@@ -49,7 +49,7 @@
 
 ## Install
 
-**Requires:**
+**Requirements:**
 
 * Zsh >= 4.3.17-1
 

@@ -36,7 +36,7 @@
 
 ## Install
 
-**Requires:**
+**Requirements:**
 
 * Vim >= 8.1
 
