@@ -4,3 +4,5 @@
   signingkey = 371A46E3EA29C7BA
 [core]
 	editor = vim
+	eol = lf
+	autocrlf = input
