@@ -107,7 +107,7 @@ zstyle ':completion:*:descriptions' format '%BCoincidences:%b'
 zstyle ':completion:*:warnings' format '%BNot found..%b'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
-setopt correctall
+# setopt correctall
 setopt extendedglob
 setopt globdots
 setopt listrowsfirst
