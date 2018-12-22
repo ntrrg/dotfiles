@@ -44,6 +44,7 @@
   * `Ctrl` + `→`: Move the cursor one word forwards.
   * `Ctrl` + `F`: Incremental search forwards.
   * `Ctrl` + `U`: Remove all the characters before the cursor.
+  * `Alt` + `H`: Open man page for the current command.
   * `Page Up`: Search up in history using the current characters.
   * `Page Down`: Search down in history using the current characters.
 
