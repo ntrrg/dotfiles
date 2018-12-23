@@ -122,3 +122,13 @@ bindkey "^F" history-incremental-search-forward
 bindkey "^U" backward-kill-line
 bindkey "${terminfo[kpp]}" up-line-or-search
 bindkey "${terminfo[knp]}" down-line-or-search
+
+# Alias
+
+alias ntflash-backup='rsync -uaXHh --delete-delay --progress --exclude="/var/" /media/ntrrg/NtFlash/srv/storage/data/ntrrg/'
+alias ntflash-backup-nlfs='rsync -urth --delete-delay --progress /media/ntrrg/NtFlash/srv/storage/data/ntrrg/'
+alias ntflash-backup-dropbox='rsync -uah --delete-delay --progress --exclude=".dropbox.cache/" --exclude=".dropbox" /media/ntrrg/NtFlash/srv/storage/data/ntrrg/ /home/ntrrg/Dropbox/'
+alias ntflash-push='rsync -e "ssh -p 8022" -uaXHh --delay-updates --delete-delay --progress /media/ntrrg/NtFlash/srv/storage/data/ntrrg ntrrg@home.nt.web.ve:/media/NtServer/srv/storage/data/'
+alias ntflash-pull='rsync -e "ssh -p 8022" -uaXHh --delay-updates --delete-delay --progress --exclude="_/private/games" --exclude="_/private/videos" ntrrg@home.nt.web.ve:/media/NtServer/srv/storage/data/_ /media/ntrrg/NtFlash/srv/storage/data/'
+
+alias ntserver-backup='rsync -uaXHh --delete-delay --progress --exclude="/var/" /media/NtServer/'
