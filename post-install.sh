@@ -107,6 +107,17 @@ fi
 cp -f et.sh /usr/bin/et
 chmod +x /usr/bin/et
 
+# Hard Disk Sentinel
+
+if [ ! -f hdsentinel-017.gz ]; then
+  wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017.gz'
+fi
+
+cp -f hdsentinel-017.gz /usr/bin/
+gzip -d /usr/bin/hdsentinel-017.gz
+mv /usr/bin/hdsentinel-017 /usr/bin/hdsentinel
+chmod +x /usr/bin/hdsentinel
+
 # Mage
 
 if [ ! -f mage_1.8.0_Linux-64bit.tar.gz ]; then
