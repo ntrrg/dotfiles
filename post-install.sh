@@ -184,6 +184,15 @@ EOF
 
 chmod +x /etc/init.d/noip2
 
+# Urchin
+
+if [ ! -f urchin-v0.1.0-rc3 ]; then
+  wget -O urchin-v0.1.0-rc3 'https://raw.githubusercontent.com/tlevine/urchin/v0.1.0-rc3/urchin'
+fi
+
+cp -f urchin-v0.1.0-rc3 /usr/bin/urchin
+chmod +x /usr/bin/urchin
+
 case "$MODE" in
   "TEXT" )
     # Vim
