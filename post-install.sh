@@ -257,9 +257,13 @@ case "$MODE" in
       wget 'https://dl.suckless.org/st/st-0.8.1.tar.gz'
     fi
 
+    if [ ! -f st-alpha-20180616-0.8.1.diff ]; then
+      wget 'https://st.suckless.org/patches/alpha/st-alpha-20180616-0.8.1.diff'
+    fi
+
     apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
     tar -xf st-0.8.1.tar.gz
-    (cd st-0.8.1 && make clean install)
+    (cd st-0.8.1 && git apply $(find .. -name "st-*.diff") && make clean install)
     rm -rf st-0.8.1
 
     cat <<EOF > /usr/share/applications/simple-terminal.desktop
