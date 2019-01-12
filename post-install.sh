@@ -267,7 +267,15 @@ case "$MODE" in
 
     apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
     tar -xf st-0.8.1.tar.gz
-    (cd st-0.8.1 && git apply $(find .. -name "st-*.diff") && make clean install)
+
+    (
+      cd st-0.8.1
+      git apply $(find .. -name "st-*.diff")
+      sed -i "s/defaultbg = 257/defaultbg = 0/" config.h config.def.h
+      sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.h config.def.h
+      make clean install
+    )
+
     rm -rf st-0.8.1
 
     cat <<EOF > /usr/share/applications/simple-terminal.desktop
