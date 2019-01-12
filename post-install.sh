@@ -261,6 +261,10 @@ case "$MODE" in
       wget 'https://st.suckless.org/patches/alpha/st-alpha-20180616-0.8.1.diff'
     fi
 
+    if [ ! -f st-clipboard-20180309-c5ba9c0.diff ]; then
+      wget 'https://st.suckless.org/patches/clipboard/st-clipboard-20180309-c5ba9c0.diff'
+    fi
+
     apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
     tar -xf st-0.8.1.tar.gz
     (cd st-0.8.1 && git apply $(find .. -name "st-*.diff") && make clean install)
