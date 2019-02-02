@@ -271,8 +271,8 @@ case "$MODE" in
     (
       cd st-0.8.1
       git apply $(find .. -name "st-*.diff")
-      sed -i "s/defaultbg = 257/defaultbg = 0/" config.h config.def.h
-      sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.h config.def.h
+      sed -i "s/defaultbg = 257/defaultbg = 0/" config.def.h
+      sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.def.h
       make clean install
     )
 
