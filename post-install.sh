@@ -125,8 +125,9 @@ fi
 
 cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
 gzip -d hdsentinel-017-x64-copy.gz
-mv hdsentinel-017-x64-copy /usr/bin/hdsentinel
+cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
 chmod +x /usr/bin/hdsentinel
+rm -f hdsentinel-017-x64-copy
 
 # Mage
 
@@ -135,7 +136,7 @@ if [ ! -f mage_1.8.0_Linux-64bit.tar.gz ]; then
 fi
 
 tar -xf mage_1.8.0_Linux-64bit.tar.gz
-cp -f mage /usr/bin/mage
+cp -f mage /usr/bin/
 chmod +x /usr/bin/mage
 rm -f LICENSE mage
 
