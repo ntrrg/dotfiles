@@ -106,6 +106,17 @@ fi
 cp -f et.sh /usr/bin/et
 chmod +x /usr/bin/et
 
+# golangci-lint
+
+if [ ! -f golangci-lint-1.13.2-linux-amd64.tar.gz ]; then
+  wget 'https://github.com/golangci/golangci-lint/releases/download/v1.13.2/golangci-lint-1.13.2-linux-amd64.tar.gz'
+fi
+
+tar -xf golangci-lint-1.13.2-linux-amd64.tar.gz
+cp -f golangci-lint-1.13.2-linux-amd64/golangci-lint /usr/bin/
+chmod +x /usr/bin/golangci-lint
+rm -rf golangci-lint-1.13.2-linux-amd64
+
 # Hard Disk Sentinel
 
 if [ ! -f hdsentinel-017-x64.gz ]; then
@@ -120,7 +131,7 @@ chmod +x /usr/bin/hdsentinel
 # Mage
 
 if [ ! -f mage_1.8.0_Linux-64bit.tar.gz ]; then
-  wget -O mage_1.8.0_Linux-64bit.tar.gz 'https://github.com/magefile/mage/releases/download/v1.8.0/mage_1.8.0_Linux-64bit.tar.gz'
+  wget 'https://github.com/magefile/mage/releases/download/v1.8.0/mage_1.8.0_Linux-64bit.tar.gz'
 fi
 
 tar -xf mage_1.8.0_Linux-64bit.tar.gz
