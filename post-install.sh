@@ -22,7 +22,6 @@ apt-get install -y \
   lbzip2 \
   lvm2 \
   make \
-  megatools \
   mosh \
   netselect \
   ntfs-3g \
