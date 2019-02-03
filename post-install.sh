@@ -58,22 +58,22 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ ! -f containerd.io_1.2.0-1_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.0-1_amd64.deb'
+if [ ! -f containerd.io_1.2.2-1_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.2-1_amd64.deb'
 fi
 
-if [ ! -f docker-ce_18.09.0~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.0~3-0~debian-buster_amd64.deb'
+if [ ! -f docker-ce-cli_18.09.1~3-0~debian-buster_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.1~3-0~debian-buster_amd64.deb'
 fi
 
-if [ ! -f docker-ce-cli_18.09.0~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.0~3-0~debian-buster_amd64.deb'
+if [ ! -f docker-ce_18.09.1~3-0~debian-buster_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.1~3-0~debian-buster_amd64.deb'
 fi
 
 dpkg -i \
   containerd.io_1.2.0-1_amd64.deb \
-  docker-ce_18.09.0~3-0~debian-buster_amd64.deb \
-  docker-ce-cli_18.09.0~3-0~debian-buster_amd64.deb ||
+  docker-ce-cli_18.09.0~3-0~debian-buster_amd64.deb \
+  docker-ce_18.09.0~3-0~debian-buster_amd64.deb ||
   apt-get install -fy
 
 # Docker Compose
@@ -108,13 +108,13 @@ chmod +x /usr/bin/et
 
 # Hard Disk Sentinel
 
-if [ ! -f hdsentinel-017.gz ]; then
-  wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017.gz'
+if [ ! -f hdsentinel-017-x64.gz ]; then
+  wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
 fi
 
-cp -f hdsentinel-017.gz /usr/bin/
-gzip -d /usr/bin/hdsentinel-017.gz
-mv /usr/bin/hdsentinel-017 /usr/bin/hdsentinel
+cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
+gzip -d hdsentinel-017-x64-copy.gz
+mv hdsentinel-017-x64-copy /usr/bin/hdsentinel
 chmod +x /usr/bin/hdsentinel
 
 # Mage
@@ -226,11 +226,11 @@ case "$MODE" in
 
     # Chrome
 
-    if [ ! -f google-chrome-stable_71.0.3578.98-1_amd64.deb ]; then
-      wget 'http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_71.0.3578.98-1_amd64.deb'
+    if [ ! -f google-chrome-stable_72.0.3626.81-1_amd64.deb ]; then
+      wget 'http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_72.0.3626.81-1_amd64.deb'
     fi
 
-    dpkg -i google-chrome-stable_71.0.3578.98-1_amd64.deb ||
+    dpkg -i google-chrome-stable_72.0.3626.81-1_amd64.deb ||
       apt-get install -fy
 
     # Paper Theme
@@ -293,11 +293,11 @@ EOF
 
     # Telegram
 
-    if [ ! -f tsetup.1.5.4.tar.xz ]; then
-      wget 'https://updates.tdesktop.com/tlinux/tsetup.1.5.4.tar.xz'
+    if [ ! -f tsetup.1.5.11.tar.xz ]; then
+      wget 'https://updates.tdesktop.com/tlinux/tsetup.1.5.11.tar.xz'
     fi
 
-    tar -xf tsetup.1.5.4.tar.xz -C /opt/
+    tar -xf tsetup.1.5.11.tar.xz -C /opt/
     ln -sf /opt/Telegram/Telegram /usr/bin/telegram
 
     # Vim
