@@ -22,7 +22,7 @@ apt install -y \
   wget \
   zsh
 
-mkdir "$HOME/bin"
+mkdir -p "$HOME/bin"
 
 # ET
 
