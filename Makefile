@@ -1,6 +1,10 @@
 .PHONY: all
 all: git vim xfce zsh
 
+.PHONY: chrome
+chrome:
+	cp -rf chrome/.chrome-remote-desktop-session "$$HOME/"
+
 .PHONY: git
 git:
 	cp -rf git/.gitconfig "$$HOME/"
