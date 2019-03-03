@@ -222,6 +222,7 @@ case "$MODE" in
   "GUI" )
     apt-get install -y \
       alsa-utils \
+      chromium \
       conky \
       cups \
       evince \
@@ -235,15 +236,6 @@ case "$MODE" in
       xcalib \
       xfce4 \
       xfce4-goodies
-
-    # Chrome
-
-    if [ ! -f google-chrome-stable_72.0.3626.81-1_amd64.deb ]; then
-      wget 'http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_72.0.3626.81-1_amd64.deb'
-    fi
-
-    dpkg -i google-chrome-stable_72.0.3626.81-1_amd64.deb ||
-      apt-get install -fy
 
     # Paper Theme
 
