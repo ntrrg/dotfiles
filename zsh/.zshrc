@@ -8,7 +8,7 @@ hostinfo() {
     _CPU="$(cat /proc/cpuinfo | grep '^Processor')"
   fi
 
-  CPU="$(echo $CPU | tail -n 1 | sed "s/.*: *//")"
+  CPU="$(echo $CPU | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ')"
 
   local RAM=$(busybox free -b | grep "Mem" | tr -s " ")
   local TRAM=$(echo $RAM | cut -d ' ' -f 2)
