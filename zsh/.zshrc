@@ -4,8 +4,8 @@ hostinfo() {
 
   local CPU="$(cat /proc/cpuinfo | grep '^model name')"
 
-  if [ "$CPU" = "" ]; then
-    _CPU="$(cat /proc/cpuinfo | grep '^Processor')"
+  if [ -z "$CPU" ]; then
+    CPU="$(cat /proc/cpuinfo | grep '^Processor')"
   fi
 
   CPU="$(echo $CPU | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ')"
