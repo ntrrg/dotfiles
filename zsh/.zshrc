@@ -125,11 +125,3 @@ bindkey "${terminfo[knp]}" down-line-or-search
 
 # Alias
 
-alias ntflash-push='rsync -e "ssh -p 8022" -uaXHh --delay-updates --delete-delay --progress --exclude="_/private/" /media/ntrrg/NtFlash/srv/storage/data/_ /media/ntrrg/NtFlash/srv/storage/data/ntrrg ntrrg@home.nt.web.ve:/media/NtServer/srv/storage/data/'
-alias ntflash-push-dropbox='rsync -e "ssh -p 8022" -uah --delay-updates --delete-delay --progress --exclude=".dropbox.cache/" --exclude=".dropbox" --exclude="/Private/" /media/ntrrg/NtFlash/srv/storage/data/ntrrg/ ntrrg@home.nt.web.ve:/media/ntrrg/Dropbox/Dropbox/'
-alias ntflash-push-mega='rsync -e "ssh -p 8022" -uaXHh --delay-updates --delete-delay --progress --exclude="_/private/" /media/ntrrg/NtFlash/srv/storage/data/_ /media/ntrrg/NtFlash/srv/storage/data/ntrrg ntrrg@home.nt.web.ve:/media/NtServer/var/mega/'
-
-alias ntflash-backup='rsync -uaXHh --delete-delay --progress --exclude="/var/" /media/ntrrg/NtFlash/'
-alias ntflash-backup-nlfs='rsync -urth --delete-delay --progress --exclude="/var/" /media/ntrrg/NtFlash/'
-
-alias ntserver-backup='rsync -uaXHh --delete-delay --progress --exclude="/var/" /media/NtServer/'
