@@ -33,6 +33,11 @@ fi
 mv et.sh "$HOME/bin/et"
 chmod +x "$HOME/bin/et"
 
+# Go
+
+mkdir -p "$HOME/../usr/lib/go/bin/"
+ln -sf "$HOME/../usr/bin/go*" "$HOME/../usr/lib/go/bin/"
+
 # Urchin
 
 if [ ! -f urchin-v0.1.0-rc3 ]; then
