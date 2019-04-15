@@ -51,13 +51,16 @@ apt-get install -y \
   system-config-printer \
   transmission \
   vlc \
-  wicd-gtk \
   xcalib \
   xfce4 \
   xfce4-goodies
 
 if lspci | grep -q "Network controller"; then
-  apt-get install -y rfkill wicd-curses wireless-tools wpasupplicant
+  apt-get install -y rfkill wicd-gtk wireless-tools wpasupplicant
+fi
+
+if lsmod | grep -q "bluetooth"; then
+  apt-get install -y blueman
 fi
 
 cd "$BASEPATH"
