@@ -41,23 +41,23 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ ! -f containerd.io_1.2.2-1_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.2-1_amd64.deb'
+if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
 fi
 
-if [ ! -f docker-ce-cli_18.09.1~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.1~3-0~debian-buster_amd64.deb'
+if [ ! -f docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb'
 fi
 
-if [ ! -f docker-ce_18.09.1~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.1~3-0~debian-buster_amd64.deb'
+if [ ! -f docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ]; then
+  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-stretch_amd64.deb'
 fi
 
 dpkg -i \
-  containerd.io_1.2.0-1_amd64.deb \
-  docker-ce-cli_18.09.0~3-0~debian-buster_amd64.deb \
-  docker-ce_18.09.0~3-0~debian-buster_amd64.deb ||
-  apt-get install -fy
+  containerd.io_1.2.5-1_amd64.deb \
+  docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb \
+  docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ||
+apt-get install -fy
 
 # ET
 
