@@ -115,15 +115,6 @@ fi
 
 cp -f docker-compose-1.24.0-completion-zsh /usr/share/zsh/vendor-completions/_docker-compose
 
-# ET
-
-if [ ! -f et.sh ]; then
-  wget 'https://gist.githubusercontent.com/ntrrg/1dbd052b2d8238fa07ea5779baebbedb/raw/371724030a77113a621fbb7f43b5be506f2eb18d/et.sh'
-fi
-
-cp -f et.sh /usr/bin/et
-chmod +x /usr/bin/et
-
 # golangci-lint
 
 if [ ! -f golangci-lint-1.16.0-linux-amd64.tar.gz ]; then
@@ -157,6 +148,62 @@ tar -xf mage_1.8.0_Linux-64bit.tar.gz
 cp -f mage /usr/bin/
 chmod +x /usr/bin/mage
 rm -f LICENSE mage
+
+# no-ip
+
+if [ ! -f noip-duc-2.1.9-linux.tar.gz ]; then
+  wget -O noip-duc-2.1.9-linux.tar.gz 'https://www.noip.com/client/linux/noip-duc-linux.tar.gz'
+fi
+
+tar -xf noip-duc-2.1.9-linux.tar.gz
+cp noip-2.1.9-1/binaries/noip2-x86_64 /usr/local/bin/noip2
+rm -rf noip-2.1.9-1
+
+cat <<EOF > /etc/init.d/noip2
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: noip2
+# Required-Start: \$local_fs \$remote_fs \$network \$syslog \$named
+# Required-Stop: \$local_fs \$remote_fs \$network \$syslog \$named
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: NoIP dynamic client
+### END INIT INFO
+
+DAEMON=/usr/local/bin/noip2
+NAME=noip2
+
+test -x \$DAEMON || exit 0
+
+case "\$1" in
+start)
+echo -n "Starting dynamic address update: "
+start-stop-daemon --start --exec \$DAEMON
+echo "noip2."
+;;
+
+stop)
+echo -n "Shutting down dynamic address update:"
+start-stop-daemon --stop --oknodo --retry 30 --exec \$DAEMON
+echo "noip2."
+;;
+
+restart)
+echo -n "Restarting dynamic address update: "
+start-stop-daemon --stop --oknodo --retry 30 --exec \$DAEMON
+start-stop-daemon --start --exec \$DAEMON
+echo "noip2."
+;;
+
+*)
+echo "Usage: \$0 {start|stop|restart}"
+exit 1
+esac
+exit 0
+EOF
+
+chmod +x /etc/init.d/noip2
+update-rc.d noip2 defaults
 
 # Urchin
 

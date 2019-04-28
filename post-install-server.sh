@@ -9,6 +9,7 @@ apt-get upgrade -y
 
 apt-get install -y \
   apt-transport-https \
+  elinks \
   git \
   htop \
   iftop \
@@ -58,15 +59,6 @@ dpkg -i \
   docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb \
   docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ||
 apt-get install -fy
-
-# ET
-
-if [ ! -f et.sh ]; then
-  wget 'https://gist.githubusercontent.com/ntrrg/1dbd052b2d8238fa07ea5779baebbedb/raw/371724030a77113a621fbb7f43b5be506f2eb18d/et.sh'
-fi
-
-cp -f et.sh /usr/bin/et
-chmod +x /usr/bin/et
 
 # Hard Disk Sentinel
 
@@ -134,4 +126,25 @@ exit 0
 EOF
 
 chmod +x /etc/init.d/noip2
+update-rc.d noip2 defaults
+
+# Vim
+
+if [ ! -f vim-8.1.tar.bz2 ]; then
+  wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+fi
+
+apt-get purge -fy vim-tiny
+apt-get install -y gcc libncurses-dev make
+tar -xf vim-8.1.tar.bz2
+(cd vim81 && ./configure && make && make install)
+rm -rf vim81
+
+apt-get autoremove -y > /dev/null
+# shellcheck disable=SC2046
+(cd /var/cache/apt && rm -rf $(ls -A))
+# shellcheck disable=SC2046
+(cd /var/lib/apt/lists && rm -rf $(ls -A))
+# shellcheck disable=SC2046
+(cd /var/log && rm -rf $(ls -A))
 

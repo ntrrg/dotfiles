@@ -24,15 +24,6 @@ apt install -y \
 
 mkdir -p "$HOME/bin"
 
-# ET
-
-if [ ! -f et.sh ]; then
-  wget 'https://gist.githubusercontent.com/ntrrg/1dbd052b2d8238fa07ea5779baebbedb/raw/371724030a77113a621fbb7f43b5be506f2eb18d/et.sh'
-fi
-
-mv et.sh "$HOME/bin/et"
-chmod +x "$HOME/bin/et"
-
 # Go
 
 mkdir -p "$HOME/../usr/lib/go/bin/"

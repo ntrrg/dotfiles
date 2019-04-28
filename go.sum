@@ -5,3 +5,5 @@ github.com/ntrrg/ntgo v0.2.0 h1:ufYzYA/le6tBnaK3B0fv6tDeD8aehBxfgszzCW32cos=
 github.com/ntrrg/ntgo v0.2.0/go.mod h1:YfXGa87QZagIbr77lAyNXtasqFhrZFD1UNTT+E78KVI=
 github.com/ntrrg/ntgo v0.2.1 h1:fuelA3KCpfI8l4jB5B5R7KlXaW48McTxhkZXyJ11Xf0=
 github.com/ntrrg/ntgo v0.2.1/go.mod h1:YfXGa87QZagIbr77lAyNXtasqFhrZFD1UNTT+E78KVI=
+github.com/ntrrg/ntgo v0.3.1 h1:8jzwRwLngylvSFYAC6tTagLa6dQnBPFtQYGVH07XzTg=
+github.com/ntrrg/ntgo v0.3.1/go.mod h1:YfXGa87QZagIbr77lAyNXtasqFhrZFD1UNTT+E78KVI=
