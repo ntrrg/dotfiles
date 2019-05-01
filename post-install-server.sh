@@ -140,6 +140,8 @@ tar -xf vim-8.1.tar.bz2
 (cd vim81 && ./configure && make && make install)
 rm -rf vim81
 
+# Cleaning
+
 apt-get autoremove -y > /dev/null
 # shellcheck disable=SC2046
 (cd /var/cache/apt && rm -rf $(ls -A))

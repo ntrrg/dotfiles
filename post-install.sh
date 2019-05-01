@@ -311,6 +311,8 @@ Categories=Utility;TextEditor;Development;
 Keywords=Text;editor;
 EOF
 
+# Cleaning
+
 apt-get autoremove -y > /dev/null
 # shellcheck disable=SC2046
 (cd /var/cache/apt && rm -rf $(ls -A))

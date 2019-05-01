@@ -17,7 +17,21 @@ var (
 var Default = All
 
 func All() {
-	mg.Deps(Git, Vim, XFCE, Zsh)
+	mg.Deps(Bin, Git, Vim, XFCE, Zsh)
+}
+
+func Bin() error {
+	dst := filepath.Join(home, "bin")
+	if err := os.MkdirAll(dst, 0755); err != nil {
+		return err
+	}
+
+	files, err := filepath.Glob("bin/*")
+	if err != nil {
+		return err
+	}
+
+	return ntos.Cp(dst, files...)
 }
 
 func Git() error {

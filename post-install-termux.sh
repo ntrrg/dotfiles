@@ -38,3 +38,7 @@ fi
 mv urchin-v0.1.0-rc3 "$HOME/bin/urchin"
 chmod +x "$HOME/bin/urchin"
 
+# Cleaning
+
+apt autoremove -y > /dev/null
+

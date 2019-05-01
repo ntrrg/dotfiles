@@ -1,5 +1,10 @@
 .PHONY: all
-all: git vim xfce zsh
+all: bin git vim xfce zsh
+
+.PHONY: bin
+bin:
+	mkdir -p "$$HOME/bin"
+	cp -pf $(shell find bin -name "*.sh") "$$HOME/bin/"
 
 .PHONY: git
 git:
