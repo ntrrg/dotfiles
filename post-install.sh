@@ -3,15 +3,13 @@
 set -e
 
 BASEPATH="${BASEPATH:-/tmp}"
+MODE="${MODE:-gui}"
 
 apt-get update
 apt-get upgrade -y
 
 apt-get install -y \
   apt-transport-https \
-  btrfs-progs \
-  cryptsetup \
-  dosfstools \
   elinks \
   git \
   htop \
@@ -19,14 +17,11 @@ apt-get install -y \
   isc-dhcp-client \
   jq \
   lbzip2 \
-  lvm2 \
   make \
   mosh \
   netselect \
-  ntfs-3g \
   p7zip-full \
   p7zip-rar \
-  pciutils \
   pv \
   rsync \
   screen \
@@ -35,35 +30,50 @@ apt-get install -y \
   ssh \
   sshfs \
   transmission-cli \
-  usbutils \
-  vbetool \
   wget \
-  zsh \
-  \
-  alsa-utils \
-  chromium \
-  conky \
-  cups \
-  evince \
-  gimp \
-  inkscape \
-  simple-scan \
-  system-config-printer \
-  transmission \
-  vlc \
-  xcalib \
-  xfce4 \
-  xfce4-goodies
-
-if lspci | grep -q "Network controller"; then
-  apt-get install -y rfkill wicd-gtk wireless-tools wpasupplicant
-fi
-
-if lsmod | grep -q "bluetooth"; then
-  apt-get install -y blueman
-fi
+  zsh
 
 cd "$BASEPATH"
+
+# Hardware
+
+if which lsmod; then
+  apt-get install -y \
+    btrfs-progs \
+    cryptsetup \
+    dosfstools \
+    lvm2 \
+    ntfs-3g \
+    pciutils \
+    usbutils \
+    vbetool
+
+  if lspci | grep -q "Network controller"; then
+    apt-get install -y rfkill wireless-tools wpasupplicant
+
+    if [ "$MODE" == "gui" ]; then
+      apt-get install -y wicd-gtk
+    elif [ "$MODE" == "text" ]; then
+      apt-get install -y wicd-curses
+    fi
+  fi
+
+  if lsmod | grep -q "bluetooth"; then
+    apt-get install -y blueman
+  fi
+
+  # Hard Disk Sentinel
+
+  if [ ! -f hdsentinel-017-x64.gz ]; then
+    wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
+  fi
+
+  cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
+  gzip -d hdsentinel-017-x64-copy.gz
+  cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
+  chmod +x /usr/bin/hdsentinel
+  rm -f hdsentinel-017-x64-copy
+fi
 
 # Busybox
 
@@ -125,18 +135,6 @@ tar -xf golangci-lint-1.16.0-linux-amd64.tar.gz
 cp -f golangci-lint-1.16.0-linux-amd64/golangci-lint /usr/bin/
 chmod +x /usr/bin/golangci-lint
 rm -rf golangci-lint-1.16.0-linux-amd64
-
-# Hard Disk Sentinel
-
-if [ ! -f hdsentinel-017-x64.gz ]; then
-  wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
-fi
-
-cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
-gzip -d hdsentinel-017-x64-copy.gz
-cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
-chmod +x /usr/bin/hdsentinel
-rm -f hdsentinel-017-x64-copy
 
 # Mage
 
@@ -214,51 +212,69 @@ fi
 cp -f urchin-v0.1.0-rc3 /usr/bin/urchin
 chmod +x /usr/bin/urchin
 
-# Paper Theme
+case "$MODE" in
+  "gui" )
+    apt-get install -y \
+      alsa-utils \
+      chromium \
+      conky \
+      cups \
+      evince \
+      gimp \
+      inkscape \
+      simple-scan \
+      system-config-printer \
+      transmission \
+      vlc \
+      xcalib \
+      xfce4 \
+      xfce4-goodies
 
-if [ ! -f paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ]; then
-  wget 'https://launchpadlibrarian.net/383884507/paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb'
-fi
+    # Paper Theme
 
-dpkg -i paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ||
-  apt-get install -fy
+    if [ ! -f paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ]; then
+      wget 'https://launchpadlibrarian.net/383884507/paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb'
+    fi
 
-if [ ! -f paper-gtk-theme.tar.gz ]; then
-  wget -O paper-gtk-theme.tar.gz 'https://github.com/snwh/paper-gtk-theme/archive/master.tar.gz'
-fi
+    dpkg -i paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ||
+      apt-get install -fy
 
-tar -xf paper-gtk-theme.tar.gz
-(cd paper-gtk-theme-master && ./install-gtk-theme.sh)
-rm -rf paper-gtk-theme-master
+    if [ ! -f paper-gtk-theme.tar.gz ]; then
+      wget -O paper-gtk-theme.tar.gz 'https://github.com/snwh/paper-gtk-theme/archive/master.tar.gz'
+    fi
 
-# ST
+    tar -xf paper-gtk-theme.tar.gz
+    (cd paper-gtk-theme-master && ./install-gtk-theme.sh)
+    rm -rf paper-gtk-theme-master
 
-if [ ! -f st-0.8.2.tar.gz ]; then
-  wget 'https://dl.suckless.org/st/st-0.8.2.tar.gz'
-fi
+    # ST
 
-if [ ! -f https://st.suckless.org/patches/alpha/st-alpha-0.8.2.diff ]; then
-  wget 'https://st.suckless.org/patches/alpha/st-alpha-0.8.2.diff'
-fi
+    if [ ! -f st-0.8.2.tar.gz ]; then
+      wget 'https://dl.suckless.org/st/st-0.8.2.tar.gz'
+    fi
 
-if [ ! -f st-clipboard-0.8.2.diff ]; then
-  wget 'https://st.suckless.org/patches/clipboard/st-clipboard-0.8.2.diff'
-fi
+    if [ ! -f https://st.suckless.org/patches/alpha/st-alpha-0.8.2.diff ]; then
+      wget 'https://st.suckless.org/patches/alpha/st-alpha-0.8.2.diff'
+    fi
 
-apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
-tar -xf st-0.8.2.tar.gz
+    if [ ! -f st-clipboard-0.8.2.diff ]; then
+      wget 'https://st.suckless.org/patches/clipboard/st-clipboard-0.8.2.diff'
+    fi
 
-(
-  cd st-0.8.2
-  git apply $(find .. -name "st-*.diff")
-  sed -i "s/defaultbg = 257/defaultbg = 0/" config.def.h
-  sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.def.h
-  make clean install
-)
+    apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
+    tar -xf st-0.8.2.tar.gz
 
-rm -rf st-0.8.2
+    (
+      cd st-0.8.2
+      git apply $(find .. -name "st-*.diff")
+      sed -i "s/defaultbg = 257/defaultbg = 0/" config.def.h
+      sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.def.h
+      make clean install
+    )
 
-cat <<EOF > /usr/share/applications/simple-terminal.desktop
+    rm -rf st-0.8.2
+
+    cat <<EOF > /usr/share/applications/simple-terminal.desktop
 [Desktop Entry]
 Name=st
 GenericName=Terminal
@@ -272,31 +288,31 @@ Categories=System;TerminalEmulator;
 Keywords=shell;prompt;command;commandline;cmd;
 EOF
 
-# Telegram
+    # Telegram
 
-if [ ! -f tsetup.1.6.7.tar.xz ]; then
-  wget 'https://updates.tdesktop.com/tlinux/tsetup.1.6.7.tar.xz'
-fi
+    if [ ! -f tsetup.1.6.7.tar.xz ]; then
+      wget 'https://updates.tdesktop.com/tlinux/tsetup.1.6.7.tar.xz'
+    fi
 
-tar -xf tsetup.1.6.7.tar.xz -C /opt/
-ln -sf /opt/Telegram/Telegram /usr/bin/telegram
+    tar -xf tsetup.1.6.7.tar.xz -C /opt/
+    ln -sf /opt/Telegram/Telegram /usr/bin/telegram
 
-# Vim
+    # Vim
 
-if [ ! -f vim-8.1.tar.bz2 ]; then
-  wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
-fi
+    if [ ! -f vim-8.1.tar.bz2 ]; then
+      wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+    fi
 
-apt-get purge -fy vim-tiny
+    apt-get purge -fy vim-tiny
 
-apt-get install -y \
-  gcc libncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev make
+    apt-get install -y \
+      gcc libncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev make
 
-tar -xf vim-8.1.tar.bz2
-(cd vim81 && ./configure --with-features=huge && make && make install)
-rm -rf vim81
+    tar -xf vim-8.1.tar.bz2
+    (cd vim81 && ./configure --with-features=huge && make && make install)
+    rm -rf vim81
 
-cat <<EOF > /usr/share/applications/vim.desktop
+    cat <<EOF > /usr/share/applications/vim.desktop
 [Desktop Entry]
 Name=Vim
 GenericName=Text Editor
@@ -310,6 +326,24 @@ Icon=gvim
 Categories=Utility;TextEditor;Development;
 Keywords=Text;editor;
 EOF
+
+    ;;
+
+  "text" )
+    # Vim
+
+    if [ ! -f vim-8.1.tar.bz2 ]; then
+      wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+    fi
+
+    apt-get purge -fy vim-tiny
+    apt-get install -y gcc libncurses-dev make
+    tar -xf vim-8.1.tar.bz2
+    (cd vim81 && ./configure && make && make install)
+    rm -rf vim81
+
+    ;;
+esac
 
 # Cleaning
 
