@@ -35,6 +35,7 @@ apt-get install -y \
   isc-dhcp-client \
   jq \
   lbzip2 \
+  locales \
   make \
   mosh \
   netselect \
@@ -76,6 +77,8 @@ if ! is_container; then
     apt-get install -y blueman
   fi
 fi
+
+localedef -ci en_US -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 # Busybox
 

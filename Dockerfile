@@ -1,11 +1,17 @@
-FROM debian:buster
-RUN useradd --shell "/bin/zsh" --create-home ntrrg
+FROM debian:buster-slim
+ARG NEW_USER="ntrrg"
+ARG NEW_USER_PASSWORD="1234"
 COPY post-install.sh /bin/
 RUN \
   echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list && \
+  apt-get update && apt-get upgrade -y && \
+  apt-get install -y sudo && \
+  useradd --shell "/bin/zsh" --create-home "$NEW_USER" && \
+  echo "$NEW_USER:$NEW_USER_PASSWORD" | chpasswd && \
+  usermod -aG sudo "$NEW_USER" && \
   DEBIAN_FRONTEND="noninteractive" MODE="text" post-install.sh
-USER ntrrg:ntrrg
-WORKDIR /hone/ntrrg/
+USER "$NEW_USER":"$NEW_USER"
+WORKDIR "/home/$NEW_USER"
 COPY . dotfiles
 RUN cd dotfiles && make bin git vim zsh
 CMD ["/bin/zsh"]

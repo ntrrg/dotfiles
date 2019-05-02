@@ -31,6 +31,7 @@ apt-get install -y \
   git \
   htop \
   iftop \
+  locales \
   mosh \
   netselect \
   pv \
@@ -60,6 +61,8 @@ if ! is_container; then
     apt-get install -y blueman
   fi
 fi
+
+localedef -ci en_US -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 # Busybox
 
