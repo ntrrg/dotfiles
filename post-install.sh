@@ -5,6 +5,24 @@ set -e
 BASEPATH="${BASEPATH:-/tmp}"
 MODE="${MODE:-gui}"
 
+is_container() {
+  if cat /proc/self/cgroup | grep -q "docker/"; then
+    return 0
+  fi
+
+  if cat /proc/self/cgroup | grep -q "kubepods/"; then
+    return 0
+  fi
+
+  if [ -n "$CONTAINER" ]; then
+    return 0
+  fi
+
+  return 1
+}
+
+cd "$BASEPATH"
+
 apt-get update
 apt-get upgrade -y
 
@@ -33,11 +51,7 @@ apt-get install -y \
   wget \
   zsh
 
-cd "$BASEPATH"
-
-# Hardware
-
-if which lsmod; then
+if ! is_container; then
   apt-get install -y \
     btrfs-progs \
     cryptsetup \
@@ -61,18 +75,6 @@ if which lsmod; then
   if lsmod | grep -q "bluetooth"; then
     apt-get install -y blueman
   fi
-
-  # Hard Disk Sentinel
-
-  if [ ! -f hdsentinel-017-x64.gz ]; then
-    wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
-  fi
-
-  cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
-  gzip -d hdsentinel-017-x64-copy.gz
-  cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
-  chmod +x /usr/bin/hdsentinel
-  rm -f hdsentinel-017-x64-copy
 fi
 
 # Busybox
@@ -86,44 +88,48 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
-fi
+if ! is_container; then
+  if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
+  fi
 
-if [ ! -f docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb'
-fi
+  if [ ! -f docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb'
+  fi
 
-if [ ! -f docker-ce_18.09.5~3-0~debian-buster_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-buster_amd64.deb'
-fi
+  if [ ! -f docker-ce_18.09.5~3-0~debian-buster_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-buster_amd64.deb'
+  fi
 
-dpkg -i \
-  containerd.io_1.2.5-1_amd64.deb \
-  docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb \
-  docker-ce_18.09.5~3-0~debian-buster_amd64.deb ||
-apt-get install -fy
+  dpkg -i \
+    containerd.io_1.2.5-1_amd64.deb \
+    docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb \
+    docker-ce_18.09.5~3-0~debian-buster_amd64.deb ||
+  apt-get install -fy
+fi
 
 # Docker Compose
 
-if [ ! -f docker-compose-1.24.0-Linux-x86_64 ]; then
-  wget -O docker-compose-1.24.0-Linux-x86_64 'https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64'
+if ! is_container; then
+  if [ ! -f docker-compose-1.24.0-Linux-x86_64 ]; then
+    wget -O docker-compose-1.24.0-Linux-x86_64 'https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64'
+  fi
+
+  cp -f docker-compose-1.24.0-Linux-x86_64 /usr/bin/docker-compose
+  chmod +x /usr/bin/docker-compose
+
+  if [ ! -f docker-compose-1.24.0-completion-bash ]; then
+    wget -O docker-compose-1.24.0-completion-bash 'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/bash/docker-compose'
+  fi
+
+  cp -f docker-compose-1.24.0-completion-bash /etc/bash_completion.d/docker-compose
+
+  if [ ! -f docker-compose-1.24.0-completion-zsh ]; then
+    wget -O docker-compose-1.24.0-completion-zsh 'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/zsh/_docker-compose'
+  fi
+
+  cp -f docker-compose-1.24.0-completion-zsh /usr/share/zsh/vendor-completions/_docker-compose
 fi
-
-cp -f docker-compose-1.24.0-Linux-x86_64 /usr/bin/docker-compose
-chmod +x /usr/bin/docker-compose
-
-if [ ! -f docker-compose-1.24.0-completion-bash ]; then
-  wget -O docker-compose-1.24.0-completion-bash 'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/bash/docker-compose'
-fi
-
-cp -f docker-compose-1.24.0-completion-bash /etc/bash_completion.d/docker-compose
-
-if [ ! -f docker-compose-1.24.0-completion-zsh ]; then
-  wget -O docker-compose-1.24.0-completion-zsh 'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/zsh/_docker-compose'
-fi
-
-cp -f docker-compose-1.24.0-completion-zsh /usr/share/zsh/vendor-completions/_docker-compose
 
 # golangci-lint
 
@@ -135,6 +141,20 @@ tar -xf golangci-lint-1.16.0-linux-amd64.tar.gz
 cp -f golangci-lint-1.16.0-linux-amd64/golangci-lint /usr/bin/
 chmod +x /usr/bin/golangci-lint
 rm -rf golangci-lint-1.16.0-linux-amd64
+
+# Hard Disk Sentinel
+
+if ! is_container; then
+  if [ ! -f hdsentinel-017-x64.gz ]; then
+    wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
+  fi
+
+  cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
+  gzip -d hdsentinel-017-x64-copy.gz
+  cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
+  chmod +x /usr/bin/hdsentinel
+  rm -f hdsentinel-017-x64-copy
+fi
 
 # Mage
 

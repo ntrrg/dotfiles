@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir -p "$HOME/bin"
+
 apt update
 apt upgrade -y
 
@@ -21,8 +23,6 @@ apt install -y \
   vim \
   wget \
   zsh
-
-mkdir -p "$HOME/bin"
 
 # Go
 

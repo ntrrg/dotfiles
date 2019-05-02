@@ -4,6 +4,24 @@ set -e
 
 BASEPATH="${BASEPATH:-/tmp}"
 
+is_container() {
+  if cat /proc/self/cgroup | grep -q "docker/"; then
+    return 0
+  fi
+
+  if cat /proc/self/cgroup | grep -q "kubepods/"; then
+    return 0
+  fi
+
+  if [ -n "$CONTAINER" ]; then
+    return 0
+  fi
+
+  return 1
+}
+
+cd "$BASEPATH"
+
 apt-get update
 apt-get upgrade -y
 
@@ -15,21 +33,33 @@ apt-get install -y \
   iftop \
   mosh \
   netselect \
-  pciutils \
   pv \
   rsync \
   screen \
   ssh \
   transmission-cli \
-  usbutils \
   wget \
   zsh
 
-if lspci | grep -q "Network controller"; then
-  apt-get install -y rfkill wicd-curses wireless-tools wpasupplicant
-fi
+if ! is_container; then
+  apt-get install -y \
+    btrfs-progs \
+    cryptsetup \
+    dosfstools \
+    lvm2 \
+    ntfs-3g \
+    pciutils \
+    usbutils \
+    vbetool
 
-cd "$BASEPATH"
+  if lspci | grep -q "Network controller"; then
+    apt-get install -y rfkill wicd-curses wireless-tools wpasupplicant
+  fi
+
+  if lsmod | grep -q "bluetooth"; then
+    apt-get install -y blueman
+  fi
+fi
 
 # Busybox
 
@@ -42,35 +72,39 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
-fi
+if ! is_container; then
+  if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
+  fi
 
-if [ ! -f docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb'
-fi
+  if [ ! -f docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb'
+  fi
 
-if [ ! -f docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ]; then
-  wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-stretch_amd64.deb'
-fi
+  if [ ! -f docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ]; then
+    wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-stretch_amd64.deb'
+  fi
 
-dpkg -i \
-  containerd.io_1.2.5-1_amd64.deb \
-  docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb \
-  docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ||
-apt-get install -fy
+  dpkg -i \
+    containerd.io_1.2.5-1_amd64.deb \
+    docker-ce-cli_18.09.5~3-0~debian-stretch_amd64.deb \
+    docker-ce_18.09.5~3-0~debian-stretch_amd64.deb ||
+  apt-get install -fy
+fi
 
 # Hard Disk Sentinel
 
-if [ ! -f hdsentinel-017-x64.gz ]; then
-  wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
-fi
+if ! is_container; then
+  if [ ! -f hdsentinel-017-x64.gz ]; then
+    wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
+  fi
 
-cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
-gzip -d hdsentinel-017-x64-copy.gz
-cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
-chmod +x /usr/bin/hdsentinel
-rm -f hdsentinel-017-x64-copy
+  cp -f hdsentinel-017-x64.gz hdsentinel-017-x64-copy.gz
+  gzip -d hdsentinel-017-x64-copy.gz
+  cp hdsentinel-017-x64-copy /usr/bin/hdsentinel
+  chmod +x /usr/bin/hdsentinel
+  rm -f hdsentinel-017-x64-copy
+fi
 
 # no-ip
 
