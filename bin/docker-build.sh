@@ -6,7 +6,7 @@ set -e
 
 main() {
   local OPTS="hrp:t:"
-  local LOPTS="help,recursive,prefix:,tag:"
+  local LOPTS="help,recursive,prefix:,push,tag:"
 
   eval set -- "$(
     getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- $@
@@ -92,6 +92,7 @@ Options:
   -g, --git-ref=REF     Use REF as Git working tree
   -h, --help            Show this help message
   -p, --prefix=PREFIX   Prepend PREFIX to the Docker repository name
+      --push            Push the images after building them
   -r, --recursive       Look for Dockerfiles in the given folders recursively
   -t, --tag=TAG         Append TAG to the Docker repository name
 
