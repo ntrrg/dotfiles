@@ -24,7 +24,7 @@ main() {
     case $1 in
       -h | --help )
         show_help
-        exit 1
+        return 1
         ;;
 
       -c | --config )
@@ -79,41 +79,72 @@ main() {
 }
 
 build() {
-  local BI="$1"
-
-  if [ -d "$BI" ]; then
+  if [ -d "$1" ]; then
     if [ $RECURSIVE -eq 0 ]; then
-      if [ -f "$BI/$CONFIGFILE" ]; then
-        echo "Config"
-      elif [ -f "$BI/$DOCKERFILE" ]; then
-        build "$BI/$DOCKERFILE"
-      else
-        echo "$BI doesn't have any $DOCKERFILE or $CONFIGFILE files"
-        exit 1
+      if [ -f "$1/$CONFIGFILE" ]; then
+        for BI in $(cat "$1/$CONFIGFILE"); do
+          build "$(readlink --canonicalize-existing "$1")/$BI"
+        done
+      elif [ -f "$1/$DOCKERFILE" ]; then
+        build "$(readlink --canonicalize-existing "$1")/$DOCKERFILE"
       fi
     else
-      FILES="$(find $BI -name "$DOCKERFILE")"
+      FILES="$(find $1 -name "$DOCKERFILE")"
 
-      for FILE in $FILES; do
-        build "$FILE"
+      for BI in $FILES; do
+        build "$BI"
       done
     fi
   else
-    local FILE="$BI"
-    local CTX="$(dirname "$FILE")"
-    local IMAGE="$(basename "$CTX")"
+    local BI="$1"
+    local TMP_BI="$BI"
 
-    echo docker build -t "$PREFIX$IMAGE$SUFFIX" -f "$FILE" "$CTX"
+    local BI_GIT_REF="$(echo "$TMP_BI" | cut -sd '#' -f 2)"
+    if [ -z "$BI_GIT_REF" ]; then
+      BI_GIT_REF="$GIT_REF"
+    fi
+
+    TMP_BI="$(echo "$TMP_BI" | cut -d '#' -f 1)"
+
+    local BI_TAG="$(echo "$TMP_BI" | cut -sd ':' -f 2)"
+    if [ -z "$BI_TAG" ]; then
+      BI_TAG="$TAG"
+    fi
+
+    TMP_BI="$(echo "$TMP_BI" | cut -d ':' -f 1)"
+
+    local BI_REPO="$(echo "$TMP_BI" | cut -sd '@' -f 2)"
+    local BI_DOCKERFILE="$(echo "$TMP_BI" | cut -d '@' -f 1)"
+    local BI_CTX="$(dirname "$BI_DOCKERFILE")"
+
+    if [ -z "$BI_REPO" ]; then
+      BI_REPO="$(basename "$BI_CTX")"
+    fi
+
+    local BI_IMAGE="$PREFIX$BI_REPO:$BI_TAG"
+
+    if [ -n "$BI_GIT_REF" ]; then
+      if [ -n "$(git -C "$BI_CTX" status --porcelain)" ]; then
+        echo "the git working directory '$BI_CTX' is not clean"
+        echo
+        git -C "$BI_CTX" status
+        return 1
+      fi
+
+      git -C "$BI_CTX" checkout $BI_GIT_REF
+    fi
+
+    docker build -t "$BI_IMAGE" -f "$BI_DOCKERFILE" "$BI_CTX"
 
     if [ $PUSH -ne 0 ]; then
-      echo docker push "$REPOSITORY"
+      docker push "$BI_IMAGE"
     fi
   fi
 }
 
 show_help() {
   cat <<EOF
-$0 is a Dockerfile build helper. It can build multiple Dockerfiles
+$0 - Dockerfile build helper. It can build multiple Dockerfiles
 with a single command.
 
 Usage: $0 [OPTIONS] [PATH | BUILD_INSTRUCTION]...

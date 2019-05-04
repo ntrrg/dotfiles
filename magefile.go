@@ -17,7 +17,7 @@ var (
 var Default = All
 
 func All() {
-	mg.Deps(Bin, Git, Vim, XFCE, Zsh)
+	mg.Deps(Git, Vim, XFCE, Zsh)
 }
 
 func Bin() error {
