@@ -177,8 +177,8 @@ Options:
   -p, --prefix=PREFIX   Prepend PREFIX to the Docker repository name
       --push            Push the image after building it
   -r, --recursive       Look for Dockerfiles in the given directories
-                        recursively, this will ignore any configuration file.
-  -t, --tag=TAG         Append TAG to the Docker repository name
+                        recursively, this will ignore any configuration file
+  -t, --tag=TAG         Use TAG as Docker repository tag (latest)
 
 Configuration file syntax:
   A configuration file is a line-separated list of build instructions. That
@@ -186,8 +186,8 @@ Configuration file syntax:
   call of this program. This only works for directories.
 
 Environment variables:
-  * 'PREFIX' will be prepended to the Docker repository name.
-  * 'TAG' will be appended to the Docker repository name.
+  * 'PREFIX' prependeds its value to the Docker repository name.
+  * 'TAG' is the default Docker repository tag. (latest)
 
 Copyright (c) 2018 Miguel Angel Rivera Notararigo
 Released under the MIT License
