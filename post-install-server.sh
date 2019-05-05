@@ -3,27 +3,17 @@
 set -e
 
 BASEPATH="${BASEPATH:-/tmp}"
-
-is_container() {
-  if cat /proc/self/cgroup | grep -q "docker/"; then
-    return 0
-  fi
-
-  if cat /proc/self/cgroup | grep -q "kubepods/"; then
-    return 0
-  fi
-
-  if [ -n "$CONTAINER" ]; then
-    return 0
-  fi
-
-  return 1
-}
+CONTAINER=${CONTAINER:-0}
+HARDWARE=${HARDWARE:-1}
 
 cd "$BASEPATH"
 
 apt-get update
 apt-get upgrade -y
+
+################
+# Installation #
+################
 
 apt-get install -y \
   apt-transport-https \
@@ -31,6 +21,7 @@ apt-get install -y \
   git \
   htop \
   iftop \
+  lbzip2 \
   locales \
   mosh \
   netselect \
@@ -42,7 +33,9 @@ apt-get install -y \
   wget \
   zsh
 
-if ! is_container; then
+localedef -ci en_US -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+if [ $HARDWARE -ne 0 ]; then
   apt-get install -y \
     btrfs-progs \
     cryptsetup \
@@ -56,13 +49,7 @@ if ! is_container; then
   if lspci | grep -q "Network controller"; then
     apt-get install -y rfkill wicd-curses wireless-tools wpasupplicant
   fi
-
-  if lsmod | grep -q "bluetooth"; then
-    apt-get install -y blueman
-  fi
 fi
-
-localedef -ci en_US -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 # Busybox
 
@@ -75,7 +62,7 @@ chmod +x /bin/busybox
 
 # Docker
 
-if ! is_container; then
+if [ $CONTAINER -ne 0 ]; then
   if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
     wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
   fi
@@ -97,7 +84,7 @@ fi
 
 # Hard Disk Sentinel
 
-if ! is_container; then
+if [ $HARDWARE -ne 0 ]; then
   if [ ! -f hdsentinel-017-x64.gz ]; then
     wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
   fi
@@ -177,7 +164,9 @@ tar -xf vim-8.1.tar.bz2
 (cd vim81 && ./configure && make && make install)
 rm -rf vim81
 
-# Cleaning
+############
+# Cleaning #
+############
 
 apt-get autoremove -y > /dev/null
 # shellcheck disable=SC2046
