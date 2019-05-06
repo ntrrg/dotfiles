@@ -15,6 +15,6 @@ RUN \
 USER "$NEW_USER":"$NEW_USER"
 WORKDIR "/home/$NEW_USER"
 COPY . dotfiles
-RUN cd dotfiles && make bin git vim zsh && cd .. && rm -rf dotfiles
+RUN cd dotfiles && make bin git vim zsh
 CMD ["/bin/zsh"]
 
