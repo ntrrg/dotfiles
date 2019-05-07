@@ -118,6 +118,8 @@ setopt globcomplete
 
 bindkey "5D" backward-word
 bindkey "5C" forward-word
+bindkey "\e[1~" beginning-of-line
+bindkey "\e[4~" end-of-line
 bindkey "^F" history-incremental-search-forward
 bindkey "^U" backward-kill-line
 bindkey "${terminfo[kpp]}" up-line-or-search
