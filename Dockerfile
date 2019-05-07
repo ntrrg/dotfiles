@@ -12,9 +12,10 @@ RUN \
   DEBIAN_FRONTEND="noninteractive" GUI_ENABLED=0 CONTAINER=1 HARDWARE=0 \
   /post-install.sh && \
   rm -rf /post-install.sh
-USER "$NEW_USER":"$NEW_USER"
 WORKDIR "/home/$NEW_USER"
 COPY . dotfiles
+RUN echo "$NEW_USER_PASSWORD\n" | sudo -S -- chown -R "$NEW_USER":"$NEW_USER" dotfiles
+USER "$NEW_USER":"$NEW_USER"
 RUN cd dotfiles && make bin git vim zsh
 CMD ["/bin/zsh"]
 
