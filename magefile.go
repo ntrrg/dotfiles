@@ -5,8 +5,10 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/magefile/mage/mg"
+	"github.com/magefile/mage/sh"
 	ntos "github.com/ntrrg/ntgo/os"
 )
 
@@ -48,4 +50,37 @@ func XFCE() error {
 
 func Zsh() error {
 	return ntos.Cp(home, "zsh/.zshenv", "zsh/.zshrc")
+}
+
+// Development
+
+var (
+	shFiles = getShFiles()
+)
+
+func CI() {
+	mg.SerialDeps(Lint)
+}
+
+func Lint() error {
+	args := []string{"-e", "SC2039", "-s", "sh"}
+	args = append(args, shFiles...)
+	return sh.RunV("shellcheck", args...)
+}
+
+// Helpers
+
+func getShFiles() []string {
+	var shFiles []string
+
+	filepath.Walk("bin", func(path string, info os.FileInfo, err error) error {
+		if !strings.HasSuffix(path, ".sh") {
+			return nil
+		}
+
+		shFiles = append(shFiles, path)
+		return nil
+	})
+
+	return shFiles
 }

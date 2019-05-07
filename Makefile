@@ -22,3 +22,12 @@ xfce:
 zsh:
 	cp -rpf zsh/.zshenv zsh/.zshrc "$$HOME/"
 
+# Development
+
+.PHONY: ci
+ci: lint
+
+.PHONY: lint
+lint:
+	shellcheck -e "SC2039" -s sh $$(find bin/ -name "*.sh" -exec echo {} +)
+
