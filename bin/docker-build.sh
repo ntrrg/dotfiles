@@ -4,27 +4,18 @@
 
 set -e
 
-CONFIGFILE=".docker-build"
-DOCKERFILE="Dockerfile"
-GIT_REF=""
-PUSH=0
-PREFIX="${PREFIX:-}"
-RECURSIVE=0
-TAG="${TAG:-latest}"
-
 main() {
   local OPTS="c:g:hp:rt:"
   local LOPTS="config:,git-ref:,help,prefix:,push,recursive,tag:"
 
   eval set -- "$(
-    getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- $@
+    getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
   )"
 
   while [ $# -gt 0 ]; do
     case $1 in
       -h | --help )
         show_help
-        return 1
         ;;
 
       -c | --config )
@@ -73,7 +64,7 @@ main() {
     eval set -- "$PWD"
   fi
 
-  for BI in $@; do
+  for BI in "$@"; do
     build "$BI"
   done
 }
@@ -82,6 +73,7 @@ build() {
   if [ -d "$1" ]; then
     if [ $RECURSIVE -eq 0 ]; then
       if [ -f "$1/$CONFIGFILE" ]; then
+        # shellcheck disable=SC2013
         for BI in $(cat "$1/$CONFIGFILE"); do
           build "$(readlink --canonicalize-existing "$1")/$BI"
         done
@@ -89,7 +81,7 @@ build() {
         build "$(readlink --canonicalize-existing "$1")/$DOCKERFILE"
       fi
     else
-      FILES="$(find $1 -name "$DOCKERFILE")"
+      FILES="$(find "$1" -name "$DOCKERFILE")"
 
       for BI in $FILES; do
         build "$BI"
@@ -99,6 +91,7 @@ build() {
     local BI="$1"
     local TMP_BI="$BI"
 
+    # shellcheck disable=SC2155
     local BI_GIT_REF="$(echo "$TMP_BI" | cut -sd '#' -f 2)"
     if [ -z "$BI_GIT_REF" ]; then
       BI_GIT_REF="$GIT_REF"
@@ -106,6 +99,7 @@ build() {
 
     TMP_BI="$(echo "$TMP_BI" | cut -d '#' -f 1)"
 
+    # shellcheck disable=SC2155
     local BI_TAG="$(echo "$TMP_BI" | cut -sd ':' -f 2)"
     if [ -z "$BI_TAG" ]; then
       BI_TAG="$TAG"
@@ -113,14 +107,18 @@ build() {
 
     TMP_BI="$(echo "$TMP_BI" | cut -d ':' -f 1)"
 
+    # shellcheck disable=SC2155
     local BI_REPO="$(echo "$TMP_BI" | cut -sd '@' -f 2)"
+    # shellcheck disable=SC2155
     local BI_DOCKERFILE="$(echo "$TMP_BI" | cut -d '@' -f 1)"
+    # shellcheck disable=SC2155
     local BI_CTX="$(dirname "$BI_DOCKERFILE")"
 
     if [ -z "$BI_REPO" ]; then
       BI_REPO="$(basename "$BI_CTX")"
     fi
 
+    # shellcheck disable=SC2155
     local BI_IMAGE="$PREFIX$BI_REPO:$BI_TAG"
 
     if [ -n "$BI_GIT_REF" ]; then
@@ -131,7 +129,7 @@ build() {
         return 1
       fi
 
-      git -C "$BI_CTX" checkout $BI_GIT_REF
+      git -C "$BI_CTX" checkout "$BI_GIT_REF"
     fi
 
     docker build -t "$BI_IMAGE" -f "$BI_DOCKERFILE" "$BI_CTX"
@@ -170,15 +168,15 @@ order of precedence):
   * Specific build instruction or configuration file.
 
 Options:
-  -c, --config=NAME     Set the configuration file name (.docker-build)
-  -f, --file=NAME       Set the Dockerfile name (Dockerfile)
+  -c, --config=NAME     Set the configuration file name ($CONFIGFILE)
+  -f, --file=NAME       Set the Dockerfile name ($DOCKERFILE)
   -g, --git-ref=REF     Use REF as Git working tree
   -h, --help            Show this help message
   -p, --prefix=PREFIX   Prepend PREFIX to the Docker repository name
       --push            Push the image after building it
   -r, --recursive       Look for Dockerfiles in the given directories
                         recursively, this will ignore any configuration file
-  -t, --tag=TAG         Use TAG as Docker repository tag (latest)
+  -t, --tag=TAG         Use TAG as Docker repository tag ($TAG)
 
 Configuration file syntax:
   A configuration file is a line-separated list of build instructions. That
@@ -187,12 +185,20 @@ Configuration file syntax:
 
 Environment variables:
   * 'PREFIX' prependeds its value to the Docker repository name.
-  * 'TAG' is the default Docker repository tag. (latest)
+  * 'TAG' is the default Docker repository tag. ($TAG)
 
 Copyright (c) 2018 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
 }
 
-main $@
+CONFIGFILE=".docker-build"
+DOCKERFILE="Dockerfile"
+GIT_REF=""
+PUSH=0
+PREFIX="${PREFIX:-}"
+RECURSIVE=0
+TAG="${TAG:-latest}"
+
+main "$@"
 

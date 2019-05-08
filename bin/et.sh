@@ -15,8 +15,6 @@ Options:
 Copyright (c) 2017 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
-
-  exit 1
 fi
 
 if [ "$1" = "-s" ] || [ "$1" = "--sleep" ]; then
@@ -25,7 +23,7 @@ if [ "$1" = "-s" ] || [ "$1" = "--sleep" ]; then
 fi
 
 while true; do
-  $* && break
+  "$@" && break
   $SLEEP
 done
 

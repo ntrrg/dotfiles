@@ -14,24 +14,17 @@ Options:
   -h, --help   Show this help message.
 
 Environment variables:
-  * 'IS_CONTAINER' if non-zero value, forces this program to exit with status
-    0.
-
-Exit status codes:
-  0   running in a container
-  1   not running in a container
-  2   showing help message
+  * 'IS_CONTAINER' forces this program to exit with status 0 if its value is
+    not 0. ($IS_CONTAINER)
 
 Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
-
-  exit 2
 fi
 
-if [ $IS_CONTAINER -ne 0 ] ||
-    cat /proc/self/cgroup | grep -q "docker/" ||
-    cat /proc/self/cgroup | grep -q "kubepods/" ||
+if [ "$IS_CONTAINER" -ne 0 ] ||
+    grep -q "docker/" < /proc/self/cgroup||
+    grep -q "kubepods/" < /proc/self/cgroup ||
     ischroot; then
   exit 0
 fi
