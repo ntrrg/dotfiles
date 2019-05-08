@@ -18,6 +18,7 @@ apt install -y \
   make \
   mosh \
   openssh \
+  protobuf \
   pv \
   rsync \
   screen \
