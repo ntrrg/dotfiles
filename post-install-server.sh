@@ -30,6 +30,7 @@ apt-get install -y \
   screen \
   ssh \
   transmission-cli \
+  unzip \
   wget \
   zsh
 

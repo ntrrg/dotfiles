@@ -22,6 +22,7 @@ apt install -y \
   rsync \
   screen \
   termux-api \
+  unzip \
   vim \
   wget \
   zsh

@@ -39,6 +39,7 @@ apt-get install -y \
   ssh \
   sshfs \
   transmission-cli \
+  unzip \
   wget \
   zsh
 
