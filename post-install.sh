@@ -216,6 +216,14 @@ EOF
 chmod +x /etc/init.d/noip2
 update-rc.d noip2 defaults
 
+# protoc
+
+if [ ! -f protoc-3.7.1-linux-x86_64.zip ]; then
+  wget 'https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip'
+fi
+
+unzip protoc-3.7.1-linux-x86_64.zip -d /usr/ -x readme.txt
+
 # Urchin
 
 if [ ! -f urchin-v0.1.0-rc3 ]; then
