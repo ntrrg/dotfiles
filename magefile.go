@@ -23,7 +23,7 @@ func All() {
 }
 
 func Bin() error {
-	dst := filepath.Join(home, "bin")
+	dst := filepath.Join(home, ".local", "bin")
 	if err := os.MkdirAll(dst, 0755); err != nil {
 		return err
 	}

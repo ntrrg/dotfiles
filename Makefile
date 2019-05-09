@@ -3,8 +3,8 @@ all: git vim xfce zsh
 
 .PHONY: bin
 bin:
-	mkdir -p "$$HOME/bin"
-	cp -pf $(shell find bin -name "*.sh") "$$HOME/bin/"
+	mkdir -p "$$HOME/.local/bin"
+	cp -pf $(shell find bin -name "*.sh") "$$HOME/.local/bin/"
 
 .PHONY: git
 git:
