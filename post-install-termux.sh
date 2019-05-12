@@ -30,8 +30,8 @@ apt install -y \
 
 # Go
 
-mkdir -p "$HOME/../usr/lib/go/bin/"
-ln -sf "$HOME/../usr/bin/go*" "$HOME/../usr/lib/go/bin/"
+mkdir -p "$PREFIX/lib/go/bin/"
+ln -sf "$PREFIX/bin/go*" "$PREFIX/lib/go/bin/"
 
 # Urchin
 
@@ -39,9 +39,9 @@ if [ ! -f urchin-v0.1.0-rc3 ]; then
   wget -O urchin-v0.1.0-rc3 'https://raw.githubusercontent.com/tlevine/urchin/v0.1.0-rc3/urchin'
 fi
 
-mkdir -p "$HOME/bin"
-mv urchin-v0.1.0-rc3 "$HOME/bin/urchin"
-chmod +x "$HOME/bin/urchin"
+mkdir -p "$HOME/.local/bin"
+mv urchin-v0.1.0-rc3 "$HOME/.local/bin/urchin"
+chmod +x "$HOME/.local/bin/urchin"
 
 ############
 # Cleaning #
