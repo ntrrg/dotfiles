@@ -63,7 +63,7 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ $CONTAINER -ne 0 ]; then
+if [ $CONTAINER -eq 0 ]; then
   if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
     wget 'https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
   fi

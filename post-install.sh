@@ -82,7 +82,7 @@ chmod +x /bin/busybox
 
 # Docker
 
-if [ $CONTAINER -ne 0 ]; then
+if [ $CONTAINER -eq 0 ]; then
   if [ ! -f containerd.io_1.2.5-1_amd64.deb ]; then
     wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
   fi
@@ -104,7 +104,7 @@ fi
 
 # Docker Compose
 
-if [ $CONTAINER -ne 0 ]; then
+if [ $CONTAINER -eq 0 ]; then
   if [ ! -f docker-compose-1.24.0-Linux-x86_64 ]; then
     wget -O docker-compose-1.24.0-Linux-x86_64 'https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64'
   fi
