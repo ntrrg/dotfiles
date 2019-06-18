@@ -257,11 +257,11 @@ if [ $GUI_ENABLED -ne 0 ]; then
 
   # Paper Theme
 
-  if [ ! -f paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ]; then
-    wget 'https://launchpadlibrarian.net/383884507/paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb'
+  if [ ! -f paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb ]; then
+    wget 'https://launchpadlibrarian.net/425392562/paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb'
   fi
 
-  dpkg -i paper-icon-theme_1.5.721-201808151353~daily~ubuntu18.04.1_all.deb ||
+  dpkg -i paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb ||
     apt-get install -fy
 
   if [ ! -f paper-gtk-theme.tar.gz ]; then
