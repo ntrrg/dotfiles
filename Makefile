@@ -16,6 +16,7 @@ vim:
 
 .PHONY: xfce
 xfce:
+	mkdir -p "$$HOME/.config"
 	cp -rpf xfce/xfce4 "$$HOME/.config/"
 
 .PHONY: zsh
