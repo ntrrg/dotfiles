@@ -34,8 +34,6 @@ apt-get install -y \
   pv \
   rsync \
   screen \
-  siege \
-  shellcheck \
   ssh \
   sshfs \
   transmission-cli \
@@ -54,13 +52,17 @@ if [ $HARDWARE -ne 0 ]; then
     usbutils \
     vbetool
 
+  if lspci | grep -q "Network controller"; then
+    apt-get install -y rfkill wireless-tools wpasupplicant
+  fi
+
   if [ $GUI_ENABLED -eq 0 ]; then
     if lspci | grep -q "Network controller"; then
-      apt-get install -y rfkill wicd-curses wireless-tools wpasupplicant
+      apt-get install -y wicd-curses
     fi
   else
     if lspci | grep -q "Network controller"; then
-      apt-get install -y rfkill wicd-gtk wireless-tools wpasupplicant
+      apt-get install -y wicd-gtk
     fi
 
     if lsmod | grep -q "bluetooth"; then
@@ -70,15 +72,6 @@ if [ $HARDWARE -ne 0 ]; then
 fi
 
 localedef -ci en_US -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-
-# Busybox
-
-if [ ! -f busybox-1.28.1-x86_64 ]; then
-  wget -O busybox-1.28.1-x86_64 'https://busybox.net/downloads/binaries/1.28.1-defconfig-multiarch/busybox-x86_64'
-fi
-
-cp -f busybox-1.28.1-x86_64 /bin/busybox
-chmod +x /bin/busybox
 
 # Docker
 
@@ -100,6 +93,10 @@ if [ $CONTAINER -eq 0 ]; then
     docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb \
     docker-ce_18.09.5~3-0~debian-buster_amd64.deb ||
   apt-get install -fy
+
+  update-rc.d docker remove
+  systemctl disable containerd.service
+  systemctl disable docker.service
 fi
 
 # Docker Compose
@@ -125,17 +122,6 @@ if [ $CONTAINER -eq 0 ]; then
   cp -f docker-compose-1.24.0-completion-zsh /usr/share/zsh/vendor-completions/_docker-compose
 fi
 
-# golangci-lint
-
-if [ ! -f golangci-lint-1.16.0-linux-amd64.tar.gz ]; then
-  wget 'https://github.com/golangci/golangci-lint/releases/download/v1.16.0/golangci-lint-1.16.0-linux-amd64.tar.gz'
-fi
-
-tar -xf golangci-lint-1.16.0-linux-amd64.tar.gz
-cp -f golangci-lint-1.16.0-linux-amd64/golangci-lint /usr/bin/
-chmod +x /usr/bin/golangci-lint
-rm -rf golangci-lint-1.16.0-linux-amd64
-
 # Hard Disk Sentinel
 
 if [ $HARDWARE -ne 0 ]; then
@@ -149,17 +135,6 @@ if [ $HARDWARE -ne 0 ]; then
   chmod +x /usr/bin/hdsentinel
   rm -f hdsentinel-017-x64-copy
 fi
-
-# Mage
-
-if [ ! -f mage_1.8.0_Linux-64bit.tar.gz ]; then
-  wget 'https://github.com/magefile/mage/releases/download/v1.8.0/mage_1.8.0_Linux-64bit.tar.gz'
-fi
-
-tar -xf mage_1.8.0_Linux-64bit.tar.gz
-cp -f mage /usr/bin/
-chmod +x /usr/bin/mage
-rm -f LICENSE mage
 
 # no-ip
 
@@ -216,23 +191,6 @@ EOF
 
 chmod +x /etc/init.d/noip2
 update-rc.d noip2 defaults
-
-# protoc
-
-if [ ! -f protoc-3.7.1-linux-x86_64.zip ]; then
-  wget 'https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip'
-fi
-
-unzip protoc-3.7.1-linux-x86_64.zip -d /usr/ -x readme.txt
-
-# Urchin
-
-if [ ! -f urchin-v0.1.0-rc3 ]; then
-  wget -O urchin-v0.1.0-rc3 'https://raw.githubusercontent.com/tlevine/urchin/v0.1.0-rc3/urchin'
-fi
-
-cp -f urchin-v0.1.0-rc3 /usr/bin/urchin
-chmod +x /usr/bin/urchin
 
 if [ $GUI_ENABLED -ne 0 ]; then
   apt-get install -y \

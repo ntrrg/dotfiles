@@ -51,15 +51,6 @@ if [ $HARDWARE -ne 0 ]; then
   fi
 fi
 
-# Busybox
-
-if [ ! -f busybox-1.28.1-i686 ]; then
-  wget -O busybox-1.28.1-i686 'https://busybox.net/downloads/binaries/1.28.1-defconfig-multiarch/busybox-i686'
-fi
-
-cp -f busybox-1.28.1-i686 /bin/busybox
-chmod +x /bin/busybox
-
 # Hard Disk Sentinel
 
 if [ $HARDWARE -ne 0 ]; then

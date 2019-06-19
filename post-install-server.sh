@@ -52,15 +52,6 @@ if [ $HARDWARE -ne 0 ]; then
   fi
 fi
 
-# Busybox
-
-if [ ! -f busybox-1.28.1-x86_64 ]; then
-  wget -O busybox-1.28.1-x86_64 'https://busybox.net/downloads/binaries/1.28.1-defconfig-multiarch/busybox-x86_64'
-fi
-
-cp -f busybox-1.28.1-x86_64 /bin/busybox
-chmod +x /bin/busybox
-
 # Docker
 
 if [ $CONTAINER -eq 0 ]; then
