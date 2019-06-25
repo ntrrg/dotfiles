@@ -1,5 +1,5 @@
 .PHONY: all
-all: git vim xfce zsh
+all: bin git vim xfce zsh
 
 .PHONY: bin
 bin:
