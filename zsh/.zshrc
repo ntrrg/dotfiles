@@ -10,13 +10,12 @@ hostinfo() {
 
   CPU="$(echo $CPU | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ')"
 
-  local RAM=$(busybox free -b | grep "Mem" | tr -s " ")
+  local RAM=$(free -b | grep "Mem" | tr -s " ")
   local TRAM=$(echo $RAM | cut -d ' ' -f 2)
-  local URAM=$(echo $RAM | cut -d ' ' -f 3)
-  local CRAM=$(echo $RAM | cut -d ' ' -f 7)
-  local RURAM=$(($URAM - $CRAM))
+  local FRAM=$(echo $RAM | cut -d ' ' -f 7)
+  local URAM=$(($TRAM - $FRAM))
 
-  local SWAP=$(busybox free -b | grep "Swap" | tr -s " ")
+  local SWAP=$(free -b | grep "Swap" | tr -s " ")
   local TSWAP=$(echo $SWAP | cut -d ' ' -f 2)
   local USWAP=$(echo $SWAP | cut -d ' ' -f 3)
 
@@ -27,7 +26,7 @@ hostinfo() {
  █\e[32m▐▌\e[0m█  █▐▌█   $DATE
  ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $HOSTNAME
   ▐▌\e[32m▝█▙\e[0m ▐▌    CPU: $CPU
- ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   RAM: $(human_measure $RURAM)/$(human_measure $TRAM)
+ ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   RAM: $(human_measure $URAM)/$(human_measure $TRAM)
  █▐▌█  █\e[32m▐▌\e[0m█   Swap: $(human_measure $USWAP)/$(human_measure $TSWAP)
  ▝██▘  ▝██▘   IP: $IP
 "
