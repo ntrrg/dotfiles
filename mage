@@ -1,4 +1,0 @@
-#!/bin/sh
-
-exec go run mage.go $@
-
