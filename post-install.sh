@@ -190,7 +190,6 @@ exit 0
 EOF
 
 chmod +x /etc/init.d/noip2
-update-rc.d noip2 defaults
 
 if [ $GUI_ENABLED -ne 0 ]; then
   apt-get install -y \
@@ -212,6 +211,32 @@ if [ $GUI_ENABLED -ne 0 ]; then
       system-config-printer \
       xcalib
   fi
+
+  # Firefox Developer Edition
+
+  if [ ! -f firefox-68.0b12.tar.bz2 ]; then
+    wget 'https://download-installer.cdn.mozilla.net/pub/devedition/releases/68.0b12/linux-x86_64/en-US/firefox-68.0b12.tar.bz2'
+  fi
+
+  apt-get purge -y "firefox-*"
+  tar -xf firefox-68.0b12.tar.bz2
+  cp -rf firefox /opt/
+  ln -sf /opt/firefox/firefox /usr/bin/firefox
+  rm -rf firefox
+
+  cat <<EOF > /usr/share/applications/firefox-developer-edition.desktop
+[Desktop Entry]
+Name=Firefox Developer Edition
+GenericName=Web Browser
+Comment=Access the Internet
+Exec=/usr/bin/firefox %U
+Terminal=false
+Type=Application
+Encoding=UTF-8
+MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
+Icon=firefox-developer-icon
+Categories=Network;WebBrowser;Development;
+EOF
 
   # Paper Theme
 

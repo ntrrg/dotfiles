@@ -150,7 +150,7 @@ if [ ! -f vim-8.1.tar.bz2 ]; then
   wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
 fi
 
-apt-get purge -fy vim-tiny
+apt-get purge -fy "vim-*"
 apt-get install -y gcc libncurses-dev make
 tar -xf vim-8.1.tar.bz2
 (cd vim81 && ./configure && make && make install)
