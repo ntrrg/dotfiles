@@ -275,8 +275,8 @@ EOF
   (
     cd st-0.8.2
     git apply $(find .. -name "st-*.diff")
-    sed -i "s/defaultbg = 257/defaultbg = 0/" config.def.h
-    sed -i "s/alpha = 0xcc/alpha = 0xdd/" config.def.h
+    sed -i "s/defaultbg = [0-9]+/defaultbg = 0/" config.def.h
+    sed -i "s/alpha = [0-9.]*/alpha = 0.5/" config.def.h
     make clean install
   )
 
