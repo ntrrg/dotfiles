@@ -16,6 +16,7 @@ main() {
     case $1 in
       -h | --help )
         show_help
+        return
         ;;
 
       -c | --config )
