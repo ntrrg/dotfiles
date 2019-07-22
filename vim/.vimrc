@@ -66,5 +66,11 @@ set magic
 " Keys
 set backspace=indent,eol,start
 
+" Keys - vimgrep
+nnoremap [q :cprev
+nnoremap ]q :cnext
+nnoremap [Q :cfirst
+nnoremap ]Q :clast
+
 " Commands
 
