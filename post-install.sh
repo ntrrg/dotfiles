@@ -62,7 +62,7 @@ if [ $HARDWARE -ne 0 ]; then
     fi
   else
     if lspci | grep -q "Network controller"; then
-      apt-get install -y wicd-gtk
+      apt-get install -y network-manager-gnome
     fi
 
     if lsmod | grep -q "bluetooth"; then
