@@ -53,6 +53,8 @@ set autoindent
 set smarttab
 set expandtab tabstop=2 shiftwidth=2
 autocmd Filetype go setlocal noexpandtab
+autocmd Filetype c setlocal noexpandtab
+autocmd Filetype cpp setlocal noexpandtab
 autocmd Filetype make setlocal noexpandtab
 autocmd Filetype markdown setlocal tabstop=4 shiftwidth=4
 autocmd Filetype python setlocal tabstop=4 shiftwidth=4
