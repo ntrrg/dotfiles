@@ -1,0 +1,13 @@
+# /etc/fstab
+
+# <file system>                             <mount point>          <type>      <options>         <dump>  <verification>
+
+# Device
+/dev/NtFlash/Data                           /media/ntrrg/NtFlash   btrfs       defaults          0       2
+
+# Folder
+/media/ntrrg/NtFlash/var/lib/docker         /var/lib/docker        btrfs       bind              0       0
+
+# Remote file system
+ntrrg@home.nt.web.ve:/media/ntrrg/NtServer  /media/ntrrg/NtServer  fuse.sshfs  defaults,_netdev  0       0
+

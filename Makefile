@@ -10,6 +10,11 @@ bin:
 git:
 	cp -rpf git/.gitconfig "$$HOME/"
 
+.PHONY: templates
+templates:
+	mkdir -p "$$HOME/Templates"
+	cp -pf $(shell find templates) "$$HOME/Templates/"
+
 .PHONY: vim
 vim:
 	cp -rpf vim/.vim vim/.vimrc "$$HOME/"

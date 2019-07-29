@@ -1,0 +1,12 @@
+# $HOME/.local/share/application/genymobile-genymotion.desktop
+
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Genymotion
+GenericName=Android Emulator
+Icon=/opt/genymobile/genymotion/icons/icon.png
+Exec=env OPENSSL_CONF=/etc/ssl/ /opt/genymobile/genymotion/genymotion
+Categories=Games;Development;Emulator;
+

@@ -1,0 +1,13 @@
+# $HOME/.config/mimeapps.list
+
+[Added Associations]
+# MIME_TYPE=APPLICATION_DESKTOP_FILE;...
+text/plain=vim.desktop;mousepad.desktop;
+
+[Default Applications]
+# MIME_TYPE=APPLICATION_DESKTOP_FILE
+text/plain=vim.desktop
+
+# x-scheme-handler/CUSTOM_PROTOCOL=APPLICATION_DESKTOP_FILE
+x-scheme-handler/tg=telegramdesktop.desktop
+
