@@ -320,6 +320,8 @@ EOF
 
   # XFCE Theme
 
+  chmod u+s /usr/sbin/hddtemp
+
     # Materia
 
   if [ ! -f materia-gtk-theme-v20190315.tar.gz ]; then
