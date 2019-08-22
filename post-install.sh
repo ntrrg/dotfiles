@@ -238,23 +238,6 @@ Icon=firefox-developer-icon
 Categories=Network;WebBrowser;Development;
 EOF
 
-  # Paper Theme
-
-  if [ ! -f paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb ]; then
-    wget 'https://launchpadlibrarian.net/425392562/paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb'
-  fi
-
-  dpkg -i paper-icon-theme_1.5.723-201905252133~daily~ubuntu18.04.1_all.deb ||
-    apt-get install -fy
-
-  if [ ! -f paper-gtk-theme.tar.gz ]; then
-    wget -O paper-gtk-theme.tar.gz 'https://github.com/snwh/paper-gtk-theme/archive/master.tar.gz'
-  fi
-
-  tar -xf paper-gtk-theme.tar.gz
-  (cd paper-gtk-theme-master && ./install-gtk-theme.sh)
-  rm -rf paper-gtk-theme-master
-
   # ST
 
   if [ ! -f st-0.8.2.tar.gz ]; then
@@ -291,7 +274,7 @@ Exec=st
 Terminal=false
 Type=Application
 Encoding=UTF-8
-Icon=terminal
+Icon=st
 Categories=System;TerminalEmulator;
 Keywords=shell;prompt;command;commandline;cmd;
 EOF
@@ -335,6 +318,32 @@ Categories=Utility;TextEditor;Development;
 Keywords=Text;editor;
 EOF
 
+  # XFCE Theme
+
+    # Materia
+
+  if [ ! -f materia-gtk-theme-v20190315.tar.gz ]; then
+    wget -O "materia-gtk-theme-v20190315.tar.gz" 'https://github.com/nana-4/materia-theme/archive/v20190315.tar.gz'
+  fi
+
+  tar -xf materia-gtk-theme-v20190315.tar.gz
+  (cd materia-theme-20190315 && ./install.sh)
+  rm -rf materia-theme-20190315
+
+    # Papirus
+
+  if [ ! -f papirus-icon-theme-v20190817.tar.gz ]; then
+    wget -O papirus-icon-theme-v20190817.tar.gz 'https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/archive/20190817.tar.gz'
+  fi
+
+  tar -xf papirus-icon-theme-v20190817.tar.gz
+  (
+    cd papirus-icon-theme-20190817
+    cp -Rf {Papirus,ePapirus,Papirus-Dark,Papirus-Light} /usr/share/icons
+    cp -Rf AUTHORS LICENSE /usr/share/icons/{Papirus,ePapirus,Papirus-Dark,Papirus-Light}
+    gtk-update-icon-cache -q /usr/share/icons/{Papirus,ePapirus,Papirus-Dark,Papirus-Light}
+  )
+  rm -rf papirus-icon-theme-20190817
 elif [ $GUI_ENABLED -eq 0 ]; then
   # Vim
 
