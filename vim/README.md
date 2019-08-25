@@ -32,6 +32,16 @@
     <img width="45%" src="screenshots/light.png"/>
   </p>
 
+  Use `:set background=dark` and `:set background=light` respectively for
+  enabling them.
+
+* Key shortcuts (Normal mode)
+
+  * `[q` -> `:cprev`
+  * `]q` -> `:cnext`
+  * `[Q` -> `:cfirst`
+  * `]Q` -> `:clast`
+
 [Peaksea]: https://www.vim.org/scripts/script.php?script_id=760
 
 ## Install
