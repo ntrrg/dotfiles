@@ -15,6 +15,8 @@ Options:
 Copyright (c) 2017 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
+
+  exit
 fi
 
 if [ "$1" = "-s" ] || [ "$1" = "--sleep" ]; then
