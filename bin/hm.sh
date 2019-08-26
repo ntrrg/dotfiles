@@ -100,7 +100,7 @@ fi
 I="$(get_index_by_prefix "$PREFIX")"
 
 while true; do
-  if [ $I -eq 5 ] || [ $(echo "$AMOUNT < 1024" | bc) -eq 1 ]; then
+  if [ "$I" -eq 5 ] || [ "$(echo "$AMOUNT < 1024" | bc)" -eq 1 ]; then
     echo "$AMOUNT$(get_prefix_by_index "$I")"
     exit
   fi
