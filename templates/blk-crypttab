@@ -1,4 +1,4 @@
 # /etc/crypttab
 
-# <target name>  <source device>     <key file>  <options>
+# TARGET_NAME    SOURCE_DEVICE       KEY_FILE    OPTIONS
 NtFlash          /dev/NtFlash/Data   none        luks

@@ -1,6 +1,6 @@
 # /etc/fstab
 
-# <file system>                             <mount point>          <type>      <options>         <dump>  <verification>
+# FILE_SYSTEM                               MOUNT_POINT            TYPE        OPTIONS           DUMP    VERIFICATION
 
 # Device
 /dev/NtFlash/Data                           /media/ntrrg/NtFlash   btrfs       defaults          0       2

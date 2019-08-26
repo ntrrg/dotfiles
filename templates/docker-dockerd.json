@@ -2,7 +2,7 @@
 
 {
   "registry-mirrors": [
-    "CUSTOM_REGISTRY",
+    // "CUSTOM_REGISTRY_URL",
     "https://registry-1.docker.io"
   ]
 }
