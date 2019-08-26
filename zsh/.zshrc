@@ -29,7 +29,7 @@ hostinfo() {
     * )
       if [ -e /sys/class/dmi/id/product_name ]; then
         DEVICE="$(cat /sys/class/dmi/id/chassis_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
-      elif which getprop; then
+      elif which getprop > /dev/null; then
         DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
       fi
 
@@ -37,7 +37,7 @@ hostinfo() {
 
       if which lsb_release > /dev/null; then
         OS="$OS - $(lsb_release -si) $(lsb_release -sr) ($(lsb_release -sc))"
-      elif which getprop; then
+      elif which getprop > /dev/null; then
         OS="$OS - Android $(getprop ro.build.version.release)"
       fi
 
