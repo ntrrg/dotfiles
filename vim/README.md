@@ -1,3 +1,7 @@
+**Requirements:**
+
+* Vim >= 8.1
+
 ## Features
 
 * Relative line numbers.
@@ -44,20 +48,3 @@
 
 [Peaksea]: https://www.vim.org/scripts/script.php?script_id=760
 
-## Install
-
-**Requirements:**
-
-* Vim >= 8.1
-
-```shell-session
-$ wget -O "$HOME/.vimrc" https://raw.githubusercontent.com/ntrrg/dotfiles/master/vim/.vimrc
-```
-
-```shell-session
-$ mkdir -p "$HOME/.vim/colors"
-```
-
-```shell-session
-$ wget -O "$HOME/.vim/colors/peaksea.vim" https://www.vim.org/scripts/download_script.php?src_id=24721
-```
