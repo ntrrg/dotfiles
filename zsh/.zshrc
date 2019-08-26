@@ -1,6 +1,7 @@
 hostinfo() {
   local DATE="$(date "+%Y/%m/%d %H:%M:%S %z | w%V")"
-  local HOSTNAME="$(hostname) ($(uname -m))"
+  local DEVICE="$(hostname) ($(uname -m))"
+  local OS=""
   local CPU=""
   local URAM=""
   local TRAM=""
@@ -10,6 +11,8 @@ hostinfo() {
 
   case "$(uname -s)" in
     Darwin* )
+      OS="$(uname -r)"
+
       CPU="$(sysctl -n machdep.cpu.brand_string)"
 
       local RAM="$(top -l 1 | grep "PhysMem:" | tr -s " ")"
@@ -24,6 +27,20 @@ hostinfo() {
       ;;
 
     * )
+      if [ -e /sys/class/dmi/id/product_name ]; then
+        DEVICE="$(cat /sys/class/dmi/id/chassis_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
+      elif which getprop; then
+        DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
+      fi
+
+      OS="$(uname -r)"
+
+      if which lsb_release > /dev/null; then
+        OS="$OS - $(lsb_release -si) $(lsb_release -sr) ($(lsb_release -sc))"
+      elif which getprop; then
+        OS="$OS - Android $(getprop ro.build.version.release)"
+      fi
+
       CPU="$(cat /proc/cpuinfo | grep '^model name')"
 
       if [ -z "$CPU" ]; then
@@ -49,11 +66,11 @@ hostinfo() {
   echo "
  ▗██▖  ▗██▖
  █\e[32m▐▌\e[0m█  █▐▌█   $DATE
- ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $HOSTNAME
-  ▐▌\e[32m▝█▙\e[0m ▐▌    CPU: $CPU
- ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   RAM: $URAM/$TRAM
- █▐▌█  █\e[32m▐▌\e[0m█   Swap: $USWAP/$TSWAP
- ▝██▘  ▝██▘   IP: $IP
+ ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $DEVICE
+  ▐▌\e[32m▝█▙\e[0m ▐▌    OS: $OS
+ ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   CPU: $CPU
+ █▐▌█  █\e[32m▐▌\e[0m█   RAM: $URAM/$TRAM Swap: $USWAP/$TSWAP
+ ▝██▘  ▝██▘   NET: $(hostname) - $IP
 "
 }
 
