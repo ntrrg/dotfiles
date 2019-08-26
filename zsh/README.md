@@ -10,8 +10,7 @@
 
 ## Requirements
 
-* [hm.sh](../bin/hm.sh)
-* Zsh >= 4.3.17-1
+* [Zsh](http://zsh.sourceforge.net/) >= 5.7
 
 ## Features
 
@@ -37,7 +36,7 @@
   4. Git information (repository name, branch, staged files, modified files).
   5. Current directory.
 
-* Exclude commands from history by adding a preceding white space
+* Exclude commands from history by preceding them with a white space
 
 * Shared history between terminals.
 
