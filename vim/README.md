@@ -1,6 +1,6 @@
 ## Requirements
 
-* Vim >= 8.1
+* [Vim](https://www.vim.org/) >= 8.1
 
 ## Features
 
@@ -40,10 +40,10 @@
   Use `:set background=dark` and `:set background=light` respectively for
   enabling them.
 
-* Key shortcuts (Normal mode)
+* Key shortcuts (Normal mode).
 
-  * `[q` -> `:cprev`
-  * `]q` -> `:cnext`
-  * `[Q` -> `:cfirst`
-  * `]Q` -> `:clast`
+  * <kbd>[</kbd> + <kbd>q</kbd> -> `:cprev`
+  * <kbd>]</kbd> + <kbd>q</kbd> -> `:cnext`
+  * <kbd>[</kbd> + <kbd>Q</kbd> -> `:cfirst`
+  * <kbd>]</kbd> + <kbd>Q</kbd> -> `:clast`
 
