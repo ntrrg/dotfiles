@@ -1,4 +1,4 @@
-**Requirements:**
+## Requirements
 
 * Vim >= 8.1
 
@@ -29,7 +29,8 @@
   10. Tab style.
   11. File type.
 
-* [Peaksea][] color scheme (great support for dark and light backgrounds).
+* [Peaksea](https://www.vim.org/scripts/script.php?script_id=760) color scheme
+  (great support for dark and light backgrounds).
 
   <p align="center">
     <img width="45%" src="screenshots/dark.png"/>
@@ -45,6 +46,4 @@
   * `]q` -> `:cnext`
   * `[Q` -> `:cfirst`
   * `]Q` -> `:clast`
-
-[Peaksea]: https://www.vim.org/scripts/script.php?script_id=760
 

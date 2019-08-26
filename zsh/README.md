@@ -8,8 +8,9 @@
 ▝██▘  ▝██▘   ▝▘ ▝▘  ▀▀ ▝▀▀▀▀▀▘ ▀▀▀ ▝▘ ▝▘ ▀  ▀
 ```
 
-**Requirements:**
+## Requirements
 
+* [hm.sh](../bin/hm.sh)
 * Zsh >= 4.3.17-1
 
 ## Features
