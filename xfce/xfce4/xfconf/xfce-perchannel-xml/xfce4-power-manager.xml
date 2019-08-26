@@ -21,5 +21,6 @@
     <property name="lid-action-on-battery" type="uint" value="1"/>
     <property name="logind-handle-lid-switch" type="bool" value="true"/>
     <property name="blank-on-battery" type="int" value="3"/>
+    <property name="presentation-mode" type="bool" value="false"/>
   </property>
 </channel>

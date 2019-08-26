@@ -1,3 +1,10 @@
+[G0]
+timername=Task
+time=1500
+timercommand=
+timerinfo=25m 0s
+is_countdown=true
+
 [others]
 nowin_if_alarm=false
 selecting_starts=false
