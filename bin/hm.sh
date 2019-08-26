@@ -88,6 +88,15 @@ if [ "$1" = "-p" ] || [ "$1" = "--prefix" ]; then
 fi
 
 AMOUNT="$1"
+
+if [ -z "$AMOUNT" ]; then
+  AMOUNT="$(cat /dev/stdin)"
+fi
+
+if [ -z "$AMOUNT" ]; then
+  AMOUNT=0
+fi
+
 I="$(get_index_by_prefix "$PREFIX")"
 
 while true; do
