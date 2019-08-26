@@ -10,6 +10,7 @@ apt upgrade -y
 ################
 
 apt install -y \
+  bc \
   elinks \
   git \
   golang \

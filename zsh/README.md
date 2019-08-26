@@ -1,4 +1,4 @@
-```text
+```
 ▗██▖  ▗██▖             ▗▄▄▄▄▄▖     ▗▖
 █▐▌█  █▐▌█         ▐▌  ▝▀▀▀▜▛▘     ▐▌
 ▝██▘▙ ▝██▘   ▐▙██▖▐███    ▗▛  ▗▟██▖▐▙██▖
@@ -7,6 +7,10 @@
 █▐▌█  █▐▌█   ▐▌ ▐▌ ▐▙▄ ▗█▄▄▄▄▖▐▄▄▟▌▐▌ ▐▌ █  █
 ▝██▘  ▝██▘   ▝▘ ▝▘  ▀▀ ▝▀▀▀▀▀▘ ▀▀▀ ▝▘ ▝▘ ▀  ▀
 ```
+
+**Requirements:**
+
+* Zsh >= 4.3.17-1
 
 ## Features
 
@@ -48,16 +52,3 @@
   * `Page Up`: Search up in history using the current characters.
   * `Page Down`: Search down in history using the current characters.
 
-## Install
-
-**Requirements:**
-
-* Zsh >= 4.3.17-1
-
-```shell-session
-$ wget -O "$HOME/.zshrc" https://raw.githubusercontent.com/ntrrg/dotfiles/master/zsh/.zshrc
-```
-
-```shell-session
-$ wget -O "$HOME/.zshenv" https://raw.githubusercontent.com/ntrrg/dotfiles/master/zsh/.zshenv
-```

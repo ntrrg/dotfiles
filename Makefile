@@ -28,10 +28,6 @@ xfce:
 zsh:
 	cp -rpf zsh/.zshenv zsh/.zshrc "$$HOME/"
 
-.PHONY: zsh-mac
-zsh-mac:
-	cp -rpf zsh/.zshenv zsh/.zshrc-mac "$$HOME/"
-
 # Development
 
 .PHONY: ci

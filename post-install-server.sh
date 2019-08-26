@@ -17,6 +17,7 @@ apt-get upgrade -y
 
 apt-get install -y \
   apt-transport-https \
+  bc \
   elinks \
   git \
   htop \
