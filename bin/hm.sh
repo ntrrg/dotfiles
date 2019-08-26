@@ -90,7 +90,7 @@ fi
 AMOUNT="$1"
 
 if [ -z "$AMOUNT" ]; then
-  AMOUNT="$(cat /dev/stdin)"
+  AMOUNT="$(cat -)"
 fi
 
 if [ -z "$AMOUNT" ]; then
