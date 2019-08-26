@@ -26,27 +26,27 @@ fi
 
 get_index_by_prefix() {
   case "$1" in
-    "B" )
+    B )
       echo 0
       ;;
 
-    "K" | "Ki" )
+    K | Ki )
       echo 1
       ;;
 
-    "M" | "Mi" )
+    M | Mi )
       echo 2
       ;;
 
-    "G" | "Gi" )
+    G | Gi )
       echo 3
       ;;
 
-    "T" | "Ti" )
+    T | Ti )
       echo 4
       ;;
 
-    "P" | "Pi" )
+    P | Pi )
       echo 5
       ;;
   esac
@@ -54,27 +54,27 @@ get_index_by_prefix() {
 
 get_prefix_by_index() {
   case "$1" in
-    "0" )
+    0 )
       echo "B"
       ;;
 
-    "1" )
+    1 )
       echo "KiB"
       ;;
 
-    "2" )
+    2 )
       echo "MiB"
       ;;
 
-    "3" )
+    3 )
       echo "GiB"
       ;;
 
-    "4" )
+    4 )
       echo "TiB"
       ;;
 
-    "5" )
+    5 )
       echo "PiB"
       ;;
   esac
