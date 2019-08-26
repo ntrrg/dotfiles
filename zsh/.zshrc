@@ -1,7 +1,7 @@
 hostinfo() {
   local DATE="$(date "+%Y/%m/%d %H:%M:%S %z | w%V")"
   local DEVICE="$(hostname) ($(uname -m))"
-  local OS=""
+  local OS="$(uname -r)"
   local CPU=""
   local URAM=""
   local TRAM=""
@@ -11,8 +11,6 @@ hostinfo() {
 
   case "$(uname -s)" in
     Darwin* )
-      OS="$(uname -r)"
-
       CPU="$(sysctl -n machdep.cpu.brand_string)"
 
       local RAM="$(top -l 1 | grep "PhysMem:" | tr -s " ")"
@@ -32,8 +30,6 @@ hostinfo() {
       elif which getprop > /dev/null; then
         DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
       fi
-
-      OS="$(uname -r)"
 
       if which lsb_release > /dev/null; then
         OS="$OS - $(lsb_release -si) $(lsb_release -sr) ($(lsb_release -sc))"
