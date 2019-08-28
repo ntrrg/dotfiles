@@ -12,6 +12,7 @@ Usage: $0 [OPTIONS]
 
 Options:
   -h, --help   Show this help message.
+  -y, --yes    Force status 0 exit.
 
 Environment variables:
   * 'IS_CONTAINER' forces this program to exit with status 0 if its value is
@@ -20,6 +21,10 @@ Environment variables:
 Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
+fi
+
+if [ "$1" = "-y" ] || [ "$1" = "--yes" ]; then
+  IS_CONTAINER=1;
 fi
 
 if [ "$IS_CONTAINER" -ne 0 ] ||
