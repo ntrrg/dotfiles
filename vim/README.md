@@ -40,7 +40,9 @@
   Use `:set background=dark` and `:set background=light` respectively for
   enabling them.
 
-* Key shortcuts (Normal mode).
+* Key shortcuts.
+
+  **Normal mode:**
 
   * <kbd>[</kbd> + <kbd>q</kbd> -> `:cprev`
   * <kbd>]</kbd> + <kbd>q</kbd> -> `:cnext`
