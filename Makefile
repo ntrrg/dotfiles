@@ -4,7 +4,7 @@ all: bin git templates vim xfce zsh
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
-	cp -pf $(shell find bin -name "*.sh") "$$HOME/.local/bin/"
+	cp -pf $(shell find bin -type f -executable) "$$HOME/.local/bin/"
 
 .PHONY: git
 git:
