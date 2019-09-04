@@ -13,7 +13,7 @@ git:
 .PHONY: templates
 templates:
 	mkdir -p "$$HOME/Templates"
-	cp -pf $(shell find templates) "$$HOME/Templates/"
+	cp -pf $(shell find templates -type f) "$$HOME/Templates/"
 
 .PHONY: vim
 vim:
