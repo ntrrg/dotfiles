@@ -5,8 +5,8 @@
 set -e
 
 main() {
-  local OPTS="c:g:hp:rt:"
-  local LOPTS="config:,git-ref:,help,prefix:,push,recursive,tag:"
+  OPTS="c:g:hp:rt:"
+  LOPTS="config:,git-ref:,help,prefix:,push,recursive,tag:"
 
   eval set -- "$(
     getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
@@ -89,11 +89,11 @@ build() {
       done
     fi
   else
-    local BI="$1"
-    local TMP_BI="$BI"
+    BI="$1"
+    TMP_BI="$BI"
 
     # shellcheck disable=SC2155
-    local BI_GIT_REF="$(echo "$TMP_BI" | cut -sd '#' -f 2)"
+    BI_GIT_REF="$(echo "$TMP_BI" | cut -sd '#' -f 2)"
     if [ -z "$BI_GIT_REF" ]; then
       BI_GIT_REF="$GIT_REF"
     fi
@@ -101,7 +101,7 @@ build() {
     TMP_BI="$(echo "$TMP_BI" | cut -d '#' -f 1)"
 
     # shellcheck disable=SC2155
-    local BI_TAG="$(echo "$TMP_BI" | cut -sd ':' -f 2)"
+    BI_TAG="$(echo "$TMP_BI" | cut -sd ':' -f 2)"
     if [ -z "$BI_TAG" ]; then
       BI_TAG="$TAG"
     fi
@@ -109,18 +109,18 @@ build() {
     TMP_BI="$(echo "$TMP_BI" | cut -d ':' -f 1)"
 
     # shellcheck disable=SC2155
-    local BI_REPO="$(echo "$TMP_BI" | cut -sd '@' -f 2)"
+    BI_REPO="$(echo "$TMP_BI" | cut -sd '@' -f 2)"
     # shellcheck disable=SC2155
-    local BI_DOCKERFILE="$(echo "$TMP_BI" | cut -d '@' -f 1)"
+    BI_DOCKERFILE="$(echo "$TMP_BI" | cut -d '@' -f 1)"
     # shellcheck disable=SC2155
-    local BI_CTX="$(dirname "$BI_DOCKERFILE")"
+    BI_CTX="$(dirname "$BI_DOCKERFILE")"
 
     if [ -z "$BI_REPO" ]; then
       BI_REPO="$(basename "$BI_CTX")"
     fi
 
     # shellcheck disable=SC2155
-    local BI_IMAGE="$PREFIX$BI_REPO:$BI_TAG"
+    BI_IMAGE="$PREFIX$BI_REPO:$BI_TAG"
 
     if [ -n "$BI_GIT_REF" ]; then
       if [ -n "$(git -C "$BI_CTX" status --porcelain)" ]; then

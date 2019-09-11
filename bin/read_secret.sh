@@ -8,7 +8,7 @@ enable_echo() {
 
 trap enable_echo EXIT
 stty -echo
-IFS= read PASSWD
+IFS= read -r PASSWD
 enable_echo
 trap - EXIT
 echo "$PASSWD"

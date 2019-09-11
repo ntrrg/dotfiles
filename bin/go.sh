@@ -4,14 +4,14 @@
 
 set -e
 
-go_env_main() {
+main() {
   case $1 in
     -h | --help )
-      go_env_show_help
+      show_help
       ;;
 
     -d | --delete )
-      go_env_delete "$2"
+      delete "$2"
       ;;
 
     -l | --list )
@@ -19,50 +19,46 @@ go_env_main() {
       ;;
 
     * )
-      go_env_create "$1"
+      activate "$1"
       ;;
   esac
 }
 
-go_env_clean_env() {
-  set +e
-  trap - INT TERM EXIT
-  unset -f go_env_clean_env
-  unset -f go_env_create
-  unset -f go_env_delete
-  unset -f go_env_get_arch
-  unset -f go_env_get_latest_release
-  unset -f go_env_main
-  unset -f go_env_on_trap
-  unset -f go_env_show_help
-}
-
-go_env_create() {
-  local GORELEASE="${1:-$(go_env_get_latest_release)}"
-  local GOENV="go$GORELEASE.linux-$GOARCH"
-
-  export GOROOT="$GOENVS/$GOENV"
+activate() {
+  GORELEASE="${1:-$(get_latest_release)}"
+  GOENV="go$GORELEASE.linux-$GOARCH"
+  GOROOT="$GOENVS/$GOENV"
 
   if [ ! -d "$GOROOT" ]; then
-    local PACKAGE="$GOENV.tar.gz"
+    PACKAGE="$GOENV.tar.gz"
     wget -cO "/tmp/$PACKAGE" "$GOMIRROR/$PACKAGE"
     mkdir -p "$GOROOT"
     tar -C "$GOROOT" --strip-components 1 -xpf "/tmp/$PACKAGE"
   fi
 
-  export GOPATH="${GOPATH:-$HOME/go}"
-  export PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+  "$GOROOT/bin/go" version > /dev/null || (
+    rm -rf "$GOROOT"
+    activate
+    return $?
+  )
+
+  GOPATH="${GOPATH:-$HOME/go}"
+  PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+
+  echo "export GOROOT=$GOROOT"
+  echo "export GOPATH=$GOPATH"
+  echo "export PATH=$PATH"
 }
 
-go_env_delete() {
-  local GORELEASE="${1:-$(go_env_get_latest_release)}"
-  local GOENV="go$GORELEASE.linux-$GOARCH"
-  local GOROOT="$GOENVS/$GOENV"
+delete() {
+  GORELEASE="$1"
+  GOENV="go$GORELEASE.linux-$GOARCH"
+  GOROOT="$GOENVS/$GOENV"
 
   rm -r "$GOROOT"
 }
 
-go_env_get_arch() {
+get_arch() {
   case "$(uname -m)" in
     x86_64 | amd64 )
       echo "amd64"
@@ -81,39 +77,24 @@ go_env_get_arch() {
       ;;
 
     * )
-      echo "can't define Go architecture for $GOARCH"
+      echo "can't define Go architecture for '$(uname -m)'"
       return 1
       ;;
   esac
 }
 
-go_env_get_latest_release() {
+get_latest_release() {
   wget -qO - 'https://golang.org/dl/?mode=json' |
     grep -m 1 "version" |
     cut -d '"' -f 4 |
     sed "s/go//"
 }
 
-go_env_on_trap() {
-  local ERR_CODE=$?
-
-  go_env_clean_env
-
-  PATH="$(
-    echo "$PATH" |
-    sed "s/$(echo "$GOROOT/bin:" | sed -re "s/\//\\\\\//g")//" |
-    sed "s/$(echo "$GOPATH/bin:" | sed -re "s/\//\\\\\//g")//"
-  )"
-
-  export PATH
-  return $ERR_CODE
-}
-
-go_env_show_help() {
+show_help() {
   cat <<EOF
 $0 - manage Go environments.
 
-Usage: $0 [RELEASE]
+Usage: \$($0 [RELEASE])
    or: $0 -l
    or: $0 -d RELEASE
 
@@ -141,11 +122,9 @@ Released under the MIT License
 EOF
 }
 
-GOARCH="${GOARCH:-$(go_env_get_arch)}"
+GOARCH="${GOARCH:-$(get_arch)}"
 GOENVS="${GOENVS:-$HOME/.local/share/go}"
 GOMIRROR="${GOMIRROR:-https://dl.google.com/go}"
 
-trap go_env_clean_env INT TERM EXIT
-go_env_main "$@"
-go_env_clean_env
+main "$@"
 
