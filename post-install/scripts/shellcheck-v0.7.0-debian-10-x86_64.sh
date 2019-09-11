@@ -1,0 +1,1 @@
+shellcheck-all-linux-all.sh

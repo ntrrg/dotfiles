@@ -4,7 +4,10 @@ all: bin git templates vim xfce zsh
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
-	cp -pf $(shell find bin -type f -executable) "$$HOME/.local/bin/"
+	cp -pf \
+		$(shell find bin -type f -executable -exec echo "{}" +) \
+		post-install/post-install.sh \
+		"$$HOME/.local/bin/"
 
 .PHONY: git
 git:
@@ -35,5 +38,8 @@ ci: lint
 
 .PHONY: lint
 lint:
-	shellcheck -e "SC2039" -s sh $$(find bin/ -name "*.sh" -exec echo {} +)
+	shellcheck -s sh \
+		$(shell find bin/ -type f -name "*.sh" -exec echo "{}" +) \
+		$(shell find post-install/scripts/ -type f -name "*.sh" -exec echo "{}" +) \
+		post-install/post-install.sh
 
