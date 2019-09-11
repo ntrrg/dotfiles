@@ -250,8 +250,12 @@ check_su_passwd() {
     return 0
   fi
 
+  trap "stty echo" EXIT
+  stty -echo
   printf "%s" "Root password: "
-  SU_PASSWD="$(bin/read_secret.sh)"
+  IFS= read -r SU_PASSWD
+  stty echo
+  trap - EXIT
   echo
   return 0
 }
