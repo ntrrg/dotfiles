@@ -259,8 +259,11 @@ EOF
   (
     cd st-0.8.2
     git apply $(find .. -name "st-*.diff")
-    sed -i "s/defaultbg = [0-9]+/defaultbg = 0/" config.def.h
-    sed -i "s/alpha = [0-9.]*/alpha = 0.5/" config.def.h
+    sed -i "s/\(pixelsize\)=[0-9]\+/\1=16/" config.def.h
+    sed -i "s/ \(defaultbg\) = [0-9]\+/ \1 = 0/" config.def.h
+    sed -i "s/ \(alpha\) = [0-9.]*/ \1 = 0.9/" config.def.h
+    sed -i "s/ \(cols\) = [0-9]\+/ \1 = 85/" config.def.h
+    sed -i "s/ \(rows\) = [0-9]\+/ \1 = 25/" config.def.h
     make clean install
   )
 
