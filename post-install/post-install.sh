@@ -168,7 +168,7 @@ main() {
       RELEASE="$(echo "$SCRIPT" | sed "s/$RE/\1/")"
 
       FILE="$SCRIPTS_DIR/$SCRIPT-$OS-$ARCH.sh"
-      eval "$FILE $MODE $(debug not printf "> /dev/null")" || (
+      eval "$FILE $MODE $(debug not printf "> /dev/null 2> /dev/null")" || (
         ERR="$?"
         echo "[FAIL]"
         return "$ERR"

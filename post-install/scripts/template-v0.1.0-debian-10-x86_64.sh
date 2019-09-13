@@ -24,7 +24,7 @@
 # SUPER_USER=false
 # ENV=template
 # EXEC_MODE=local
-# BIN_DEPS=wget
+# BIN_DEPS=b2sum;wget
 #########
 
 #########
@@ -55,7 +55,7 @@ STAGE="$1"
 
 check() {
   # This stage checks if the script may be executed in the current environment.
-  printf "Checking...\n"
+  echo "Checking..."
   return 0
 }
 
@@ -63,14 +63,14 @@ download() {
   # This stage downloads all the needed files by the script. Any should be done
   # in CACHE_DIR.
   cd "$CACHE_DIR"
-  printf "Downloading...\n"
+  echo "Downloading..."
   return 0
 }
 
 main() {
   # This stage executes the main code of the script.
   cd "$TMP_DIR"
-  printf "Running...\n"
+  echo "Running..."
   return 0
 }
 
@@ -85,19 +85,41 @@ clean() {
 
   case "$STAGE" in
     check )
-      printf "Cleaning after check...\n"
+      echo "Cleaning after check..."
       ;;
 
     download | main )
-      printf "Cleaning after download/main...\n"
+      echo "Cleaning after download/main..."
       ;;
 
     * )
-      printf "Cleaning after %s...\n" "$STAGE"
+      echo "Cleaning after '$STAGE'..."
       ;;
   esac
 
   return "$ERR_CODE"
+}
+
+checksum() {
+  FILE="$1"
+
+  case "$FILE" in
+    my-package.tar.gz )
+      CHECKSUM="30f4cfacdf9024a4f4c8233842f40a6027069e81cf5529f2441b22856773abcd716ee92d2303ad3cda5eaeecac3161e5980c0eedeb4ffa077d5c15c7f356512e  my-package.tar.gz"
+      ;;
+
+    * )
+      echo "Invalid file '$FILE'"
+      return 1
+      ;;
+  esac
+
+  if ! b2sum "$FILE" | grep -q $CHECKSUM; then
+    echo "Invalid checksum for '$FILE'"
+    return 1
+  fi
+
+  return 0
 }
 
 if [ $# -eq 0 ] || [ "$1" = "all" ]; then
