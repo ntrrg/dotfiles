@@ -114,7 +114,7 @@ checksum() {
       ;;
   esac
 
-  if ! b2sum "$FILE" | grep -q $CHECKSUM; then
+  if ! b2sum "$FILE" | grep -q "$CHECKSUM"; then
     echo "Invalid checksum for '$FILE'"
     return 1
   fi

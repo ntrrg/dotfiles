@@ -20,7 +20,7 @@
 set -e
 trap clean EXIT
 
-STAGE="$1"
+# STAGE="$1"
 
 check() {
   return 0
@@ -94,7 +94,7 @@ checksum() {
 
   case "$FILE" in
     my-package.tar.gz )
-      CHECKSUM="30f4cfacdf9024a4f4c8233842f40a6027069e81cf5529f2441b22856773abcd716ee92d2303ad3cda5eaeecac3161e5980c0eedeb4ffa077d5c15c7f356512e  my-package.tar.gz"
+      CHECKSUM="30f4cfacdf9024a4f4c8233842f40a6027069e81cf5529f2441b22856773abcd716ee92d2303ad3cda5eaeecac3161e5980c0eedeb4ffa077d5c15c7f356512e"
       ;;
 
     * )
@@ -103,7 +103,7 @@ checksum() {
       ;;
   esac
 
-  if ! b2sum "$FILE" | grep -q $CHECKSUM; then
+  if ! b2sum "$FILE" | grep -q "$CHECKSUM"; then
     echo "Invalid checksum for '$FILE'"
     return 1
   fi

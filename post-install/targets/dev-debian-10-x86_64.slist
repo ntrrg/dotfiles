@@ -6,6 +6,8 @@ ENV_GUI=true
 EXEC_MODE=local
 BASEPATH=~/.local
 
+DEBIAN_FRONTEND=noninteractive
+
 shellcheck-v0.7.0
 docker-cli-v18.09.5~3-0
 

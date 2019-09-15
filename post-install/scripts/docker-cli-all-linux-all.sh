@@ -14,8 +14,49 @@
 set -e
 trap clean EXIT
 
+MIRROR="https://download.docker.com/linux"
 PACKAGE="docker-ce-cli_$RELEASE"
-# STAGE="$1"
+STAGE="$1"
+
+case "$OS" in
+  debian* )
+    MIRROR="$MIRROR/debian/dists"
+    PACKAGE="$PACKAGE~debian"
+
+    case "$OS" in
+      *-10 )
+        MIRROR="$MIRROR/buster"
+        PACKAGE="$PACKAGE-buster"
+        ;;
+
+      * )
+        echo "Unsupported Debian version '$OS'"
+        false
+        ;;
+    esac
+
+    MIRROR="$MIRROR/pool/stable"
+
+    case "$ARCH" in
+      x86_64 )
+        MIRROR="$MIRROR/amd64"
+        PACKAGE="${PACKAGE}_amd64"
+        ;;
+
+      * )
+        echo "Unsupported OS architecture '$ARCH'"
+        false
+        ;;
+    esac
+
+    PACKAGE="$PACKAGE.deb"
+    ;;
+
+  * )
+    echo "Unsupported os '$OS'"
+    false
+    ;;
+esac
 
 check() {
   return 0
@@ -23,50 +64,6 @@ check() {
 
 download() {
   cd "$CACHE_DIR"
-
-  MIRROR="https://download.docker.com/linux"
-
-  case "$OS" in
-    debian* )
-      MIRROR="$MIRROR/debian/dists"
-      PACKAGE="$PACKAGE~debian"
-
-      case "$OS" in
-        *-9 )
-          MIRROR="$MIRROR/stretch"
-          PACKAGE="$PACKAGE-stretch"
-          ;;
-
-        *-10 )
-          MIRROR="$MIRROR/buster"
-          PACKAGE="$PACKAGE-buster"
-          ;;
-
-        * )
-          echo "Unsupported Debian version '$OS'"
-          ;;
-      esac
-
-      MIRROR="$MIRROR/pool/stable"
-
-      case "$ARCH" in
-        x86_64 )
-          MIRROR="$MIRROR/amd64"
-          PACKAGE="${PACKAGE}_amd64"
-          ;;
-
-        * )
-          echo "Unsupported OS architecture '$ARCH'"
-          ;;
-      esac
-
-      PACKAGE="$PACKAGE.deb"
-      ;;
-
-    * )
-      echo "Unsupported os '$OS'"
-      ;;
-  esac
 
   if [ -f "$PACKAGE" ] && checksum "$PACKAGE"; then
     return 0
@@ -84,6 +81,17 @@ download() {
 
 main() {
   cd "$TMP_DIR"
+  mkdir -p "docker-cli"
+
+  case "$OS" in
+    debian* )
+      dpkg -x "$PACKAGE" "docker-cli"
+      cd "docker-cli/usr"
+      # shellcheck disable=SC2046
+      cp -af $(ls -A) "$BASEPATH"
+      ;;
+  esac
+
   return 0
 }
 
@@ -91,6 +99,13 @@ clean() {
   ERR_CODE="$?"
   set +e
   trap - EXIT
+
+  case "$STAGE" in
+    main )
+      rm -rf "$TMP_DIR/docker-cli"
+      ;;
+  esac
+
   return "$ERR_CODE"
 }
 
@@ -99,7 +114,7 @@ checksum() {
 
   case "$FILE" in
     docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb )
-      CHECKSUM="5c3c7688f91a617d64a633d081a6a7ffb23c43292fef37819ad583c785c92c774eb5c0154adadfdce86545bf05898324c08d67c8ee92dc485b809f0215f46fd7  docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb"
+      CHECKSUM="5c3c7688f91a617d64a633d081a6a7ffb23c43292fef37819ad583c785c92c774eb5c0154adadfdce86545bf05898324c08d67c8ee92dc485b809f0215f46fd7"
       ;;
 
     * )
@@ -108,7 +123,7 @@ checksum() {
       ;;
   esac
 
-  if ! b2sum "$FILE" | grep -q $CHECKSUM; then
+  if ! b2sum "$FILE" | grep -q "$CHECKSUM"; then
     echo "Invalid checksum for '$FILE'"
     return 1
   fi
