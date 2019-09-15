@@ -2,7 +2,9 @@
 
 ## Requirements
 
-* [Shellcheck](https://shellcheck.org/dl/) >= 0.4.7
+* [GNU make](https://www.gnu.org/software/make/) >= 4.2
+
+* [Shellcheck](https://shellcheck.org/dl/) >= 0.7
 
 ## Guidelines
 
