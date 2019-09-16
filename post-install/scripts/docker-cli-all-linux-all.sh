@@ -84,7 +84,7 @@ main() {
   mkdir -p "docker-cli"
 
   # shellcheck disable=2230
-  if which docker; then
+  if [ "$FORCE" = "false" ] && which docker; then
     if docker version -f "{{ .Client.Version }}" | grep -q "$(echo "$RELEASE" | sed "s/^\(.\+\)~.\+$/\1/")"; then
       return 0
     fi

@@ -7,6 +7,7 @@ set -e
 export TMP_DIR="${TMP_DIR:-/tmp}"
 export CACHE_DIR="${CACHE_DIR:-$TMP_DIR}"
 export SU_PASSWD="$SU_PASSWD"
+export FORCE="${FORCE:-false}"
 
 DEBUG="${DEBUG:-false}"
 MODES="check download main"
@@ -40,6 +41,10 @@ main() {
 
       --download )
         MODES="download"
+        ;;
+
+      -f | --force )
+        FORCE="true"
         ;;
 
       -h | --help )
@@ -297,6 +302,7 @@ Options:
                         permissions. ($CACHE_DIR)
       --debug           Print debugging messages.
   -D, --download        Just run the download stage of every script.
+  -f, --force           Run the scripts even if they can be skipped.
       --mirror=URL      Use URL as base mirror for targets and scripts.
                         ($MIRROR)
       --smirror=URL     Use URL as scripts mirror when some script can't be
@@ -329,6 +335,7 @@ Scripts syntax:
 Environment variables:
   * 'CACHE_DIR': behaves as the '--cache' flag.
   * 'DEBUG': behaves as the '--debug' flag.
+  * 'FORCE': behaves as the '-f, --force' flag.
   * 'MIRROR': behaves as the '--mirror' flag.
   * 'SCRIPTS_DIR': behaves as the '--scripts' flag.
   * 'SCRIPTS_MIRROR': behaves as the '--smirror' flag.

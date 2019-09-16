@@ -44,6 +44,7 @@ STAGE="$1"
 # Environment variables:
 #   * 'STAGE': is the current stage.
 #   * 'SU_PASSWD': contains the root password.
+#   * 'FORCE': if 'true', all the instructions must be executed.
 #   * 'CACHE_DIR': is the directory where the script should download its files.
 #   * 'TMP_DIR': is the temporal filesystem directory.
 #   * 'OS': is the current OS.

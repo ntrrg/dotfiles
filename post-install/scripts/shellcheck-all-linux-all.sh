@@ -42,7 +42,7 @@ main() {
   cd "$TMP_DIR"
 
   # shellcheck disable=2230
-  if which shellcheck; then
+  if [ "$FORCE" = "false" ] && which shellcheck; then
     if shellcheck --version | grep -q "version: $RELEASE"; then
       return 0
     fi
