@@ -40,6 +40,14 @@ download() {
 
 main() {
   cd "$TMP_DIR"
+
+  # shellcheck disable=2230
+  if which shellcheck; then
+    if shellcheck --version | grep -q "version: $RELEASE"; then
+      return 0
+    fi
+  fi
+
   tar --strip-components 1 --exclude "*.txt" \
     -C "$BASEPATH/bin" -xpf "$CACHE_DIR/$PACKAGE"
   return 0
@@ -72,6 +80,10 @@ checksum() {
   fi
 
   return 0
+}
+
+which() {
+  command -v "$1" > /dev/null
 }
 
 if [ $# -eq 0 ] || [ "$1" = "all" ]; then

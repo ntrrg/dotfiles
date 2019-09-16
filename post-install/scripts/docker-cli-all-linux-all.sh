@@ -83,12 +83,23 @@ main() {
   cd "$TMP_DIR"
   mkdir -p "docker-cli"
 
+  # shellcheck disable=2230
+  if which docker; then
+    if docker version -f "{{ .Client.Version }}" | grep -q "$(echo "$RELEASE" | sed "s/^\(.\+\)~.\+$/\1/")"; then
+      return 0
+    fi
+  fi
+
   case "$OS" in
     debian* )
-      dpkg -x "$PACKAGE" "docker-cli"
-      cd "docker-cli/usr"
-      # shellcheck disable=SC2046
-      cp -af $(ls -A) "$BASEPATH"
+      if [ "$EXEC_MODE" = "system" ]; then
+        dpkg -i "$PACKAGE" || apt-get install -fy
+      else
+        dpkg -x "$PACKAGE" "docker-cli"
+        cd "docker-cli/usr"
+        # shellcheck disable=SC2046
+        cp -af $(ls -A) "$BASEPATH"
+      fi
       ;;
   esac
 
@@ -129,6 +140,10 @@ checksum() {
   fi
 
   return 0
+}
+
+which() {
+  command -v "$1" > /dev/null
 }
 
 if [ $# -eq 0 ] || [ "$1" = "all" ]; then
