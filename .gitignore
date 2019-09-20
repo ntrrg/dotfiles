@@ -1,7 +1,8 @@
 *.sublime*
-*.swp
-*.swo
-Session.vim
+*.sw[op]
+*.vim
 nogit-*
 .DS_Store
 .screenrc
+*~
+
