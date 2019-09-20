@@ -45,9 +45,9 @@ activate() {
   GOPATH="${GOPATH:-$HOME/go}"
   PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
 
-  echo "export GOROOT=$GOROOT"
-  echo "export GOPATH=$GOPATH"
-  echo "export PATH=$PATH"
+  echo "export GOROOT=\"$GOROOT\""
+  echo "export GOPATH=\"$GOPATH\""
+  echo "export PATH=\"$PATH\""
 }
 
 delete() {
