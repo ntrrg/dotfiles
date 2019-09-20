@@ -1,13 +1,12 @@
+binaries := $(shell find bin -type f -executable -exec echo "{}" +)
+
 .PHONY: all
 all: bin git templates vim xfce zsh
 
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
-	cp -pf \
-		$(shell find bin -type f -executable -exec echo "{}" +) \
-		post-install/post-install.sh \
-		"$$HOME/.local/bin/"
+	cp -pf $(binaries) "$$HOME/.local/bin/"
 
 .PHONY: git
 git:
@@ -38,8 +37,5 @@ ci: lint
 
 .PHONY: lint
 lint:
-	shellcheck -s sh \
-		$(shell find bin/ -type f -name "*.sh" -exec echo "{}" +) \
-		$(shell find post-install/scripts/ -type f -name "*.sh" -exec echo "{}" +) \
-		post-install/post-install.sh
+	shellcheck -s sh $(binaries)
 
