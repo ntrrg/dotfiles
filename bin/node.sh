@@ -44,8 +44,8 @@ create() {
 
   PATH="$NODEJS_HOME/bin:$PATH"
 
-  echo "export NODEJS_HOME=$NODEJS_HOME"
-  echo "export PATH=$PATH"
+  echo "export NODEJS_HOME=\"$NODEJS_HOME\""
+  echo "export PATH=\"$PATH\""
 }
 
 delete() {
