@@ -31,7 +31,7 @@ create() {
 
   if [ ! -d "$NODEJS_HOME" ]; then
     PACKAGE="$NODEJS_ENV.tar.xz"
-    wget -cO "/tmp/$PACKAGE" "$NODEJS_MIRROR/v$NODEJS_RELEASE/$PACKAGE"
+    wget -cqO "/tmp/$PACKAGE" "$NODEJS_MIRROR/v$NODEJS_RELEASE/$PACKAGE"
     mkdir -p "$NODEJS_HOME"
     tar -C "$NODEJS_HOME" --strip-components 1 -xpf "/tmp/$PACKAGE"
   fi
