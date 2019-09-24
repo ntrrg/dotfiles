@@ -31,7 +31,7 @@ activate() {
 
   if [ ! -d "$GOROOT" ]; then
     PACKAGE="$GOENV.tar.gz"
-    wget -cO "/tmp/$PACKAGE" "$GOMIRROR/$PACKAGE"
+    wget -cqO "/tmp/$PACKAGE" "$GOMIRROR/$PACKAGE"
     mkdir -p "$GOROOT"
     tar -C "$GOROOT" --strip-components 1 -xpf "/tmp/$PACKAGE"
   fi
