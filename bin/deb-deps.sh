@@ -15,5 +15,11 @@ EOF
   exit
 fi
 
-apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts --no-breaks --no-replaces --no-enhances -qq "$@" | tr -d " " | sed "s/Depends://" | sort -u
+apt-cache depends \
+  --recurse --no-recommends --no-suggests --no-conflicts \
+  --no-breaks --no-replaces --no-enhances -qq "$@" |
+tr -d " " |
+sed "s/\(Pre\)\?Depends://" |
+grep "^\w" |
+sort -u
 
