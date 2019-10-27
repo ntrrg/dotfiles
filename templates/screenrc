@@ -1,0 +1,20 @@
+only
+split -v
+resize 85
+focus
+split
+screen
+# title "WATCH_SERVICE"
+title "Server"
+resize -v 10
+focus
+screen
+title "Console"
+focus
+title "Text editor"
+# exec TEXT_EDITOR_COMMAND
+exec vim
+mousetrack on
+# layout save PROJECT-name
+layout save ntweb
+
