@@ -1,4 +1,7 @@
 only
+# screen TEXT_EDITOR_COMMAND
+screen vim
+title "Text editor"
 split -v
 resize 85
 focus
@@ -11,9 +14,6 @@ focus
 screen
 title "Console"
 focus
-title "Text editor"
-# exec TEXT_EDITOR_COMMAND
-exec vim
 mousetrack on
 # layout save PROJECT-name
 layout save ntweb
