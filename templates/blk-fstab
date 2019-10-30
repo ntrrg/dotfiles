@@ -1,13 +1,16 @@
 # /etc/fstab
 
-# FILE_SYSTEM                               MOUNT_POINT            TYPE        OPTIONS           DUMP    VERIFICATION
+# FILE_SYSTEM                      MOUNT_POINT       TYPE         OPTIONS            DUMP   VERIFICATION
 
 # Device
-/dev/NtFlash/Data                           /media/ntrrg/NtFlash   btrfs       defaults          0       2
+/dev/VG/Data                       /media/host       btrfs        defaults           0      2
+
+# Swap
+/dev/VG/Swap                       none              swap         defaults           0      0
 
 # Folder
-/media/ntrrg/NtFlash/var/lib/docker         /var/lib/docker        btrfs       bind              0       0
+/media/host/var/lib/docker         /var/lib/docker   btrfs        bind               0      0
 
 # Remote file system
-ntrrg@home.nt.web.ve:/media/ntrrg/NtServer  /media/ntrrg/NtServer  fuse.sshfs  defaults,_netdev  0       0
+ntrrg@home.nt.web.ve:/home/ntrrg   /home/ntrrg       fuse.sshfs   defaults,_netdev   0      0
 
