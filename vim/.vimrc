@@ -17,6 +17,8 @@ set mouse=a
 set nomodeline
 set wildmenu
 set showcmd
+set splitbelow
+set splitright
 
 if ! has("gui_running")
   set t_Co=256
@@ -24,6 +26,20 @@ endif
 
 set background=dark
 colors peaksea
+
+" if &background=='light'
+"   hi PrePro guifg=#009030 guibg=NONE gui=NONE
+" 
+"   if &t_Co==256
+"     hi PreProc ctermfg=28 ctermbg=NONE cterm=NONE
+"   endif
+" elseif &background=='dark'
+"   hi PreProc guifg=#60f080 guibg=NONE gui=NONE
+" 
+"   if &t_Co==256
+"     hi PreProc ctermfg=28 ctermbg=NONE cterm=NONE
+"   endif
+" endif
 
 set statusline=
 set statusline+=%#Normal#
