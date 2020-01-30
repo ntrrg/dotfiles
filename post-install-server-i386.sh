@@ -124,15 +124,15 @@ update-rc.d noip2 defaults
 
 # Vim
 
-if [ ! -f vim-8.1.tar.bz2 ]; then
-  wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+if [ ! -f vim-8.2.tar.bz2 ]; then
+  wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
 fi
 
 apt-get purge -fy "vim-*"
 apt-get install -y gcc libncurses-dev make
-tar -xf vim-8.1.tar.bz2
-(cd vim81 && ./configure && make && make install)
-rm -rf vim81
+tar -xf vim-8.2.tar.bz2
+(cd vim82 && ./configure && make && make install)
+rm -rf vim82
 
 ############
 # Cleaning #

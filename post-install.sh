@@ -294,8 +294,8 @@ EOF
 
   # Vim
 
-  if [ ! -f vim-8.1.tar.bz2 ]; then
-    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+  if [ ! -f vim-8.2.tar.bz2 ]; then
+    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
   fi
 
   apt-get purge -fy vim-tiny
@@ -303,9 +303,9 @@ EOF
   apt-get install -y \
     gcc libncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev make
 
-  tar -xf vim-8.1.tar.bz2
-  (cd vim81 && ./configure --with-features=huge && make && make install)
-  rm -rf vim81
+  tar -xf vim-8.2.tar.bz2
+  (cd vim82 && ./configure --with-features=huge && make && make install)
+  rm -rf vim82
 
   cat <<EOF > /usr/share/applications/vim.desktop
 [Desktop Entry]
@@ -353,15 +353,15 @@ EOF
 elif [ $GUI_ENABLED -eq 0 ]; then
   # Vim
 
-  if [ ! -f vim-8.1.tar.bz2 ]; then
-    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.1.tar.bz2'
+  if [ ! -f vim-8.2.tar.bz2 ]; then
+    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
   fi
 
   apt-get purge -fy "vim-*"
   apt-get install -y gcc libncurses-dev make
-  tar -xf vim-8.1.tar.bz2
-  (cd vim81 && ./configure && make && make install)
-  rm -rf vim81
+  tar -xf vim-8.2.tar.bz2
+  (cd vim82 && ./configure && make && make install)
+  rm -rf vim82
 fi
 
 ############
