@@ -1,8 +1,40 @@
-*.sublime*
-*.sw[op]
-*.vim
 nogit-*
+/content/challenges/**/solution
+
+######
+# OS #
+######
+
+# MacOS
 .DS_Store
-.screenrc
+
+###########
+# Editors #
+###########
+
+# Sublime Text
+*.sublime*
+
+# Vim
+*.sw[op]
+Session.vim
 *~
+
+#########
+# Tools #
+#########
+
+# GNU Screen
+.screenrc
+
+# Mage
+/mage
+
+#######################
+# Frameworks and libs #
+#######################
+
+# Hugo
+/public/
+/resources/
 
