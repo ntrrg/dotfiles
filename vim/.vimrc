@@ -25,7 +25,7 @@ if ! has("gui_running")
 endif
 
 set background=dark
-colors peaksea
+colors monokai-dark
 
 set statusline=
 set statusline+=%#Normal#
