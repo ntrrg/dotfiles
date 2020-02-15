@@ -5,7 +5,7 @@ if exists("syntax_on")
 endif
 
 set t_Co=256
-let g:colors_name = "monokai-dark"
+let g:colors_name = "monokai"
 
 if &t_Co==8 || &t_Co==16
 elseif &t_Co==256
@@ -14,7 +14,7 @@ elseif &t_Co==256
   hi Directory       ctermfg=141  ctermbg=NONE cterm=NONE
   hi ErrorMsg        ctermfg=231  ctermbg=9    cterm=NONE
   hi IncSearch       ctermfg=235  ctermbg=186  cterm=NONE
-  hi Search          ctermfg=NONE ctermbg=NONE cterm=underline
+  hi Search          ctermfg=NONE ctermbg=NONE cterm=underline,bold,italic
   " hi MoreMsg         ctermfg=NONE ctermbg=NONE cterm=NONE
   " hi ModeMsg         ctermfg=NONE ctermbg=NONE cterm=NONE
   hi LineNr          ctermfg=102  ctermbg=NONE cterm=NONE
@@ -60,25 +60,25 @@ elseif &t_Co==256
   hi Boolean         ctermfg=141  ctermbg=NONE cterm=NONE
   hi Character       ctermfg=141  ctermbg=NONE cterm=NONE
   hi Comment         ctermfg=242  ctermbg=NONE cterm=italic
-  hi Conditional     ctermfg=197  ctermbg=NONE cterm=NONE
+  hi Conditional     ctermfg=81   ctermbg=NONE cterm=NONE
   hi Constant        ctermfg=NONE ctermbg=NONE cterm=NONE
   hi Define          ctermfg=197  ctermbg=NONE cterm=NONE
   hi Float           ctermfg=141  ctermbg=NONE cterm=NONE
   hi Function        ctermfg=148  ctermbg=NONE cterm=NONE
-  hi Identifier      ctermfg=81   ctermbg=NONE cterm=NONE
+  hi Identifier      ctermfg=148  ctermbg=NONE cterm=NONE
   hi Keyword         ctermfg=197  ctermbg=NONE cterm=NONE
   hi Label           ctermfg=186  ctermbg=NONE cterm=NONE
   hi Number          ctermfg=141  ctermbg=NONE cterm=NONE
   hi Operator        ctermfg=197  ctermbg=NONE cterm=NONE
   hi PreProc         ctermfg=197  ctermbg=NONE cterm=NONE
-  hi Special         ctermfg=231  ctermbg=NONE cterm=NONE
+  hi Special         ctermfg=11   ctermbg=NONE cterm=NONE
   hi SpecialComment  ctermfg=242  ctermbg=NONE cterm=italic
-  hi Statement       ctermfg=197  ctermbg=NONE cterm=NONE
+  hi Statement       ctermfg=81   ctermbg=NONE cterm=NONE
   hi StorageClass    ctermfg=81   ctermbg=NONE cterm=NONE
   hi String          ctermfg=186  ctermbg=NONE cterm=NONE
   hi Tag             ctermfg=197  ctermbg=NONE cterm=NONE
-  hi Todo            ctermfg=95   ctermbg=NONE cterm=inverse,bold
-  hi Type            ctermfg=197  ctermbg=NONE cterm=NONE
+  hi Todo            ctermfg=95   ctermbg=NONE cterm=inverse,bold,italic
+  hi Type            ctermfg=81   ctermbg=NONE cterm=NONE
   hi Underlined      ctermfg=NONE ctermbg=NONE cterm=underline
   hi Ignore          ctermfg=242  ctermbg=NONE cterm=NONE
   hi Error           ctermfg=231  ctermbg=9    cterm=NONE

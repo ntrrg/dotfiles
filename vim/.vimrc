@@ -25,7 +25,7 @@ if ! has("gui_running")
 endif
 
 set background=dark
-colors monokai-dark
+colors monokai
 
 set statusline=
 set statusline+=%#Normal#
@@ -37,7 +37,7 @@ set statusline+=%#Number#
 set statusline+=\ %l:%c%V
 set statusline+=\ %<
 set statusline+=%P
-set statusline+=\ %#DiffAdd#\|
+set statusline+=\ %#Identifier#\|
 set statusline+=\ %{&term}
 set statusline+=\ \|
 set statusline+=\ %{&fileformat}
@@ -62,7 +62,9 @@ set autoindent
 set smarttab
 set expandtab tabstop=2 shiftwidth=2
 
-autocmd Filetype go setlocal noexpandtab
+autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
+
+autocmd Filetype go,gomod setlocal noexpandtab
 autocmd Filetype c setlocal noexpandtab
 autocmd Filetype cpp setlocal noexpandtab
 autocmd Filetype make setlocal noexpandtab
@@ -85,4 +87,7 @@ nnoremap [Q :cfirst
 nnoremap ]Q :clast
 
 " Commands
+
+" Plugins
+" filetype plugin indent on
 
