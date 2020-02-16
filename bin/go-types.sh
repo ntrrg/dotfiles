@@ -4,7 +4,7 @@
 
 set -e
 
-which go > /dev/null
+command -v go > /dev/null
 
 PACKAGES="$(
   go list "$(go env GOROOT)/..." 2> /dev/null |
@@ -24,7 +24,7 @@ for PACKAGE in $PACKAGES; do
 
   for TYPE in $TYPES; do
     TYPE="$(echo "$TYPE" | sed "s/__SPACE__/ /g" | cut -d " " -f 2)"
-    echo "$(basename $PACKAGE).$TYPE"
+    echo "$(basename "$PACKAGE").$TYPE"
   done
 done
 
