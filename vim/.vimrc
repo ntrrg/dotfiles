@@ -27,30 +27,48 @@ endif
 set background=dark
 colors monokai
 
+hi def link stNormal     Normal
+hi def link stBuffNumber Number
+hi def link stBuffName   Title
+hi def link stBuffPos    Number
+hi def link stBuffProps  Identifier
+
 set statusline=
-set statusline+=%#Normal#
-set statusline+=\ ⬓
-set statusline+=%#Number#\ [%n]
-set statusline+=%#Title#\ %t\ %m
-set statusline+=\ %=
-set statusline+=%#Number#
-set statusline+=\ %l:%c%V
+set statusline+=%#stNormal#
+set statusline+=\ ⬓\ 
+
+set statusline+=%#stBuffNumber#
+set statusline+=[%n]
+
+set statusline+=%#stNormal#\ 
+
+set statusline+=%#stBuffName#
+set statusline+=%t\ %m
+
+set statusline+=%#stNormal#
+set statusline+=\ %=\ 
+
+set statusline+=%#stBuffPos#
+set statusline+=%l:%c%V
+
+set statusline+=%#stNormal#
 set statusline+=\ %<
+
+set statusline+=%#stBuffPos#
 set statusline+=%P
-set statusline+=\ %#Identifier#\|
-set statusline+=\ %{&term}
-set statusline+=\ \|
-set statusline+=\ %{&fileformat}
-set statusline+=\ \|
-set statusline+=\ %{&encoding}
-set statusline+=\ \|
-set statusline+=\ %{TabStyle()}:\ %{&shiftwidth}
-set statusline+=\ \|
-set statusline+=\ %Y
-set statusline+=\ \|%#Normal#
+
+set statusline+=%#stNormal#\ 
+
+set statusline+=%#stBuffProps#
+set statusline+=\|\ %{&term}\ 
+set statusline+=\|\ %{&fileformat}\ 
+set statusline+=\|\ %{&encoding}\ 
+set statusline+=\|\ %{TabStyle()}:%{&shiftwidth}\ 
+set statusline+=\|\ %Y\ 
+set statusline+=\|
 
 function! TabStyle()
-  return &expandtab == 1 ? "Spaces" : "Tabs"
+  return &expandtab == 1 ? "S" : "T"
 endfunction
 
 " File formatting and editing
@@ -63,6 +81,9 @@ set smarttab
 set expandtab tabstop=2 shiftwidth=2
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
+autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
+autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtmltmpl
+autocmd BufRead,BufNewFile *.tmpl setlocal filetype=gohtmltmpl
 
 autocmd Filetype go,gomod setlocal noexpandtab
 autocmd Filetype c setlocal noexpandtab

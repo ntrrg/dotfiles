@@ -156,11 +156,11 @@ syn match goLiteralHexadecimalInt "\<0[xX]\(_\?\x\+\)\+\>"
 syn match goLiteralOctalInt       "\<0[oO]\?\(_\?\o\+\)\+\>"
 syn match goLiteralBinaryInt      "\<0[bB]\(_\?[01]\+\)\+\>"
 
-hi def link goLiteralDecimalInt     GoLiteralInt
-hi def link goLiteralHexadecimalInt GoLiteralInt
-hi def link goLiteralOctalInt       GoLiteralInt
-hi def link goLiteralBinaryInt      GoLiteralInt
-hi def link GoLiteralInt            Number
+hi def link goLiteralDecimalInt     goLiteralInt
+hi def link goLiteralHexadecimalInt goLiteralInt
+hi def link goLiteralOctalInt       goLiteralInt
+hi def link goLiteralBinaryInt      goLiteralInt
+hi def link goLiteralInt            Number
 
     " Floats
 syn match goLiteralDecimalFloat     "\<\d\(_\?\d\+\)*\."
@@ -228,15 +228,6 @@ syn match goEscapeStringSQ display contained +\\'+
 
 hi def link goEscapeStringSQ goEscapeError
 
-syn cluster goStringGroup contains=goEscapeChar,goEscapeO,goEscapeX,goEscapeU,goEscapeBigU,goEscapeInvalid,goStringFormat,goEscapeStringSQ
-
-syn region goLiteralStringR   start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
-syn region goLiteralRawString start=+`+ end=+`+
-
-hi def link goLiteralStringR   goLiteralString
-hi def link goLiteralRawString goLiteralString
-hi def link goLiteralString    String
-
 " [n] notation is valid for specifying explicit argument indexes
 " 1. Match a literal % not preceded by a %.
 " 2. Match any number of -, #, 0, space, or +
@@ -249,9 +240,18 @@ syn match goStringFormat /\
       \@<=%[-#0 +]*\
       \%(\%(\%(\[\d\+\]\)\=\*\)\|\d\+\)\=\
       \%(\.\%(\%(\%(\[\d\+\]\)\=\*\)\|\d\+\)\=\)\=\
-      \%(\[\d\+\]\)\=[vTtbcdoqxXUeEfFgGspw]/ contained containedin=goString,goRawString
+      \%(\[\d\+\]\)\=[vTtbcdoqxXUeEfFgGspw]/ contained
 
 hi def link goStringFormat Identifier
+
+syn cluster goStringGroup contains=goEscapeChar,goEscapeO,goEscapeX,goEscapeU,goEscapeBigU,goEscapeInvalid,goStringFormat,goEscapeStringSQ
+
+syn region goLiteralStringR   start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup
+syn region goLiteralRawString start=+`+ end=+`+
+
+hi def link goLiteralStringR   goLiteralString
+hi def link goLiteralRawString goLiteralString
+hi def link goLiteralString    String
 
 " -----------------------------------------------------------------------------
 " Regions

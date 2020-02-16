@@ -137,6 +137,9 @@ hi def link markdownCodeDelimiter         Delimiter
 hi def link markdownEscape                Special
 hi def link markdownError                 Error
 
+syn include @goSyntax syntax/go.vim
+syn region markdownGoCode matchgroup=markdownCodeDelimiter start="^\s*```go\( .*\)\?$" end="^\s*```\ze\s*$" keepend contains=@goSyntax
+
 let b:current_syntax = "markdown"
 if main_syntax ==# 'markdown'
   unlet main_syntax

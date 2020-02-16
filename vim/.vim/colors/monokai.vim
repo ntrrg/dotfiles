@@ -11,7 +11,7 @@ if &t_Co==8 || &t_Co==16
 elseif &t_Co==256
   hi SpecialKey      ctermfg=59   ctermbg=237  cterm=NONE
   hi NonText         ctermfg=59   ctermbg=NONE cterm=NONE
-  hi Directory       ctermfg=141  ctermbg=NONE cterm=NONE
+  hi Directory       ctermfg=148  ctermbg=NONE cterm=NONE
   hi ErrorMsg        ctermfg=231  ctermbg=9    cterm=NONE
   hi IncSearch       ctermfg=235  ctermbg=186  cterm=NONE
   hi Search          ctermfg=NONE ctermbg=NONE cterm=underline,bold,italic
