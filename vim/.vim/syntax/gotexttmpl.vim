@@ -29,7 +29,7 @@ syn keyword goTmplBuiltins              contained and call html index js len not
 syn keyword goTmplPredefinedIdentifiers contained nil
 syn cluster goTmplSyntax add=goTmplBuiltins,goTmplPredefinedIdentifiers
 
-hi def link goTmplBuiltins              Identifier
+hi def link goTmplBuiltins              Function
 hi def link goTmplPredefinedIdentifiers Boolean
 
 syn keyword goTmplConditional contained else if with
@@ -156,8 +156,8 @@ hi def link goTmplStringFormat Identifier
 
 syn cluster goTmplStringGroup contains=goTmplEscapeChar,goTmplEscapeO,goTmplEscapeX,goTmplEscapeU,goTmplEscapeBigU,goTmplEscapeInvalid,goTmplStringFormat,goTmplEscapeStringSQ
 
-syn region goTmplLiteralStringR   start=+"+ skip=+\\\\\|\\"+ end=+"+ contained contains=@goTmplStringGroup
-syn region goTmplLiteralRawString start=+`+ end=+`+ contained
+syn region goTmplLiteralStringR   start=+"+ skip=+\\\\\|\\"+ end=+"+ contained contains=@goTmplStringGroup,@Spell
+syn region goTmplLiteralRawString start=+`+ end=+`+ contained contains=@Spell
 syn cluster goTmplSyntax add=goTmplLiteralStringR,goTmplLiteralRawString
 
 hi def link goTmplLiteralStringR   goTmplLiteralString
