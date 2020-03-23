@@ -1,0 +1,30 @@
+name: Shell Scripts
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  ci:
+    name: CI
+    strategy:
+      matrix:
+        os: 
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up tools
+        run: |
+          wget -O "/tmp/shellcheck.tar.gz" 'https://github.com/koalaman/shellcheck/releases/download/v0.7.0/shellcheck-v0.7.0.linux.x86_64.tar.xz'
+          tar -xf "/tmp/shellcheck.tar.gz" -C "/tmp/"
+          sudo mv "/tmp/shellcheck-v0.7.0/shellcheck" "/usr/bin/"
+
+      - name: Get source code
+        uses: actions/checkout@v1
+
+      - name: Lint
+        run: make lint
+

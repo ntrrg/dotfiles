@@ -1,16 +1,11 @@
 nogit-*
-/content/challenges/**/solution
 
-######
-# OS #
-######
+#########
+# Tools #
+#########
 
-# MacOS
-.DS_Store
-
-###########
-# Editors #
-###########
+# GNU Screen
+.screenrc
 
 # Sublime Text
 *.sublime*
@@ -20,21 +15,10 @@ nogit-*
 Session.vim
 *~
 
-#########
-# Tools #
-#########
+######
+# OS #
+######
 
-# GNU Screen
-.screenrc
-
-# Mage
-/mage
-
-#######################
-# Frameworks and libs #
-#######################
-
-# Hugo
-/public/
-/resources/
+# MacOS
+.DS_Store
 
