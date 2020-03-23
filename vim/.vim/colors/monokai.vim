@@ -59,7 +59,7 @@ elseif &t_Co==256
   hi Cursor          ctermfg=235  ctermbg=231  cterm=NONE
   hi Boolean         ctermfg=141  ctermbg=NONE cterm=NONE
   hi Character       ctermfg=141  ctermbg=NONE cterm=NONE
-  hi Comment         ctermfg=242  ctermbg=NONE cterm=italic
+  hi Comment         ctermfg=242  ctermbg=NONE cterm=NONE
   hi Conditional     ctermfg=81   ctermbg=NONE cterm=NONE
   hi Constant        ctermfg=NONE ctermbg=NONE cterm=NONE
   hi Define          ctermfg=197  ctermbg=NONE cterm=NONE
@@ -72,12 +72,12 @@ elseif &t_Co==256
   hi Operator        ctermfg=197  ctermbg=NONE cterm=NONE
   hi PreProc         ctermfg=197  ctermbg=NONE cterm=NONE
   hi Special         ctermfg=11   ctermbg=NONE cterm=NONE
-  hi SpecialComment  ctermfg=242  ctermbg=NONE cterm=italic
+  hi SpecialComment  ctermfg=242  ctermbg=NONE cterm=NONE
   hi Statement       ctermfg=81   ctermbg=NONE cterm=NONE
   hi StorageClass    ctermfg=81   ctermbg=NONE cterm=NONE
   hi String          ctermfg=186  ctermbg=NONE cterm=NONE
   hi Tag             ctermfg=197  ctermbg=NONE cterm=NONE
-  hi Todo            ctermfg=95   ctermbg=NONE cterm=inverse,bold,italic
+  hi Todo            ctermfg=95   ctermbg=NONE cterm=inverse,bold
   hi Type            ctermfg=81   ctermbg=NONE cterm=NONE
   hi Underlined      ctermfg=NONE ctermbg=NONE cterm=underline
   hi Ignore          ctermfg=242  ctermbg=NONE cterm=NONE
