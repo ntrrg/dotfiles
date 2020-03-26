@@ -33,10 +33,10 @@
   1. Last command exit status (none if `0`).
   2. Username.
   3. User permissions.
-  4. Git information (repository name, branch, staged files, modified files).
+  4. Git information (reference, staged files, modified files).
   5. Current directory.
 
-* Exclude commands from history by preceding them with a white space
+* Exclude commands from history by preceding them with a white space.
 
 * Shared history between terminals.
 
