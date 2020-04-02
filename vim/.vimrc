@@ -4,7 +4,7 @@ set history=100
 set nobackup
 set autoread
 set encoding=utf8
-set ffs=unix,dos,mac
+set fileformats=unix,dos,mac
 set sessionoptions-=options
 set sessionoptions-=folds
 
@@ -79,6 +79,7 @@ set wrap
 set autoindent
 set smarttab
 set expandtab tabstop=2 shiftwidth=2
+set noendofline nofixendofline
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
 autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
@@ -111,4 +112,3 @@ nnoremap ]Q :clast
 
 " Plugins
 " filetype plugin indent on
-
