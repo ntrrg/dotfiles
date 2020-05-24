@@ -16,14 +16,19 @@ PACKAGES="$(
 )"
 
 for PACKAGE in $PACKAGES; do
-  TYPES="$( (
-    go doc "$PACKAGE" |
-      grep "^type [A-Z]" |
-      sed "s/ /__SPACE__/g"
-  ) || true)"
+  TYPES="$(
+    go doc -short "$PACKAGE" |
+    grep "^type [A-Z]" |
+    sed "s/ /__SPACE__/g"
+  )"
 
   for TYPE in $TYPES; do
-    TYPE="$(echo "$TYPE" | sed "s/__SPACE__/ /g" | cut -d " " -f 2)"
+    TYPE="$(
+      echo "$TYPE" |
+      sed "s/__SPACE__/ /g" |
+      cut -d " " -f 2
+    )"
+
     echo "$(basename "$PACKAGE").$TYPE"
   done
 done
