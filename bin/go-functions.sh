@@ -16,11 +16,12 @@ PACKAGES="$(
 )"
 
 for PACKAGE in $PACKAGES; do
-  FUNCS="$( (
-    go doc "$PACKAGE" |
-      grep "^func [A-Z]" |
-      sed "s/ /__SPACE__/g"
-  ) || true)"
+  FUNCS="$(
+    go doc -short "$PACKAGE" |
+    grep "^\s*func [A-Z]" |
+    sed "s/^[[:space:]]*//g" |
+    sed "s/ /__SPACE__/g"
+  )"
 
   for FUNC in $FUNCS; do
     FUNC="$(
