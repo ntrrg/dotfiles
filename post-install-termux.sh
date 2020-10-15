@@ -2,26 +2,27 @@
 
 set -e
 
-apt update
-apt upgrade -y
-
 ################
 # Installation #
 ################
+
+apt update
+apt upgrade -y
 
 apt install -y \
   bc \
   elinks \
   git \
-  htop \
   jq \
   make \
+  man \
   mosh \
   openssh \
   pv \
   rsync \
   screen \
   termux-api \
+  transmission \
   unzip \
   vim \
   wget \
@@ -31,5 +32,5 @@ apt install -y \
 # Cleaning #
 ############
 
-apt autoremove -y > /dev/null
+apt autoremove -y > "/dev/null"
 
