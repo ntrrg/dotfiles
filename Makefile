@@ -1,7 +1,8 @@
-binaries := $(shell find bin -type f -executable -exec echo "{}" +)
+binaries := $(shell find bin -type f -executable -exec echo '{}' \+)
+templatesDir := $(shell xdg-user-dir "TEMPLATES")
 
 .PHONY: all
-all: bin git templates vim xfce zsh
+all: gui
 
 .PHONY: bin
 bin:
@@ -12,14 +13,25 @@ bin:
 git:
 	cp -rpf git/.gitconfig "$$HOME/"
 
+.PHONY: gui
+gui: xdg bin git templates vim xfce zsh
+
 .PHONY: templates
 templates:
-	mkdir -p "$$HOME/Templates"
-	cp -pf $(shell find templates -type f) "$$HOME/Templates/"
+	mkdir -p "$(templatesDir)"
+	find templates -type f -exec cp -f '{}' "$(templatesDir)" \;
+
+.PHONY: tui
+tui: bin git vim zsh
 
 .PHONY: vim
 vim:
 	cp -rpf vim/.vim vim/.vimrc "$$HOME/"
+
+.PHONY: xdg
+xdg:
+	mkdir -p "$$HOME/.config"
+	cp -pf xdg/user-dirs.dirs xdg/user-dirs.locale "$$HOME/.config/"
 
 .PHONY: xfce
 xfce:
@@ -32,10 +44,12 @@ zsh:
 
 # Development
 
+pish := $(shell find . -maxdepth 1 -name "post-install*.sh" -exec echo '{}' \+)
+
 .PHONY: ci
 ci: lint
 
 .PHONY: lint
 lint:
-	shellcheck -s sh $(binaries)
+	shellcheck -s sh $(binaries) $(pish)
 
