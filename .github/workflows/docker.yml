@@ -1,0 +1,26 @@
+name: Docker
+on:
+  push:
+    branches:
+      - master
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
+    steps:
+      - name: Get source code
+        uses: actions/checkout@v2
+
+      - name: Log into the Docker Registry
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+
+      - name: "Build and push 'latest'"
+        run: |
+          docker build -t $DOCKER_IMAGE .
+          docker push $DOCKER_IMAGE
+
