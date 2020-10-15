@@ -1,8 +1,8 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 ARG NEW_USER="ntrrg"
 ARG MIRROR="http://deb.debian.org/debian"
 RUN \
-  echo "deb $MIRROR buster main contrib non-free" > /etc/apt/sources.list && \
+  echo "deb $MIRROR bullseye main contrib non-free" > /etc/apt/sources.list && \
   apt-get update && apt-get upgrade -y && \
   apt-get install -y sudo && \
   useradd --shell "/bin/zsh" --create-home "$NEW_USER" && \
@@ -10,7 +10,8 @@ RUN \
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
-  DEBIAN_FRONTEND="noninteractive" GUI_ENABLED=0 CONTAINER=1 HARDWARE=0 BASEPATH="/tmp/post-install" \
+  DEBIAN_FRONTEND="noninteractive" BASEPATH="/tmp/post-install" \
+  IS_CONTAINER=1 IS_GUI=0 IS_HARDWARE=0 \
   /tmp/post-install/post-install.sh && cd / && rm -rf /tmp/post-install
 USER "$NEW_USER":"$NEW_USER"
 WORKDIR "/home/$NEW_USER"
