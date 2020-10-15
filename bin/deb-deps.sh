@@ -3,10 +3,12 @@
 # Released under the MIT License
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  cat <<EOF
-$0 - get the dependencies from the given packages.
+  BIN_NAME="$(basename "$0")"
 
-Usage: $0 PACKAGE...
+  cat <<EOF
+$BIN_NAME - get the dependencies from the given packages.
+
+Usage: $BIN_NAME PACKAGE...
 
 Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License

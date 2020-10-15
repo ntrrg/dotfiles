@@ -142,11 +142,13 @@ build() {
 }
 
 show_help() {
+  BIN_NAME="$(basename "$0")"
+
   cat <<EOF
-$0 - Dockerfile build helper. It can build multiple Dockerfiles
+$BIN_NAME - Dockerfile build helper. It can build multiple Dockerfiles
 with a single command.
 
-Usage: $0 [OPTIONS] [PATH | BUILD_INSTRUCTION]...
+Usage: $BIN_NAME [OPTIONS] [PATH | BUILD_INSTRUCTION]...
 
 A build instruction is a sentence that contains the needed information to run
 this program in an arbitrary behavior. It's syntax is:
@@ -158,8 +160,6 @@ this program in an arbitrary behavior. It's syntax is:
   * @REPO is the repository name. E.g. '@ntrrg/my-image'. 
   * :TAG is the tag used for the Docker repository. E.g. ':0.1.0'
   * #GIT_REF is the Git reference used as working tree. E.g. '#v0.1.0'
-
-  Note: build instructions only work for Dockerfiles.
 
 If just PATH is given, the Dockerfile directory name will be used as repository
 name and 'latest' as tag. Here is a list of ways to override this behavior (in

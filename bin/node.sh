@@ -85,12 +85,14 @@ get_latest_release() {
 }
 
 show_help() {
-  cat <<EOF
-$0 - manage Node.js environments.
+  BIN_NAME="$(basename "$0")"
 
-Usage: \$($0 [RELEASE])
-   or: $0 -l
-   or: $0 -d RELEASE
+  cat <<EOF
+$BIN_NAME - manage Node.js environments.
+
+Usage: \$($BIN_NAME [RELEASE])
+   or: $BIN_NAME -l
+   or: $BIN_NAME -d RELEASE
 
 If no release is given, the latest release will be used.
 

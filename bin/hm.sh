@@ -3,10 +3,12 @@
 # Released under the MIT License
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  cat <<EOF
-$0 - make a memory measure human-readable.
+  BIN_NAME="$(basename "$0")"
 
-Usage: $0 [OPTIONS] AMOUNT
+  cat <<EOF
+$BIN_NAME - make a memory measure human-readable.
+
+Usage: $BIN_NAME [OPTIONS] AMOUNT
 
 Options:
   -h, --help            Show this help message

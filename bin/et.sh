@@ -3,10 +3,12 @@
 # Released under the MIT License
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  cat <<EOF
-$0 - run a command until it gets done.
+  BIN_NAME="$(basename "$0")"
 
-Usage: $0 [OPTIONS] COMMAND
+  cat <<EOF
+$BIN_NAME - run a command until it gets done.
+
+Usage: $BIN_NAME [OPTIONS] COMMAND
 
 Options:
   -h, --help         Show this help message

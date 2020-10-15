@@ -5,10 +5,12 @@
 IS_CONTAINER=${IS_CONTAINER:-0}
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  cat <<EOF
-$0 - detect if running in a container.
+  BIN_NAME="$(basename "$0")"
 
-Usage: $0 [OPTIONS]
+  cat <<EOF
+$BIN_NAME - check if the running system is a container.
+
+Usage: $BIN_NAME [OPTIONS]
 
 Options:
   -h, --help   Show this help message.
