@@ -58,11 +58,11 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
     apt-get install -y rfkill wireless-tools wpasupplicant
   fi
 
-  if [ "$IS_GUI" -eq 0 ]; then
-    if lspci | grep -q "Network controller"; then
-      apt-get install -y wicd-curses
-    fi
-  else
+  if lsmod | grep -q "bluetooth"; then
+    apt-get install -y bluez
+  fi
+
+  if [ "$IS_GUI" -ne 0 ]; then
     if lspci | grep -q "Network controller"; then
       apt-get install -y network-manager-gnome
     fi
