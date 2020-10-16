@@ -1,3 +1,5 @@
+FROM docker:19 as docker
+
 FROM alpine:edge
 ARG NEW_USER="ntrrg"
 ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/edge"
@@ -8,6 +10,7 @@ RUN \
   apk add sudo && \
   adduser -s "/bin/zsh" -D "$NEW_USER" && \
   echo "$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+COPY --from=docker /usr/local/bin/docker /usr/local/bin/docker
 WORKDIR "/tmp/post-install"
 COPY post-install-alpine.sh .
 RUN \
