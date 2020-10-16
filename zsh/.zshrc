@@ -31,8 +31,8 @@ hostinfo() {
         DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
       fi
 
-      if which lsb_release > /dev/null; then
-        OS="$OS - $(lsb_release -si) $(lsb_release -sr) ($(lsb_release -sc))"
+      if [ -e /etc/os-release ]; then
+        OS="$OS - $(source /etc/os-release; echo $PRETTY_NAME)"
       elif which getprop > /dev/null; then
         OS="$OS - Android $(getprop ro.build.version.release)"
       fi

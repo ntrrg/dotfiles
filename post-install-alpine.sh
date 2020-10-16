@@ -38,7 +38,8 @@ apk add \
   transmission-cli \
   unzip \
   wget \
-  zsh
+  zsh \
+  zsh-vcs
 
 if [ "$IS_HARDWARE" -ne 0 ]; then
   apk add \
