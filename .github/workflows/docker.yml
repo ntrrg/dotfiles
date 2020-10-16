@@ -24,3 +24,8 @@ jobs:
           docker build -t $DOCKER_IMAGE .
           docker push $DOCKER_IMAGE
 
+      - name: "Build and push 'alpine'"
+        run: |
+          docker build -t $DOCKER_IMAGE:alpine -f alpine.Dockerfile .
+          docker push $DOCKER_IMAGE:alpine
+
