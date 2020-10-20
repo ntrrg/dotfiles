@@ -5,6 +5,13 @@ timercommand=
 timerinfo=25m 0s
 is_countdown=true
 
+[G1]
+timername=Break
+time=300
+timercommand=
+timerinfo=5m 0s
+is_countdown=true
+
 [others]
 nowin_if_alarm=false
 selecting_starts=false
