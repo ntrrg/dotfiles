@@ -7,7 +7,8 @@ set -e
 command -v go > /dev/null
 
 PACKAGES="$(
-  go list "$(go env GOROOT)/..." 2> /dev/null |
+  cd $(go env "GOROOT") &&
+  go list "..." 2> /dev/null |
   grep -v "^_" |
   grep -v "^cmd/" |
   grep -v "^internal/" |
