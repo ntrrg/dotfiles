@@ -247,7 +247,7 @@ hi def link goStringFormat Identifier
 syn cluster goStringGroup contains=goEscapeChar,goEscapeO,goEscapeX,goEscapeU,goEscapeBigU,goEscapeInvalid,goStringFormat,goEscapeStringSQ
 
 syn region goLiteralStringR   start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=@goStringGroup,@Spell
-syn region goLiteralRawString start=+`+ end=+`+ contains=@Spell
+syn region goLiteralRawString start=+`+ end=+`+ contains=goStringFormat,@Spell
 
 hi def link goLiteralStringR   goLiteralString
 hi def link goLiteralRawString goLiteralString
