@@ -268,7 +268,7 @@ syn match goSpaceError display excludenl "\s\+$"
 hi def link goSpaceError Error
 
 " -----------------------------------------------------------------------------
-" Stdlib types (Go 1.14)
+" Stdlib types (Go 1.15)
 
 syn match goStdlibType /\<tar\.Format\>/
 syn match goStdlibType /\<tar\.Header\>/
@@ -286,11 +286,6 @@ syn match goStdlibType /\<bufio\.Reader\>/
 syn match goStdlibType /\<bufio\.Scanner\>/
 syn match goStdlibType /\<bufio\.SplitFunc\>/
 syn match goStdlibType /\<bufio\.Writer\>/
-syn match goStdlibType /\<builtin\.ComplexType\>/
-syn match goStdlibType /\<builtin\.FloatType\>/
-syn match goStdlibType /\<builtin\.IntegerType\>/
-syn match goStdlibType /\<builtin\.Type\>/
-syn match goStdlibType /\<builtin\.Type1\>/
 syn match goStdlibType /\<bytes\.Buffer\>/
 syn match goStdlibType /\<bytes\.Reader\>/
 syn match goStdlibType /\<bzip2\.StructuralError\>/
@@ -358,6 +353,7 @@ syn match goStdlibType /\<tls\.Config\>/
 syn match goStdlibType /\<tls\.Conn\>/
 syn match goStdlibType /\<tls\.ConnectionState\>/
 syn match goStdlibType /\<tls\.CurveID\>/
+syn match goStdlibType /\<tls\.Dialer\>/
 syn match goStdlibType /\<tls\.RecordHeaderError\>/
 syn match goStdlibType /\<tls\.RenegotiationSupport\>/
 syn match goStdlibType /\<tls\.SignatureScheme\>/
@@ -373,6 +369,7 @@ syn match goStdlibType /\<x509\.InvalidReason\>/
 syn match goStdlibType /\<x509\.KeyUsage\>/
 syn match goStdlibType /\<x509\.PEMCipher\>/
 syn match goStdlibType /\<x509\.PublicKeyAlgorithm\>/
+syn match goStdlibType /\<x509\.RevocationList\>/
 syn match goStdlibType /\<x509\.SignatureAlgorithm\>/
 syn match goStdlibType /\<x509\.SystemRootsError\>/
 syn match goStdlibType /\<x509\.UnhandledCriticalExtension\>/
@@ -441,6 +438,7 @@ syn match goStdlibType /\<driver\.StmtExecContext\>/
 syn match goStdlibType /\<driver\.StmtQueryContext\>/
 syn match goStdlibType /\<driver\.Tx\>/
 syn match goStdlibType /\<driver\.TxOptions\>/
+syn match goStdlibType /\<driver\.Validator\>/
 syn match goStdlibType /\<driver\.Value\>/
 syn match goStdlibType /\<driver\.ValueConverter\>/
 syn match goStdlibType /\<driver\.Valuer\>/
@@ -1255,7 +1253,7 @@ syn match goStdlibType /\<unsafe\.Pointer\>/
 hi def link goStdlibType Type
 
 " -----------------------------------------------------------------------------
-" Stdlib functions (Go 1.14)
+" Stdlib functions (Go 1.15)
 
 syn match goStdlibFunction /\<tar\.FileInfoHeader\>/
 syn match goStdlibFunction /\<tar\.NewReader\>/
@@ -1372,7 +1370,9 @@ syn match goStdlibFunction /\<dsa\.GenerateParameters\>/
 syn match goStdlibFunction /\<dsa\.Sign\>/
 syn match goStdlibFunction /\<dsa\.Verify\>/
 syn match goStdlibFunction /\<ecdsa\.Sign\>/
+syn match goStdlibFunction /\<ecdsa\.SignASN1\>/
 syn match goStdlibFunction /\<ecdsa\.Verify\>/
+syn match goStdlibFunction /\<ecdsa\.VerifyASN1\>/
 syn match goStdlibFunction /\<ecdsa\.GenerateKey\>/
 syn match goStdlibFunction /\<ed25519\.GenerateKey\>/
 syn match goStdlibFunction /\<ed25519\.Sign\>/
@@ -1380,7 +1380,9 @@ syn match goStdlibFunction /\<ed25519\.Verify\>/
 syn match goStdlibFunction /\<ed25519\.NewKeyFromSeed\>/
 syn match goStdlibFunction /\<elliptic\.GenerateKey\>/
 syn match goStdlibFunction /\<elliptic\.Marshal\>/
+syn match goStdlibFunction /\<elliptic\.MarshalCompressed\>/
 syn match goStdlibFunction /\<elliptic\.Unmarshal\>/
+syn match goStdlibFunction /\<elliptic\.UnmarshalCompressed\>/
 syn match goStdlibFunction /\<elliptic\.P224\>/
 syn match goStdlibFunction /\<elliptic\.P256\>/
 syn match goStdlibFunction /\<elliptic\.P384\>/
@@ -1438,6 +1440,7 @@ syn match goStdlibFunction /\<tls\.DialWithDialer\>/
 syn match goStdlibFunction /\<tls\.Server\>/
 syn match goStdlibFunction /\<x509\.CreateCertificate\>/
 syn match goStdlibFunction /\<x509\.CreateCertificateRequest\>/
+syn match goStdlibFunction /\<x509\.CreateRevocationList\>/
 syn match goStdlibFunction /\<x509\.DecryptPEMBlock\>/
 syn match goStdlibFunction /\<x509\.EncryptPEMBlock\>/
 syn match goStdlibFunction /\<x509\.IsEncryptedPEMBlock\>/
@@ -2391,6 +2394,7 @@ syn match goStdlibFunction /\<strconv\.AppendUint\>/
 syn match goStdlibFunction /\<strconv\.Atoi\>/
 syn match goStdlibFunction /\<strconv\.CanBackquote\>/
 syn match goStdlibFunction /\<strconv\.FormatBool\>/
+syn match goStdlibFunction /\<strconv\.FormatComplex\>/
 syn match goStdlibFunction /\<strconv\.FormatFloat\>/
 syn match goStdlibFunction /\<strconv\.FormatInt\>/
 syn match goStdlibFunction /\<strconv\.FormatUint\>/
@@ -2398,6 +2402,7 @@ syn match goStdlibFunction /\<strconv\.IsGraphic\>/
 syn match goStdlibFunction /\<strconv\.IsPrint\>/
 syn match goStdlibFunction /\<strconv\.Itoa\>/
 syn match goStdlibFunction /\<strconv\.ParseBool\>/
+syn match goStdlibFunction /\<strconv\.ParseComplex\>/
 syn match goStdlibFunction /\<strconv\.ParseFloat\>/
 syn match goStdlibFunction /\<strconv\.ParseInt\>/
 syn match goStdlibFunction /\<strconv\.ParseUint\>/
