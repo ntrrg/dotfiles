@@ -6,7 +6,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   BIN_NAME="$(basename "$0")"
 
   cat <<EOF
-$BIN_NAME - run a command until it gets done.
+$BIN_NAME - (Ensure Task) run a command until it gets done.
 
 Usage: $BIN_NAME [OPTIONS] COMMAND
 
