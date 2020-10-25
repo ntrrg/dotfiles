@@ -36,8 +36,8 @@
 
   **Normal mode:**
 
-  * <kbd>[</kbd> + <kbd>q</kbd> -> `:cprev`
-  * <kbd>]</kbd> + <kbd>q</kbd> -> `:cnext`
-  * <kbd>[</kbd> + <kbd>Q</kbd> -> `:cfirst`
-  * <kbd>]</kbd> + <kbd>Q</kbd> -> `:clast`
+  * <kbd>[</kbd> + <kbd>q</kbd> -> `:cprev<CR>`
+  * <kbd>]</kbd> + <kbd>q</kbd> -> `:cnext<CR>`
+  * <kbd>[</kbd> + <kbd>Q</kbd> -> `:cfirst<CR>`
+  * <kbd>]</kbd> + <kbd>Q</kbd> -> `:clast<CR>`
 

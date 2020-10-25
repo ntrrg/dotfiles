@@ -103,10 +103,10 @@ set magic
 set backspace=indent,eol,start
 
 " Keys - vimgrep
-nnoremap [q :cprev
-nnoremap ]q :cnext
-nnoremap [Q :cfirst
-nnoremap ]Q :clast
+nnoremap [q :cprev<CR>
+nnoremap ]q :cnext<CR>
+nnoremap [Q :cfirst<CR>
+nnoremap ]Q :clast<CR>
 
 " Commands
 
