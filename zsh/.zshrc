@@ -146,7 +146,8 @@ bindkey "5D" backward-word
 bindkey "5C" forward-word
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
-bindkey "^F" history-incremental-search-forward
+bindkey "^R" history-incremental-pattern-search-backward
+bindkey "^F" history-incremental-pattern-search-forward
 bindkey "^U" backward-kill-line
 bindkey "${terminfo[kpp]}" up-line-or-search
 bindkey "${terminfo[knp]}" down-line-or-search

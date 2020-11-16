@@ -49,6 +49,13 @@
   * `Ctrl` + `F`: Incremental search forwards.
   * `Ctrl` + `U`: Remove all the characters before the cursor.
   * `Alt` + `H`: Open man page for the current command.
+
+  * `Ctrl` + `R`: Search backward in history for the given string (GLOB
+    patterns supported).
+
+  * `Ctrl` + `F`: Search forward in history for the given string (GLOB patterns
+    supported).
+
   * `Page Up`: Search up in history using the current characters.
   * `Page Down`: Search down in history using the current characters.
 
