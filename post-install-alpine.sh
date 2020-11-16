@@ -165,36 +165,7 @@ EOF
   # XFCE Theme
 
   chmod u+s "/usr/sbin/hddtemp"
-
-    # Materia
-
-  if [ ! -f "materia-gtk-theme-v20190315.tar.gz" ]; then
-    wget -O "materia-gtk-theme-v20190315.tar.gz" \
-      'https://github.com/nana-4/materia-theme/archive/v20190315.tar.gz'
-  fi
-
-  tar -xf "materia-gtk-theme-v20190315.tar.gz"
-  (cd "materia-theme-20190315" && "./install.sh")
-  rm -rf "materia-theme-20190315"
-
-    # Papirus
-
-  if [ ! -f "papirus-icon-theme-v20190817.tar.gz" ]; then
-    wget -O "papirus-icon-theme-v20190817.tar.gz" \
-      'https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/archive/20190817.tar.gz'
-  fi
-
-  tar -xf "papirus-icon-theme-v20190817.tar.gz"
-  (
-    cd "papirus-icon-theme-20190817"
-    cp -rf "Papirus" "ePapirus" "Papirus-Dark" "Papirus-Light" \
-      "/usr/share/icons/"
-    find "/usr/share/icons/" -name "*Papirus*" \
-      -exec cp "AUTHORS" "LICENSE" '{}' \;
-    find "/usr/share/icons/" -name "*Papirus*" \
-      -exec gtk-update-icon-cache -q '{}' \;
-  )
-  rm -rf "papirus-icon-theme-20190817"
+  apk add materia-gtk-theme papirus-icon-theme
 elif [ "$IS_GUI" -eq 0 ]; then
   # Vim
 
