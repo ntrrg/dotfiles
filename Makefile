@@ -13,8 +13,12 @@ bin:
 git:
 	cp -rpf git/.gitconfig "$$HOME/"
 
+.PHONY: gpg
+gpg:
+	cp -rpf gpg/.gnupg "$$HOME/"
+
 .PHONY: gui
-gui: xdg bin git templates vim xfce zsh
+gui: xdg bin git gpg templates vim xfce zsh
 
 .PHONY: templates
 templates:
@@ -22,7 +26,7 @@ templates:
 	find templates -type f -exec cp -f '{}' "$(templatesDir)" \;
 
 .PHONY: tui
-tui: bin git vim zsh
+tui: bin git gpg vim zsh
 
 .PHONY: vim
 vim:
