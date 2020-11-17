@@ -61,7 +61,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 
   if [ "$IS_GUI" -ne 0 ]; then
     if lspci | grep -q "Network controller"; then
-      apk add network-manager-gnome
+      apk add network-manager-applet
     fi
   fi
 fi
@@ -104,7 +104,7 @@ if [ "$IS_GUI" -ne 0 ]; then
   fi
 
   apk add fontconfig-dev freetype-dev libx11-dev libxext-dev libxft-dev \
-    make musl-dev ncurses-terminfo-base
+    make musl-dev ncurses ncurses-dev
   tar -xf "st-0.8.2.tar.gz"
 
   (
@@ -140,7 +140,7 @@ EOF
     wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
   fi
 
-  apk add gcc ncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev \
+  apk add gcc ncurses ncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev \
     make musl-dev
 
   tar -xf "vim-8.2.tar.bz2"
@@ -173,7 +173,7 @@ elif [ "$IS_GUI" -eq 0 ]; then
     wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
   fi
 
-  apk add gcc make musl-dev ncurses-dev
+  apk add gcc make musl-dev ncurses ncurses-dev
   tar -xf "vim-8.2.tar.bz2"
   (cd "vim82" && "./configure" && make && make install)
   rm -rf "vim82"
