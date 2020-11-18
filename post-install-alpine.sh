@@ -17,6 +17,7 @@ apk update
 apk upgrade
 
 apk add \
+  bash \
   bc \
   bzip2 \
   elinks \
@@ -24,10 +25,12 @@ apk add \
   htop \
   iftop \
   dhclient \
+  file \
+  fuse \
   gzip \
   jq \
   make \
-  man-pages \
+  mandoc \
   mosh \
   openssh \
   p7zip \
@@ -37,6 +40,7 @@ apk add \
   sshfs \
   transmission-cli \
   unzip \
+  util-linux \
   wget \
   zsh \
   zsh-vcs
@@ -52,7 +56,9 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
     usbutils
 
   if lspci | grep -q "Network controller"; then
-    apk add util-linux wireless-tools wpa_supplicant
+    apk add networkmanager wireless-tools wpa_supplicant
+    rc-update add networkmanager boot
+    rc-update add wpa_supplicant boot
   fi
 
   if lsmod | grep -q "bluetooth"; then
@@ -73,21 +79,42 @@ if [ "$IS_CONTAINER" -eq 0 ]; then
 fi
 
 if [ "$IS_GUI" -ne 0 ]; then
-  apk add \
-    chromium \
-    conky \
-    evince \
-    firefox \
-    gimp \
-    inkscape \
-    telegram-desktop \
-    transmission \
-    vlc \
-    xfce4
+  setup-xorg-base
 
   if [ "$IS_HARDWARE" -ne 0 ]; then
     apk add alsa-utils xcalib
   fi
+
+  apk add \
+    conky \
+    lightdm-gtk-greeter \
+    xdg-user-dirs \
+    xdg-utils \
+    xfce4 \
+    xfce4-notifyd \
+    xfce4-screensaver \
+    xfce4-screenshooter \
+    xfce4-taskmanager
+
+  apk add \
+    xfce4-pulseaudio-plugin \
+    xfce4-whiskermenu-plugin
+
+  apk add \
+    chromium \
+    evince \
+    firefox \
+    flatpak \
+    gimp \
+    inkscape \
+    telegram-desktop \
+    transmission \
+    vlc
+
+  flatpak remote-add --if-not-exists \
+    flathub https://flathub.org/repo/flathub.flatpakrepo || true
+
+  rc-update add lightdm
 
   # ST
 
@@ -164,8 +191,35 @@ EOF
 
   # XFCE Theme
 
-  chmod u+s "/usr/sbin/hddtemp"
-  apk add materia-gtk-theme papirus-icon-theme
+    # Materia
+
+  if [ ! -f "materia-gtk-theme-v20190315.tar.gz" ]; then
+    wget -O "materia-gtk-theme-v20190315.tar.gz" \
+      'https://github.com/nana-4/materia-theme/archive/v20190315.tar.gz'
+  fi
+
+  tar -xf "materia-gtk-theme-v20190315.tar.gz"
+  (cd "materia-theme-20190315" && "./install.sh")
+  rm -rf "materia-theme-20190315"
+
+    # Papirus
+
+  if [ ! -f "papirus-icon-theme-v20190817.tar.gz" ]; then
+    wget -O "papirus-icon-theme-v20190817.tar.gz" \
+      'https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/archive/20190817.tar.gz'
+  fi
+
+  tar -xf "papirus-icon-theme-v20190817.tar.gz"
+  (
+    cd "papirus-icon-theme-20190817"
+    cp -rf "Papirus" "ePapirus" "Papirus-Dark" "Papirus-Light" \
+      "/usr/share/icons/"
+    find "/usr/share/icons/" -name "*Papirus*" \
+      -exec cp "AUTHORS" "LICENSE" '{}' \;
+    find "/usr/share/icons/" -name "*Papirus*" \
+      -exec gtk-update-icon-cache -q '{}' \;
+  )
+  rm -rf "papirus-icon-theme-20190817"
 elif [ "$IS_GUI" -eq 0 ]; then
   # Vim
 
