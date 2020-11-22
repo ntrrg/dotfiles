@@ -6,12 +6,12 @@ all: gui
 
 .PHONY: bin
 bin:
-	mkdir -p "$$HOME/.local/bin"
+	mkdir -p "$$HOME/.local/bin/"
 	cp -pf $(binaries) "$$HOME/.local/bin/"
 
 .PHONY: fonts
 fonts:
-	mkdir -p "$$HOME/.local/share"
+	mkdir -p "$$HOME/.local/share/"
 	cp -rpf fonts "$$HOME/.local/share/"
 	fc-cache -f
 
@@ -40,13 +40,15 @@ vim:
 
 .PHONY: xdg
 xdg:
-	mkdir -p "$$HOME/.config"
+	mkdir -p "$$HOME/.config/"
 	cp -pf xdg/user-dirs.dirs xdg/user-dirs.locale "$$HOME/.config/"
 
 .PHONY: xfce
 xfce:
-	mkdir -p "$$HOME/.config"
+	mkdir -p "$$HOME/.config/"
 	cp -rpf xfce/xfce4 "$$HOME/.config/"
+	mkdir -p "$$HOME/.local/share/"
+	cp -rpf xfce/themes "$$HOME/.local/share/"
 
 .PHONY: zsh
 zsh:
