@@ -16,7 +16,7 @@ main() {
       ;;
 
     * )
-      echo $(((BRIGHTNESS * 100 / MAX_BRIGHTNESS + 1)))
+      echo $(((BRIGHTNESS * 100 / MAX_BRIGHTNESS)))
       ;;
   esac
 }
@@ -36,12 +36,20 @@ Options:
   -s, --set=VALUE   Set screen brightnes to given percent
   -h, --help        Show this help message
 
+Environment variables:
+  * 'BRIGHTNESS_DIR' points to the brightness control directory, useful for
+    avoiding ambiguity between video controllers. ($BRIGHTNESS_DIR)
+
 Copyright (c) 2020 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
 }
 
-BRIGHTNESS_DIR="$(find /sys/class/backlight/ -mindepth 1 -maxdepth 1)"
+BRIGHTNESS_DIR="${BRIGHTNESS_DIR:-$(
+  find "/sys/class/backlight/" -mindepth 1 -maxdepth 1 |
+  head -n 1
+)}"
+
 BRIGHTNESS_FILE="$BRIGHTNESS_DIR/brightness"
 BRIGHTNESS="$(cat "$BRIGHTNESS_FILE")"
 MAX_BRIGHTNESS="$(cat "$BRIGHTNESS_DIR/max_brightness")"
