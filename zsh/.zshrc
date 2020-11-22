@@ -26,7 +26,7 @@ hostinfo() {
 
     * )
       if [ -e /sys/class/dmi/id/product_name ]; then
-        DEVICE="$(cat /sys/class/dmi/id/chassis_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
+        DEVICE="$(cat /sys/class/dmi/id/sys_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
       elif which getprop > /dev/null; then
         DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
       fi
