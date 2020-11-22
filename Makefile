@@ -44,7 +44,7 @@ xfce:
 
 .PHONY: zsh
 zsh:
-	cp -rpf zsh/.zshenv zsh/.zshrc "$$HOME/"
+	cp -rpf zsh/.zprofile zsh/.zshenv zsh/.zshrc "$$HOME/"
 
 # Development
 
