@@ -9,6 +9,12 @@ bin:
 	mkdir -p "$$HOME/.local/bin"
 	cp -pf $(binaries) "$$HOME/.local/bin/"
 
+.PHONY: fonts
+fonts:
+	mkdir -p "$$HOME/.local/share"
+	cp -rpf fonts "$$HOME/.local/share/"
+	fc-cache -f
+
 .PHONY: git
 git:
 	cp -rpf git/.gitconfig "$$HOME/"
