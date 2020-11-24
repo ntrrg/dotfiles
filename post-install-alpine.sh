@@ -38,6 +38,7 @@ apk add \
   rsync \
   screen \
   sshfs \
+  strace \
   transmission-cli \
   unzip \
   util-linux \
@@ -49,26 +50,21 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
   apk add \
     btrfs-progs \
     cryptsetup \
+    dmidecode \
     dosfstools \
     lvm2 \
     ntfs-3g \
     pciutils \
+    smartmontools \
     usbutils
 
   if lspci | grep -q "Network controller"; then
-    apk add networkmanager wireless-tools wpa_supplicant
-    rc-update add networkmanager boot
+    apk add wireless-tools wpa_supplicant
     rc-update add wpa_supplicant boot
   fi
 
   if lsmod | grep -q "bluetooth"; then
     apk add bluez
-  fi
-
-  if [ "$IS_GUI" -ne 0 ]; then
-    if lspci | grep -q "Network controller"; then
-      apk add network-manager-applet
-    fi
   fi
 fi
 
@@ -82,11 +78,12 @@ if [ "$IS_GUI" -ne 0 ]; then
   setup-xorg-base
 
   if [ "$IS_HARDWARE" -ne 0 ]; then
-    apk add alsa-utils xcalib
+    apk add alsa-utils xcalib xrandr
+    chmod u+s "/usr/sbin/dmidecode"
+    chmod u+s "/usr/sbin/smartctl"
   fi
 
   apk add \
-    conky \
     lightdm-gtk-greeter \
     xdg-user-dirs \
     xdg-utils \
@@ -98,14 +95,19 @@ if [ "$IS_GUI" -ne 0 ]; then
 
   apk add \
     xfce4-pulseaudio-plugin \
+    xfce4-timer-plugin \
     xfce4-whiskermenu-plugin
+
+  rc-update add lightdm
 
   apk add \
     chromium \
+    conky \
     evince \
     firefox \
     flatpak \
     gimp \
+    midori \
     inkscape \
     telegram-desktop \
     transmission \
@@ -113,8 +115,6 @@ if [ "$IS_GUI" -ne 0 ]; then
 
   flatpak remote-add --if-not-exists \
     flathub https://flathub.org/repo/flathub.flatpakrepo || true
-
-  rc-update add lightdm
 
   # ST
 
