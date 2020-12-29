@@ -2,12 +2,14 @@
 # Copyright (c) 2019 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
+set -e
+
 IS_CONTAINER=${IS_CONTAINER:-0}
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  BIN_NAME="$(basename "$0")"
+	BIN_NAME="$(basename "$0")"
 
-  cat <<EOF
+	cat << EOF
 $BIN_NAME - check if the running system is a container.
 
 Usage: $BIN_NAME [OPTIONS]
@@ -26,15 +28,14 @@ EOF
 fi
 
 if [ "$1" = "-y" ] || [ "$1" = "--yes" ]; then
-  IS_CONTAINER=1;
+	IS_CONTAINER=1
 fi
 
 if [ "$IS_CONTAINER" -ne 0 ] ||
-    grep -q "docker/" < /proc/self/cgroup||
-    grep -q "kubepods/" < /proc/self/cgroup ||
-    ischroot; then
-  exit 0
+	cat /proc/self/cgroup | grep -q "/docker" ||
+	cat /proc/self/cgroup | grep -q "/kubepods" ||
+	ischroot; then
+	exit 0
 fi
 
 exit 1
-

@@ -2,204 +2,216 @@
 # Copyright (c) 2018 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eu
 
-main() {
-  OPTS="c:g:hp:rt:"
-  LOPTS="config:,git-ref:,help,prefix:,push,recursive,tag:"
+CONFIGFILE=".docker-build"
+DOCKERFILE="Dockerfile"
+DRY_RUN=0
+GIT_REF=""
+PUSH=0
+RECURSIVE=0
+REPO_PREFIX="${REPO_PREFIX:-""}"
+REPO_SUFFIX="${REPO_SUFFIX:-""}"
+TAG="${TAG:-""}"
+TAG_PREFIX="${TAG_PREFIX:-""}"
+TAG_SUFFIX="${TAG_SUFFIX:-""}"
 
-  eval set -- "$(
-    getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
-  )"
+_main() {
+	OPTS="c:g:hnp:rt:"
+	LOPTS="config:,dry-run,git-ref:,help,prefix:,push,recursive,tag:"
 
-  while [ $# -gt 0 ]; do
-    case $1 in
-      -h | --help )
-        show_help
-        return
-        ;;
+	eval set -- "$(
+		getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
+	)"
 
-      -c | --config )
-        CONFIGFILE="$2"
-        shift
-        ;;
+	while [ $# -gt 0 ]; do
+		case $1 in
+		-c | --config)
+			CONFIGFILE="$2"
+			shift
+			;;
 
-      -f | --file )
-        DOCKERFILE="$2"
-        shift
-        ;;
+		-f | --file)
+			DOCKERFILE="$2"
+			shift
+			;;
 
-      -g | --git-ref )
-        GIT_REF="$2"
-        shift
-        ;;
+		-g | --git-ref)
+			GIT_REF="$2"
+			shift
+			;;
 
-      -p | --prefix )
-        PREFIX="$2"
-        shift
-        ;;
+		-h | --help)
+			_show_help
+			return
+			;;
 
-      --push )
-        PUSH=1
-        ;;
+		-n | --dry-run)
+			DRY_RUN=1
+			;;
 
-      -r | --recursive )
-        RECURSIVE=1
-        ;;
+		-p | --push)
+			PUSH=1
+			;;
 
-      -t | --tag )
-        TAG="$2"
-        shift
-        ;;
+		-r | --recursive)
+			RECURSIVE=1
+			;;
 
-      -- )
-        shift
-        break
-        ;;
-    esac
+		-t | --tag)
+			TAG="$2"
+			shift
+			;;
 
-    shift
-  done
+		--)
+			shift
+			break
+			;;
+		esac
 
-  if [ $# -eq 0 ]; then
-    eval set -- "$PWD"
-  fi
+		shift
+	done
 
-  for BI in "$@"; do
-    build "$BI"
-  done
+	if [ $# -eq 0 ]; then
+		eval set -- "."
+	fi
+
+	for BI in "$@"; do
+		if [ ! -d "$BI" ]; then
+			_build "$BI"
+			continue
+		fi
+
+		if [ $RECURSIVE -ne 0 ]; then
+			FILES="$(find "$BI" -name "$DOCKERFILE" -type f)"
+
+			for BI in $FILES; do
+				_build "$BI"
+			done
+
+			continue
+		fi
+
+		if [ -f "$BI/$CONFIGFILE" ]; then
+			for BI in $(cat "$BI/$CONFIGFILE" | xargs -n 1 printf "$BI/%s\n"); do
+				_build "$BI"
+			done
+
+			continue
+		fi
+
+		_build "$BI/$DOCKERFILE"
+	done
 }
 
-build() {
-  if [ -d "$1" ]; then
-    if [ $RECURSIVE -eq 0 ]; then
-      if [ -f "$1/$CONFIGFILE" ]; then
-        # shellcheck disable=SC2013
-        for BI in $(cat "$1/$CONFIGFILE"); do
-          build "$(readlink --canonicalize-existing "$1")/$BI"
-        done
-      elif [ -f "$1/$DOCKERFILE" ]; then
-        build "$(readlink --canonicalize-existing "$1")/$DOCKERFILE"
-      fi
-    else
-      FILES="$(find "$1" -name "$DOCKERFILE")"
+_build() {
+	BI="$1"
+	BI_ORIG="$BI"
 
-      for BI in $FILES; do
-        build "$BI"
-      done
-    fi
-  else
-    BI="$1"
-    TMP_BI="$BI"
+	BI_GIT_REF="${GIT_REF:-"$(echo "$BI" | cut -sd '#' -f 2)"}"
+	BI="$(echo "$BI" | cut -d '#' -f 1)"
 
-    # shellcheck disable=SC2155
-    BI_GIT_REF="$(echo "$TMP_BI" | cut -sd '#' -f 2)"
-    if [ -z "$BI_GIT_REF" ]; then
-      BI_GIT_REF="$GIT_REF"
-    fi
+	BI_TAG="$TAG_PREFIX${TAG:-"$(echo "$BI" | cut -sd ':' -f 2)"}$TAG_SUFFIX"
+	BI_TAG="${BI_TAG:-"latest"}"
+	BI="$(echo "$BI" | cut -d ':' -f 1)"
 
-    TMP_BI="$(echo "$TMP_BI" | cut -d '#' -f 1)"
+	BI_REPO="$(echo "$BI" | cut -sd '@' -f 2)"
+	BI_PATH="$(echo "$BI" | cut -d '@' -f 1)"
+	BI_CTX="$(dirname "$(realpath "$BI_PATH")")"
+	BI_REPO="$REPO_PREFIX${BI_REPO:-"$(basename "$BI_CTX")"}$REPO_SUFFIX"
 
-    # shellcheck disable=SC2155
-    BI_TAG="$(echo "$TMP_BI" | cut -sd ':' -f 2)"
-    if [ -z "$BI_TAG" ]; then
-      BI_TAG="$TAG"
-    fi
+	BI_IMAGE="$BI_REPO:$BI_TAG"
+	_log "Building '$BI_IMAGE'.. ($BI_ORIG)"
 
-    TMP_BI="$(echo "$TMP_BI" | cut -d ':' -f 1)"
+	if [ -n "$BI_GIT_REF" ]; then
+		if [ -n "$(git -C "$BI_CTX" status --porcelain)" ]; then
+			_log_err "the git working directory '$BI_CTX' is not clean\n"
+			git -C "$BI_CTX" status > /dev/stderr
+			return 1
+		fi
 
-    # shellcheck disable=SC2155
-    BI_REPO="$(echo "$TMP_BI" | cut -sd '@' -f 2)"
-    # shellcheck disable=SC2155
-    BI_DOCKERFILE="$(echo "$TMP_BI" | cut -d '@' -f 1)"
-    # shellcheck disable=SC2155
-    BI_CTX="$(dirname "$BI_DOCKERFILE")"
+		_run git -C "$BI_CTX" checkout "$BI_GIT_REF"
+	fi
 
-    if [ -z "$BI_REPO" ]; then
-      BI_REPO="$(basename "$BI_CTX")"
-    fi
+	_run docker build -t "$BI_IMAGE" -f "$BI_PATH" "$BI_CTX"
 
-    # shellcheck disable=SC2155
-    BI_IMAGE="$PREFIX$BI_REPO:$BI_TAG"
-
-    if [ -n "$BI_GIT_REF" ]; then
-      if [ -n "$(git -C "$BI_CTX" status --porcelain)" ]; then
-        echo "the git working directory '$BI_CTX' is not clean"
-        echo
-        git -C "$BI_CTX" status
-        return 1
-      fi
-
-      git -C "$BI_CTX" checkout "$BI_GIT_REF"
-    fi
-
-    docker build -t "$BI_IMAGE" -f "$BI_DOCKERFILE" "$BI_CTX"
-
-    if [ $PUSH -ne 0 ]; then
-      docker push "$BI_IMAGE"
-    fi
-  fi
+	if [ $PUSH -ne 0 ]; then
+		_run docker push "$BI_IMAGE"
+	fi
 }
 
-show_help() {
-  BIN_NAME="$(basename "$0")"
+_log() {
+	printf "$@\n"
+}
 
-  cat <<EOF
-$BIN_NAME - Dockerfile build helper. It can build multiple Dockerfiles
-with a single command.
+_log_err() {
+	_log "$@" > /dev/stderr
+}
 
-Usage: $BIN_NAME [OPTIONS] [PATH | BUILD_INSTRUCTION]...
+_run() {
+	if [ "$DRY_RUN" -ne 0 ]; then
+		echo "\$ $@"
+		return
+	fi
+
+	"$@"
+}
+
+_show_help() {
+	BIN_NAME="$(basename "$0")"
+
+	cat << EOF
+$BIN_NAME - Dockerfile build helper.
+
+Usage: $BIN_NAME [OPTIONS] [DOCKERFILE | BUILD_INSTRUCTION]...
 
 A build instruction is a sentence that contains the needed information to run
-this program in an arbitrary behavior. It's syntax is:
+this program with arbitrary behavior. It's syntax is:
 
   PATH[@REPO][:TAG][#GIT_REF]
 
   * PATH is a Dockerfile path. It can't content at symbols (@), colons (:) or
     hashes (#). E.g. '~/my-image/Dockerfile'.
-  * @REPO is the repository name. E.g. '@ntrrg/my-image'. 
-  * :TAG is the tag used for the Docker repository. E.g. ':0.1.0'
-  * #GIT_REF is the Git reference used as working tree. E.g. '#v0.1.0'
+  * @REPO is the repository name. E.g. '@ntrrg/my-image'. Defaults to the name
+    of the directory containing the Dockerfile. 
+  * :TAG is the tag used for the Docker repository. E.g. ':0.1.0'. Defaults to
+    'latest'.
+  * #GIT_REF is the Git reference used as working tree. E.g. '#v0.1.0'.
+    Defaults to the current working tree.
 
-If just PATH is given, the Dockerfile directory name will be used as repository
-name and 'latest' as tag. Here is a list of ways to override this behavior (in
-order of precedence):
-  * 'PREFIX' and 'TAG' environment variables.
-  * '-p, --prefix' and '-t/--tag' flags.
-  * Specific build instruction or configuration file.
+Additionally, environment variables and flags may be used. This program
+follows this order:
+
+  1. Read build instructions (from arguments or configuration file).
+  2. Read environment variables.
+  3. Read flags.
 
 Options:
-  -c, --config=NAME     Set the configuration file name ($CONFIGFILE)
-  -f, --file=NAME       Set the Dockerfile name ($DOCKERFILE)
-  -g, --git-ref=REF     Use REF as Git working tree
-  -h, --help            Show this help message
-  -p, --prefix=PREFIX   Prepend PREFIX to the Docker repository name
-      --push            Push the image after building it
-  -r, --recursive       Look for Dockerfiles in the given directories
-                        recursively, this will ignore any configuration file
-  -t, --tag=TAG         Use TAG as Docker repository tag ($TAG)
+  -c, --config=FILE   Use FILE as configuration file ($CONFIGFILE)
+  -f, --file=FILE     Use FILE as default Dockerfile name ($DOCKERFILE)
+  -g, --git-ref=REF   Use REF as Git working tree
+  -h, --help          Show this help message
+  -n, --dry-run       Print what will be done, without doing it
+  -p, --push          Push the image after building it
+  -r, --recursive     Look for Dockerfiles in the given directories
+                      recursively, this will ignore any configuration file
+  -t, --tag=TAG       Use TAG as Docker repository tag (latest)
+
+Environment variables:
+  * 'REPO_PREFIX' prepends its value to the repository name.
+  * 'REPO_SUFFIX' appends its value to the repository name.
+  * 'TAG' same as '-t, --tag' flat.
+  * 'TAG_PREFIX' prepends its value to the Docker tag.
+  * 'TAG_SUFFIX' appends its value to the Docker tag.
 
 Configuration file syntax:
   A configuration file is a line-separated list of build instructions. That
-  means that a single Dockerfile could be built multiple times with just one
-  call of this program. This only works for directories.
-
-Environment variables:
-  * 'PREFIX' prependeds its value to the Docker repository name.
-  * 'TAG' is the default Docker repository tag. ($TAG)
+  means that a Dockerfile could be built multiple times with a single call of
+  this program. Configuration files only work for directories.
 
 Copyright (c) 2018 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
 }
 
-CONFIGFILE=".docker-build"
-DOCKERFILE="Dockerfile"
-GIT_REF=""
-PUSH=0
-PREFIX="${PREFIX:-}"
-RECURSIVE=0
-TAG="${TAG:-latest}"
-
-main "$@"
-
+_main "$@"

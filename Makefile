@@ -1,19 +1,17 @@
 binaries := $(shell find bin -type f -executable -exec echo '{}' \+)
-templatesDir := $(shell xdg-user-dir "TEMPLATES")
 
 .PHONY: all
 all: gui
 
+.PHONY: abuild
+abuild:
+	cp -rf alpine/.abuild "$$HOME/"
+	chmod -R a=,u=rwX "$$HOME/.abuild"
+
 .PHONY: bin
 bin:
-	mkdir -p "$$HOME/.local/bin/"
+	mkdir -p "$$HOME/.local/bin"
 	cp -pf $(binaries) "$$HOME/.local/bin/"
-
-.PHONY: fonts
-fonts:
-	mkdir -p "$$HOME/.local/share/"
-	cp -rpf fonts "$$HOME/.local/share/"
-	fc-cache -f
 
 .PHONY: git
 git:
@@ -21,40 +19,62 @@ git:
 
 .PHONY: gpg
 gpg:
-	cp -rpf gpg/.gnupg "$$HOME/"
+	cp -rf gpg/.gnupg "$$HOME/"
+	chmod -R a=,u=rwX "$$HOME/.gnupg"
 
-.PHONY: gui
-gui: xdg bin git gpg templates vim xfce zsh
-
-.PHONY: templates
-templates:
-	mkdir -p "$(templatesDir)"
-	find templates -type f -exec cp -f '{}' "$(templatesDir)" \;
+.PHONY: ssh
+ssh:
+	mkdir -p "$$HOME/.ssh"
+	chmod -R a=,u=rwX "$$HOME/.ssh"
 
 .PHONY: tui
-tui: bin git gpg vim zsh
+tui: bin git gpg ssh vim zsh
 
 .PHONY: vim
 vim:
 	cp -rpf vim/.vim vim/.vimrc "$$HOME/"
 
-.PHONY: xdg
-xdg:
-	mkdir -p "$$HOME/.config/"
-	cp -pf xdg/user-dirs.dirs xdg/user-dirs.locale "$$HOME/.config/"
-
-.PHONY: xfce
-xfce:
-	mkdir -p "$$HOME/.config/"
-	cp -rpf xfce/xfce4 "$$HOME/.config/"
-	mkdir -p "$$HOME/.local/share/"
-	cp -rpf xfce/themes "$$HOME/.local/share/"
-
 .PHONY: zsh
 zsh:
 	cp -rpf zsh/.zprofile zsh/.zshenv zsh/.zshrc "$$HOME/"
 
-# Development
+# GUI
+
+.PHONY: conky
+conky:
+	mkdir -p "$$HOME/.config"
+	cp -rpf desktop/conky "$$HOME/.config/"
+
+.PHONY: fonts
+fonts:
+	mkdir -p "$$HOME/.local/share/"
+	cp -rpf desktop/fonts "$$HOME/.local/share/"
+	fc-cache -f
+
+.PHONY: gui
+gui: tui fonts conky xfce
+
+.PHONY: xdg
+xdg:
+	mkdir -p "$$HOME/Desktop" "$$HOME/Downloads" "$$HOME/Templates" \
+		"$$HOME/Public" "$$HOME/Documents" "$$HOME/Music" "$$HOME/Pictures" \
+		"$$HOME/Videos"
+	mkdir -p "$$HOME/.config"
+	cp -pf desktop/xdg/user-dirs.dirs desktop/xdg/user-dirs.locale \
+		"$$HOME/.config/"
+
+.PHONY: xfce
+xfce:
+	# XFWM theme
+	mkdir -p "$$HOME/.local/share"
+	cp -rpf desktop/themes "$$HOME/.local/share/"
+	# XFCE
+	mkdir -p "$$HOME/.config"
+	cp -rpf desktop/xfce4 "$$HOME/.config/"
+
+###############
+# Development #
+###############
 
 pish := $(shell find . -maxdepth 1 -name "post-install*.sh" -exec echo '{}' \+)
 
@@ -63,5 +83,5 @@ ci: lint
 
 .PHONY: lint
 lint:
-	shellcheck -s sh $(binaries) $(pish)
+	shfmt -s -p -i 0 -sr -kp -d $(binaries) $(pish)
 

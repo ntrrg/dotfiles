@@ -2,116 +2,128 @@
 # Copyright (c) 2020 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eu
 
-main() {
-  OPTS="fhist"
-  LOPTS="funcs,help,ifaces,short,types"
+command -v go > /dev/null ||
+	echo "can't find the Go toolchain" > /dev/stderr
 
-  eval set -- "$(
-    getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
-  )"
+PRINT_TYPES=0
+PRINT_IFACES=0
+PRINT_FUNCS=0
+SHORT=0
 
-  while [ $# -gt 0 ]; do
-    case $1 in
-      -h | --help )
-        show_help
-        return
-        ;;
+_main() {
+	OPTS="fhist"
+	LOPTS="funcs,help,ifaces,short,types"
 
-      -f | --funcs )
-        PRINT_TYPES=0
-        PRINT_IFACES=0
-        PRINT_FUNCS=1
-        ;;
+	eval set -- "$(
+		getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
+	)"
 
-      -i | --ifaces )
-        PRINT_TYPES=1
-        PRINT_IFACES=1
-        PRINT_FUNCS=0
-        ;;
+	while [ $# -gt 0 ]; do
+		case $1 in
+		-h | --help)
+			_show_help
+			return
+			;;
 
-      -t | --types )
-        PRINT_TYPES=1
-        PRINT_IFACES=0
-        PRINT_FUNCS=0
-        ;;
+		-f | --funcs)
+			PRINT_TYPES=0
+			PRINT_IFACES=0
+			PRINT_FUNCS=1
+			;;
 
-      -s | --short )
-        SHORT=1
-        ;;
+		-i | --ifaces)
+			PRINT_TYPES=1
+			PRINT_IFACES=1
+			PRINT_FUNCS=0
+			;;
 
-      -- )
-        shift
-        break
-        ;;
-    esac
+		-t | --types)
+			PRINT_TYPES=1
+			PRINT_IFACES=0
+			PRINT_FUNCS=0
+			;;
 
-    shift
-  done
+		-s | --short)
+			SHORT=1
+			;;
 
-  if [ $# -eq 0 ]; then
-    PACKAGES="$(
-      cd "$(go env "GOROOT")" &&
-      go list "..." |
-      grep -v "^_" |
-      grep -v "^cmd/" |
-      grep -v "^internal/" |
-      grep -v "/internal$" |
-      grep -v "/internal/" |
-      grep -v "^golang.org/"
-    )"
-  fi
+		--)
+			shift
+			break
+			;;
+		esac
 
-  for PACKAGE in ${PACKAGES:-$@}; do
-    IDENTIFIERS="$(
-      go doc -short "$PACKAGE" |
-      sed "s/^[[:space:]]*//g" |
-      grep -v "^const" |
-      grep -v "^var"
-    )"
+		shift
+	done
 
-    if [ "$PRINT_TYPES" -eq 1 ]; then
-      IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^type ")"
+	if [ $# -eq 0 ]; then
+		cd "$(go env "GOROOT")"
 
-      if [ "$PRINT_IFACES" -eq 1 ]; then
-        IDENTIFIERS="$(echo "$IDENTIFIERS" | grep " interface{ ... }$")"
-      fi
-    elif [ "$PRINT_FUNCS" -eq 1 ]; then
-      IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^func ")"
-    fi
+		PACKAGES="$(
+			go list "..." |
+				grep -v "^_" |
+				grep -v "^cmd/" |
+				grep -v "^internal/" |
+				grep -v "/internal$" |
+				grep -v "/internal/" |
+				grep -v "^golang.org/"
+		)"
 
-    IDENTIFIERS="$(echo "$IDENTIFIERS" | sed "s/ /%20/g")"
+		cd -
+	fi
 
-    for IDENTIFIER in $IDENTIFIERS; do
-      if echo "$IDENTIFIER" | grep -q "^type"; then
-        IDENTIFIER="$(
-          echo "$IDENTIFIER" |
-          sed "s/%20/ /g" |
-          cut -d " " -f 2
-        )"
-      elif echo "$IDENTIFIER" | grep -q "^func"; then
-        IDENTIFIER="$(
-          echo "$IDENTIFIER" |
-          sed "s/%20/ /g" |
-          cut -d " " -f 2 |
-          cut -d "(" -f 1
-        )"
-      fi
+	for PACKAGE in ${PACKAGES:-$@}; do
+		IDENTIFIERS="$(
+			go doc -short "$PACKAGE" |
+				sed "s/^[[:space:]]*//g" |
+				grep -v "^const" |
+				grep -v "^var" |
+				tee
+		)"
 
-      if [ "$SHORT" -eq 1 ]; then
-        echo "$(basename "$PACKAGE").$IDENTIFIER"
-      else
-        echo "$PACKAGE.$IDENTIFIER"
-      fi
-    done
-  done
+		if [ "$PRINT_TYPES" -eq 1 ]; then
+			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^type ")"
+
+			if [ "$PRINT_IFACES" -eq 1 ]; then
+				IDENTIFIERS="$(echo "$IDENTIFIERS" | grep " interface{ ... }$")"
+			fi
+		elif [ "$PRINT_FUNCS" -eq 1 ]; then
+			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^func ")"
+		fi
+
+		IDENTIFIERS="$(echo "$IDENTIFIERS" | sed "s/ /%20/g")"
+
+		for IDENTIFIER in $IDENTIFIERS; do
+			if echo "$IDENTIFIER" | grep -q "^type"; then
+				IDENTIFIER="$(
+					echo "$IDENTIFIER" |
+						sed "s/%20/ /g" |
+						cut -d " " -f 2
+				)"
+			elif echo "$IDENTIFIER" | grep -q "^func"; then
+				IDENTIFIER="$(
+					echo "$IDENTIFIER" |
+						sed "s/%20/ /g" |
+						cut -d " " -f 2 |
+						cut -d "(" -f 1
+				)"
+			fi
+
+			if [ "$SHORT" -eq 1 ]; then
+				echo "$(basename "$PACKAGE").$IDENTIFIER"
+			else
+				echo "$PACKAGE.$IDENTIFIER"
+			fi
+		done
+	done
 }
 
-show_help() {
-  BIN_NAME="$(basename "$0")"
+_show_help() {
+	BIN_NAME="$(basename "$0")"
 
-  cat <<EOF
+	cat << EOF
 $BIN_NAME - Print exported data types and functions from the given Go package
 (or the standard library if none).
 
@@ -129,12 +141,4 @@ Released under the MIT License
 EOF
 }
 
-command -v go > /dev/null
-
-PRINT_TYPES=0
-PRINT_IFACES=0
-PRINT_FUNCS=0
-SHORT=0
- 
-main "$@"
-
+_main "$@"

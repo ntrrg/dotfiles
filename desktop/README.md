@@ -1,0 +1,68 @@
+<p align="center">
+  <img src="screenshots/desktop.png"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/windows.png"/>
+</p>
+
+## Requirements
+
+* [XFCE](https://xfce.org) >= 4.16
+* [Conky](https://github.com/brndnmtthws/conky) >= 1.11
+* [Material Design Icons Desktop TTF](https://github.com/Templarian/MaterialDesign-Font)
+* [Materia GTK theme](https://github.com/nana-4/materia-theme)
+* [Papirus icon theme](https://git.io/papirus-icon-theme)
+
+## Features
+
+* Simple smart-hide panel.
+
+  1. Open applications.
+  2. Status area.
+  3. Notification area.
+  4. Audio controls.
+  5. Clock.
+  6. Timer.
+
+* No title bars and desktop margin.
+
+* Keyboard shortcuts.
+
+  * <kbd>⌘</kbd> + <kbd>I</kbd> -> Invert screen colors (`xcalib`).
+  * <kbd>⌘</kbd> + <kbd>K</kbd> -> Start `xkill`.
+  * <kbd>⌘</kbd> + <kbd>P</kbd> -> Open display settings.
+  * <kbd>⌘</kbd> + <kbd>L</kbd> -> Lock screen.
+  * <kbd>⌘</kbd> + <kbd>Delete</kbd> -> Suspend.
+
+  **Applications:**
+
+  * <kbd>⌘</kbd> + <kbd>Space</kbd> -> Open application launcher.
+  * <kbd>⌘</kbd> + <kbd>F</kbd> -> Open default file manager.
+  * <kbd>⌘</kbd> + <kbd>M</kbd> -> Open Telegram.
+  * <kbd>⌘</kbd> + <kbd>T</kbd> -> Open default terminal.
+  * <kbd>⌘</kbd> + <kbd>W</kbd> -> Open default web browser.
+
+  **Windows management:**
+
+  * <kbd>⌘</kbd> + <kbd>D</kbd> -> Minimize/maximize all windows (show desktop).
+  * <kbd>Alt</kbd> + <kbd>Tab</kbd> -> Cycle windows.
+  * <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd> -> Reverse cycle windows.
+  * <kbd>⌘</kbd> + <kbd>Tab</kbd> -> Cycle windows from the same application.
+  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Tile window to the top.
+  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Tile window to the bottom.
+  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Tile window to the left.
+  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tole window to the right.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Tile window to the top-left.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Tile window to the bottom-right.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Tile window to the bottom-left.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tole window to the top-right.
+  * <kbd>⌘</kbd> + <kbd>↑</kbd> -> Toggle vertical maximize window.
+  * <kbd>⌘</kbd> + <kbd>↓</kbd> -> Minimize window.
+  * <kbd>⌘</kbd> + <kbd>←</kbd> -> Start resize window.
+  * <kbd>⌘</kbd> + <kbd>→</kbd> -> Toggle horizontal maximize window.
+  * <kbd>Alt</kbd> + <kbd>F10</kbd> -> Toggle maximize window.
+  * <kbd>Alt</kbd> + <kbd>F11</kbd> -> Toggle full screen window.
+  * <kbd>Alt</kbd> + <kbd>F7</kbd> -> Move window.
+  * <kbd>Alt</kbd> + <kbd>F4</kbd> -> Close window.
+

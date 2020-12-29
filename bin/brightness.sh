@@ -4,55 +4,49 @@
 
 set -e
 
-main() {
-  case $1 in
-    -h | --help )
-      show_help
-      ;;
+BRIGHTNESS_DRIVERS="$(
+	find "/sys/class/backlight/" -mindepth 1 -maxdepth 1 |
+		head -n 1
+)"
 
-    -s | --set )
-      val="$([ "$2" -gt 100 ] && echo 100 || echo "$2")"
-      echo $(((val * MAX_BRIGHTNESS / 100))) > "$BRIGHTNESS_FILE"
-      ;;
+BRIGHTNESS_DRIVER="${BRIGHTNESS_DRIVER:-"$(
+	echo "$BRIGHTNESS_DRIVERS" | head -n 1
+)"}"
 
-    * )
-      echo $(((BRIGHTNESS * 100 / MAX_BRIGHTNESS)))
-      ;;
-  esac
-}
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	BIN_NAME="$(basename "$0")"
 
-show_help() {
-  BIN_NAME="$(basename "$0")"
+	cat << EOF
+$BIN_NAME - manage screen brightness.
 
-  cat <<EOF
-$BIN_NAME - manage screen brightnes.
+Usage: $BIN_NAME [VALUE]
 
-Usage: $BIN_NAME [-s VALUE]
-
-If no options are given, current percent screen brightnes is printed. Root
-permissions are required for setting a new screen brightnes.
+Set current screen brightness to VALUE%, or print current value if nothing is
+given. Root permissions are required for setting a new screen brightness.
 
 Options:
-  -s, --set=VALUE   Set screen brightnes to given percent
-  -h, --help        Show this help message
+  -h, --help   Show this help message
 
 Environment variables:
-  * 'BRIGHTNESS_DIR' points to the brightness control directory, useful for
-    avoiding ambiguity between video controllers. ($BRIGHTNESS_DIR)
+  * 'BRIGHTNESS_DRIVER' points to the brightness control directory, useful for
+    avoiding ambiguity between video controllers. ($BRIGHTNESS_DRIVER)
 
 Copyright (c) 2020 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
-}
 
-BRIGHTNESS_DIR="${BRIGHTNESS_DIR:-$(
-  find "/sys/class/backlight/" -mindepth 1 -maxdepth 1 |
-  head -n 1
-)}"
+	exit
+fi
 
-BRIGHTNESS_FILE="$BRIGHTNESS_DIR/brightness"
-BRIGHTNESS="$(cat "$BRIGHTNESS_FILE")"
-MAX_BRIGHTNESS="$(cat "$BRIGHTNESS_DIR/max_brightness")"
+if [ -z "$1" ]; then
+	BRIGHTNESS="$(cat "$BRIGHTNESS_DRIVER/brightness")"
+	MAX_BRIGHTNESS="$(cat "$BRIGHTNESS_DRIVER/max_brightness")"
+	echo "$((BRIGHTNESS * 100 / MAX_BRIGHTNESS))"
+	exit
+fi
 
-main "$@"
-
+for BRIGHTNESS_DRIVER in $BRIGHTNESS_DRIVERS; do
+	MAX_BRIGHTNESS="$(cat "$BRIGHTNESS_DRIVER/max_brightness")"
+	VAL="$([ "$1" -gt 100 ] && echo 100 || echo "$1")"
+	su -c "echo '$((VAL * MAX_BRIGHTNESS / 100))' > '$BRIGHTNESS_DRIVER/brightness'" -
+done

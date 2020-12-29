@@ -18,9 +18,9 @@ jobs:
     steps:
       - name: Set up tools
         run: |
-          wget -O "/tmp/shellcheck.tar.gz" 'https://github.com/koalaman/shellcheck/releases/download/v0.7.0/shellcheck-v0.7.0.linux.x86_64.tar.xz'
-          tar -xf "/tmp/shellcheck.tar.gz" -C "/tmp/"
-          sudo mv "/tmp/shellcheck-v0.7.0/shellcheck" "/usr/bin/"
+          wget -O "/tmp/shfmt" 'https://github.com/mvdan/sh/releases/download/v3.2.1/shfmt_v3.2.1_linux_amd64'
+          chmod +x "/tmp/shfmt"
+          sudo mv "/tmp/shfmt" "/usr/bin/"
 
       - name: Get source code
         uses: actions/checkout@v2

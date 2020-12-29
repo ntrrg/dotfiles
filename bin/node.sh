@@ -4,90 +4,94 @@
 
 set -e
 
-main() {
-  case $1 in
-    -h | --help )
-      show_help
-      ;;
+_get_arch() {
+	case "$(uname -m)" in
+	x86_64 | amd64)
+		echo "x64"
+		;;
 
-    -d | --delete )
-      delete "$2"
-      ;;
+	armv8* | arm64 | aarch64)
+		echo "arm64"
+		;;
 
-    -l | --list )
-      ls "$NODEJS_ENVS"
-      ;;
+	armv7*)
+		echo "armv7l"
+		;;
 
-    * )
-      create "$1"
-      ;;
-  esac
+	*)
+		echo "can't define Node.js architecture for '$(uname -m)'" > /dev/stderr
+		return 1
+		;;
+	esac
 }
 
-create() {
-  NODEJS_RELEASE="${1:-$(get_latest_release)}"
-  NODEJS_ENV="node-v$NODEJS_RELEASE-linux-$NODEJS_ARCH"
-  NODEJS_HOME="$NODEJS_ENVS/$NODEJS_ENV"
+NODEJS_ARCH="${NODEJS_ARCH:-"$(_get_arch)"}"
+NODEJS_ENVS="${NODEJS_ENVS:-"$HOME/.local/share/node"}"
+NODEJS_MIRROR="${NODEJS_MIRROR:-"https://nodejs.org/dist"}"
 
-  if [ ! -d "$NODEJS_HOME" ]; then
-    PACKAGE="$NODEJS_ENV.tar.xz"
-    wget -cqO "/tmp/$PACKAGE" "$NODEJS_MIRROR/v$NODEJS_RELEASE/$PACKAGE"
-    mkdir -p "$NODEJS_HOME"
-    tar -C "$NODEJS_HOME" --strip-components 1 -xpf "/tmp/$PACKAGE"
-  fi
+_main() {
+	case $1 in
+	-h | --help)
+		_show_help
+		;;
 
-  "$NODEJS_HOME/bin/node" --version > /dev/null || (
-    rm -rf "$NODEJS_HOME"
-    activate
-    return $?
-  )
+	-d | --delete)
+		_delete "$2"
+		;;
 
-  PATH="$NODEJS_HOME/bin:$PATH"
+	-l | --list)
+		ls "$NODEJS_ENVS"
+		;;
 
-  echo "export NODEJS_HOME=$NODEJS_HOME"
-  echo "export PATH=$PATH"
+	*)
+		_activate "$1"
+		;;
+	esac
 }
 
-delete() {
-  NODEJS_RELEASE="$1"
-  NODEJS_ENV="node-v$NODEJS_RELEASE-linux-$NODEJS_ARCH"
-  NODEJS_HOME="$NODEJS_ENVS/$NODEJS_ENV"
+_activate() {
+	NODEJS_RELEASE="${1:-"$(get_latest_release)"}"
+	NODEJS_ENV="node-v$NODEJS_RELEASE-linux-$NODEJS_ARCH"
+	NODEJS_HOME="$NODEJS_ENVS/$NODEJS_ENV"
 
-  rm -r "$NODEJS_HOME"
+	if [ ! -d "$NODEJS_HOME" ]; then
+		PACKAGE="$NODEJS_ENV.tar.xz"
+		wget -cqO "/tmp/$PACKAGE" "$NODEJS_MIRROR/v$NODEJS_RELEASE/$PACKAGE"
+		mkdir -p "$NODEJS_HOME"
+		tar -C "$NODEJS_HOME" --strip-components 1 -xpf "/tmp/$PACKAGE"
+	fi
+
+	"$NODEJS_HOME/bin/node" --version > /dev/null || (
+		rm -rf "$NODEJS_HOME"
+		_activate
+		return $?
+	)
+
+	PATH="$NODEJS_HOME/bin:$PATH"
+
+	echo "export NODEJS_HOME=$NODEJS_HOME"
+	echo "export PATH=$PATH"
 }
 
-get_arch() {
-  case "$(uname -m)" in
-    x86_64 | amd64 )
-      echo "x64"
-      ;;
+_delete() {
+	NODEJS_RELEASE="$1"
+	NODEJS_ENV="node-v$NODEJS_RELEASE-linux-$NODEJS_ARCH"
+	NODEJS_HOME="$NODEJS_ENVS/$NODEJS_ENV"
 
-    armv8* | arm64 | aarch64 )
-      echo "arm64"
-      ;;
-
-    armv7* )
-      echo "armv7l"
-      ;;
-
-    * )
-      echo "can't define Node.js architecture for '$(uname -m)'"
-      return 1
-      ;;
-  esac
+	rm -r "$NODEJS_HOME"
 }
 
 get_latest_release() {
-  wget -qO - 'https://nodejs.org/en/download/current/' |
-    grep -m 1 "Latest Current Version: " |
-    cut -d '>' -f 3 |
-    sed "s/<\/strong//"
+	wget -qO - 'https://nodejs.org/en/download/current/' |
+		grep -m 1 "Latest Current Version: " |
+		cut -d '>' -f 3 |
+		sed "s/<\/strong//"
 }
 
-show_help() {
-  BIN_NAME="$(basename "$0")"
+_show_help() {
+	BIN_NAME="$(basename "$0")"
 
-  cat <<EOF
+	cat << EOF
 $BIN_NAME - manage Node.js environments.
 
 Usage: \$($BIN_NAME [RELEASE])
@@ -113,9 +117,4 @@ Released under the MIT License
 EOF
 }
 
-NODEJS_ARCH="${NODEJS_ARCH:-$(get_arch)}"
-NODEJS_ENVS="${NODEJS_ENVS:-$HOME/.local/share/node}"
-NODEJS_MIRROR="${NODEJS_MIRROR:-https://nodejs.org/dist}"
-
-main "$@"
-
+_main "$@"

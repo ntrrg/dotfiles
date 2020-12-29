@@ -1,24 +1,22 @@
-FROM docker:19 as docker
-
-FROM debian:bullseye-slim
+FROM alpine:edge
 ARG NEW_USER="ntrrg"
-ARG MIRROR="http://deb.debian.org/debian"
-RUN \
-  echo "deb $MIRROR bullseye main contrib non-free" > /etc/apt/sources.list && \
-  apt-get update && apt-get upgrade -y && \
-  apt-get install -y sudo && \
-  useradd --shell "/bin/zsh" --create-home "$NEW_USER" && \
-  echo "\n$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
-COPY --from=docker /usr/local/bin/docker /usr/local/bin/docker
+ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/edge"
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
-  DEBIAN_FRONTEND="noninteractive" BASEPATH="/tmp/post-install" \
-  IS_CONTAINER=1 IS_GUI=0 IS_HARDWARE=0 \
-  /tmp/post-install/post-install.sh && cd / && rm -rf /tmp/post-install
-USER "$NEW_USER":"$NEW_USER"
+  echo "$MIRROR/main" > /etc/apk/repositories && \
+  echo "$MIRROR/community" >> /etc/apk/repositories && \
+  echo "$MIRROR/testing" >> /etc/apk/repositories && \
+  apk update && apk upgrade && \
+  apk add sudo && \
+  echo "$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+  BASEPATH="/tmp/post-install" NEW_USER="$NEW_USER" IS_GUI=0 IS_HARDWARE=0 \
+  /tmp/post-install/post-install.sh && \
+  cd / && rm -rf /tmp/post-install
 WORKDIR "/home/$NEW_USER"
 COPY . dotfiles
-RUN cd dotfiles && make bin git vim zsh
+RUN chown -R "$NEW_USER":"$NEW_USER" dotfiles
+USER "$NEW_USER"
+RUN cd dotfiles && make tui
 CMD ["/bin/zsh"]
 

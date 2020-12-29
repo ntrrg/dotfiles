@@ -1,11 +1,13 @@
 #!/bin/sh
 
-set -e
+set -eu
 
-BASEPATH="${BASEPATH:-/tmp}"
-IS_CONTAINER="${IS_CONTAINER:-0}"
+BASEPATH="${BASEPATH:-"/tmp"}"
+BUILD_PKGS="${BUILD_PKGS:-1}"
+DE="${DE:-"xfce"}"
 IS_GUI="${IS_GUI:-1}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
+IS_LAPTOP="${IS_LAPTOP:-1}"
 
 ################
 # Installation #
@@ -13,373 +15,377 @@ IS_HARDWARE="${IS_HARDWARE:-1}"
 
 cd "$BASEPATH"
 
-apt-get update
-apt-get upgrade -y
-
-apt-get install -y \
-  apt-transport-https \
-  bc \
-  elinks \
-  git \
-  htop \
-  iftop \
-  isc-dhcp-client \
-  jq \
-  lbzip2 \
-  locales \
-  make \
-  man \
-  mosh \
-  netselect \
-  p7zip-full \
-  p7zip-rar \
-  pv \
-  rsync \
-  screen \
-  ssh \
-  sshfs \
-  transmission-cli \
-  unzip \
-  wget \
-  zsh
-
-if [ "$IS_HARDWARE" -ne 0 ]; then
-  apt-get install -y \
-    btrfs-progs \
-    cryptsetup \
-    dosfstools \
-    lvm2 \
-    ntfs-3g \
-    pciutils \
-    usbutils \
-    vbetool
-
-  if lspci | grep -q "Network controller"; then
-    apt-get install -y rfkill wireless-tools wpasupplicant
-  fi
-
-  if lsmod | grep -q "bluetooth"; then
-    apt-get install -y bluez
-  fi
-
-  if [ "$IS_GUI" -ne 0 ]; then
-    if lspci | grep -q "Network controller"; then
-      apt-get install -y network-manager-gnome
-    fi
-
-    if lsmod | grep -q "bluetooth"; then
-      apt-get install -y blueman
-    fi
-  fi
-fi
-
-localedef -ci "en_US" -f "UTF-8" -A "/usr/share/locale/locale.alias" \
-  "en_US.UTF-8"
-
-# Docker
-
-if [ "$IS_CONTAINER" -eq 0 ]; then
-  if [ ! -f "containerd.io_1.2.5-1_amd64.deb" ]; then
-    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.2.5-1_amd64.deb'
-  fi
-
-  if [ ! -f "docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb" ]; then
-    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb'
-  fi
-
-  if [ ! -f "docker-ce_18.09.5~3-0~debian-buster_amd64.deb" ]; then
-    wget 'https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_18.09.5~3-0~debian-buster_amd64.deb'
-  fi
-
-  dpkg -i \
-    "containerd.io_1.2.5-1_amd64.deb" \
-    "docker-ce-cli_18.09.5~3-0~debian-buster_amd64.deb" \
-    "docker-ce_18.09.5~3-0~debian-buster_amd64.deb" ||
-  apt-get install -fy
-fi
-
-# Docker Compose
-
-if [ "$IS_CONTAINER" -eq 0 ]; then
-  if [ ! -f "docker-compose-1.24.0-Linux-x86_64" ]; then
-    wget -O "docker-compose-1.24.0-Linux-x86_64" \
-      'https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64'
-  fi
-
-  cp -f "docker-compose-1.24.0-Linux-x86_64" "/usr/bin/docker-compose"
-  chmod +x "/usr/bin/docker-compose"
-
-  if [ ! -f "docker-compose-1.24.0-completion-bash" ]; then
-    wget -O "docker-compose-1.24.0-completion-bash" \
-      'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/bash/docker-compose'
-  fi
-
-  cp -f "docker-compose-1.24.0-completion-bash" \
-    "/etc/bash_completion.d/docker-compose"
-
-  if [ ! -f "docker-compose-1.24.0-completion-zsh" ]; then
-    wget -O "docker-compose-1.24.0-completion-zsh" \
-      'https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/zsh/_docker-compose'
-  fi
-
-  cp -f "docker-compose-1.24.0-completion-zsh" \
-    "/usr/share/zsh/vendor-completions/_docker-compose"
-fi
-
-# Hard Disk Sentinel
+apk add \
+	bc \
+	bzip2 \
+	elinks \
+	git \
+	htop \
+	iftop \
+	file \
+	fuse \
+	gnupg \
+	gzip \
+	make \
+	man-pages \
+	mandoc \
+	mosh \
+	openssh \
+	p7zip \
+	pv \
+	rclone \
+	rsync \
+	screen \
+	sshfs \
+	strace \
+	transmission-cli \
+	unzip \
+	xz \
+	zsh \
+	zsh-vcs
 
 if [ "$IS_HARDWARE" -ne 0 ]; then
-  if [ ! -f "hdsentinel-017-x64.gz" ]; then
-    wget 'https://www.hdsentinel.com/hdslin/hdsentinel-017-x64.gz'
-  fi
+	apk add \
+		btrfs-progs \
+		cryptsetup \
+		dmidecode \
+		dosfstools \
+		lvm2 \
+		ntfs-3g \
+		pciutils \
+		smartmontools \
+		usbutils \
+		util-linux
 
-  cp -f "hdsentinel-017-x64.gz" "hdsentinel-017-x64-copy.gz"
-  gzip -d "hdsentinel-017-x64-copy.gz"
-  cp "hdsentinel-017-x64-copy" "/usr/bin/hdsentinel"
-  chmod +x "/usr/bin/hdsentinel"
-  rm -f "hdsentinel-017-x64-copy"
+	if lspci | grep -q "Network controller"; then
+		apk add wireless-tools wpa_supplicant
+		rc-update add wpa_supplicant boot
+	fi
+
+	if lsmod | grep -q "bluetooth"; then
+		apk add bluez
+	fi
 fi
 
-# no-ip
+if [ "$IS_GUI" -eq 0 ]; then
+	apk add vim
 
-if [ ! -f "noip-duc-2.1.9-linux.tar.gz" ]; then
-  wget -O "noip-duc-2.1.9-linux.tar.gz" \
-    'https://www.noip.com/client/linux/noip-duc-linux.tar.gz'
-fi
+	# New user
 
-tar -xf "noip-duc-2.1.9-linux.tar.gz"
-cp "noip-2.1.9-1/binaries/noip2-x86_64" "/usr/local/bin/noip2"
-rm -rf "noip-2.1.9-1"
+	if [ -n "$NEW_USER" ]; then
+		if ! id "$NEW_USER" 2> /dev/null; then
+			adduser -s "/bin/zsh" -D "$NEW_USER"
+		fi
+	fi
+else
+	setup-xorg-base
 
-cat <<EOF > "/etc/init.d/noip2"
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides: noip2
-# Required-Start: \$local_fs \$remote_fs \$network \$syslog \$named
-# Required-Stop: \$local_fs \$remote_fs \$network \$syslog \$named
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Short-Description: NoIP dynamic client
-### END INIT INFO
+	apk add \
+		xkill \
+		xdg-user-dirs \
+		xdg-utils \
+		xhost
 
-DAEMON=/usr/local/bin/noip2
-NAME=noip2
+	if [ "$IS_HARDWARE" -ne 0 ]; then
+		apk add \
+			alsa-utils \
+			pavucontrol \
+			pm-utils \
+			pulseaudio \
+			pulseaudio-utils \
+			xcalib \
+			xrandr
 
-test -x \$DAEMON || exit 0
+		chmod u+s "/usr/sbin/dmidecode"
+		chmod u+s "/usr/sbin/smartctl"
 
-case "\$1" in
-start)
-echo -n "Starting dynamic address update: "
-start-stop-daemon --start --exec \$DAEMON
-echo "noip2."
-;;
+		if [ "$IS_LAPTOP" -ne 0 ]; then
+			apk add acpi cpufreqd hdparm
+			rc-update add cpufreqd default
+		fi
+	fi
 
-stop)
-echo -n "Shutting down dynamic address update:"
-start-stop-daemon --stop --oknodo --retry 30 --exec \$DAEMON
-echo "noip2."
-;;
+	# Fonts
 
-restart)
-echo -n "Restarting dynamic address update: "
-start-stop-daemon --stop --oknodo --retry 30 --exec \$DAEMON
-start-stop-daemon --start --exec \$DAEMON
-echo "noip2."
-;;
+	apk add \
+		font-hermit-nerd \
+		font-noto-all \
+		font-noto-cjk \
+		font-noto-emoji \
+		libxft \
+		terminus-font
 
-*)
-echo "Usage: \$0 {start|stop|restart}"
-exit 1
-esac
-exit 0
+	cat << EOF > "/etc/fonts/conf.avail/69-google-noto.conf"
+<?xml version='1.0'?>
+<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<!--
+  Use 'Google Noto' as default font
+-->
+<fontconfig>
+  <match>
+    <test name="family" qual="any">
+      <string>sans-serif</string>
+    </test>
+
+    <edit binding="strong" mode="prepend" name="family">
+      <string>Noto Sans</string>
+    </edit>
+  </match>
+
+  <match>
+    <test name="family" qual="any">
+      <string>serif</string>
+    </test>
+
+    <edit binding="strong" mode="prepend" name="family">
+      <string>Noto Serif</string>
+    </edit>
+  </match>
+
+  <match>
+    <test name="family" qual="any">
+      <string>sans</string>
+    </test>
+
+    <edit binding="strong" mode="prepend" name="family">
+      <string>Noto Sans</string>
+    </edit>
+  </match>
+
+	<!-- MS fonts -->
+
+	<match>
+		<test name="family">
+			<string>Arial</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Helvetica</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Verdana</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Tahoma</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Comic Sans MS</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Times New Roman</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Serif</string>
+		</edit>
+	</match>
+
+	<match>
+		<test name="family">
+			<string>Times</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Serif</string>
+		</edit>
+	</match>
+</fontconfig>
 EOF
 
-chmod +x "/etc/init.d/noip2"
-update-rc.d noip2 defaults
+	ln -sf "/etc/fonts/conf.avail/69-google-noto.conf" "/etc/fonts/conf.d/69-google-noto.conf"
 
-if [ "$IS_GUI" -ne 0 ]; then
-  apt-get install -y \
-    chromium \
-    conky \
-    evince \
-    gimp \
-    inkscape \
-    transmission \
-    vlc \
-    xfce4 \
-    xfce4-goodies
+	cat << EOF > "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf"
+<?xml version='1.0'?>
+<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+<!--
+  Use 'Hurmit Nerd Font' as default monospace font
+-->
+<fontconfig>
+  <match>
+    <test name="family" qual="any">
+      <string>monospace</string>
+    </test>
+  
+    <edit binding="strong" mode="prepend" name="family">
+      <string>Hurmit Nerd Font</string>
+    </edit>
+  </match>
 
-  if [ "$IS_HARDWARE" -ne 0 ]; then
-    apt-get install -y \
-      alsa-utils \
-      cups \
-      simple-scan \
-      system-config-printer \
-      xcalib
-  fi
+	<!-- MS fonts -->
 
-  # Firefox Developer Edition
+	<match>
+		<test name="family">
+			<string>Courier New</string>
+		</test>
 
-  if [ ! -f "firefox-82.0b8.tar.bz2" ]; then
-    wget 'https://download-installer.cdn.mozilla.net/pub/devedition/releases/82.0b8/linux-x86_64/en-US/firefox-82.0b8.tar.bz2'
-  fi
-
-  apt-get purge -y "firefox-*"
-  tar -xf "firefox-82.0b8.tar.bz2"
-  cp -rf "firefox" "/opt/"
-  ln -sf "/opt/firefox/firefox" "/usr/bin/firefox"
-  rm -rf "firefox"
-
-  cat <<EOF > "/usr/share/applications/firefox-developer-edition.desktop"
-[Desktop Entry]
-Name=Firefox Developer Edition
-GenericName=Web Browser
-Comment=Access the Internet
-Exec=/usr/bin/firefox %U
-Terminal=false
-Type=Application
-Encoding=UTF-8
-MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
-Icon=firefox-developer-icon
-Categories=Network;WebBrowser;Development;
+		<edit name="family" mode="assign" binding="strong">
+			<string>Hurmit Nerd Font</string>
+		</edit>
+	</match>
+</fontconfig>
 EOF
 
-  # ST
+	ln -sf "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf" "/etc/fonts/conf.d/69-hurmit-nerd-font.conf"
+	fc-cache -f
 
-  if [ ! -f "st-0.8.2.tar.gz" ]; then
-    wget 'https://dl.suckless.org/st/st-0.8.2.tar.gz'
-  fi
+	# Apps
 
-  if [ ! -f "st-alpha-0.8.2.diff" ]; then
-    wget 'https://st.suckless.org/patches/alpha/st-alpha-0.8.2.diff'
-  fi
+	apk add \
+		chromium \
+		evince \
+		firefox \
+		flatpak \
+		gimp \
+		inkscape \
+		midori \
+		telegram-desktop \
+		transmission \
+		vlc-qt \
+		xarchiver
 
-  if [ ! -f "st-clipboard-0.8.2.diff" ]; then
-    wget 'https://st.suckless.org/patches/clipboard/st-clipboard-0.8.2.diff'
-  fi
+	flatpak remote-add --if-not-exists \
+		flathub https://flathub.org/repo/flathub.flatpakrepo || true
 
-  apt-get install -y gcc libx11-dev libxft-dev libxext-dev make
-  tar -xf "st-0.8.2.tar.gz"
+	if grep -q "@ntrrg" /etc/apk/repositories; then
+		apk add \
+			conky@ntrrg \
+			st@ntrrg \
+			sxiv@ntrrg \
+			vim@ntrrg
+	else
+		apk add \
+			conky \
+			st \
+			sxiv \
+			vim
+	fi
 
-  (
-    cd "st-0.8.2"
-    find .. -name "st-*.diff" -exec git apply '{}' \+
-    sed -i "s/\(pixelsize\)=[0-9]\+/\1=16/" "config.def.h"
-    sed -i "s/ \(defaultbg\) = [0-9]\+/ \1 = 0/" "config.def.h"
-    sed -i "s/ \(alpha\) = [0-9.]*/ \1 = 0.9/" "config.def.h"
-    sed -i "s/ \(cols\) = [0-9]\+/ \1 = 85/" "config.def.h"
-    sed -i "s/ \(rows\) = [0-9]\+/ \1 = 25/" "config.def.h"
-    make clean install
-  )
+	# Materia
 
-  rm -rf "st-0.8.2"
+	apk add \
+		materia materia-gtk3 \
+		materia-dark materia-dark-gtk3
 
-  cat <<EOF > "/usr/share/applications/simple-terminal.desktop"
-[Desktop Entry]
-Name=st
-GenericName=Terminal
-Comment=Simple terminal emulator for the X window system
-Exec=st
-Terminal=false
-Type=Application
-Encoding=UTF-8
-Icon=st
-Categories=System;TerminalEmulator;
-Keywords=shell;prompt;command;commandline;cmd;
-EOF
+	# Papirus
 
-  # Telegram
+	apk add papirus-icon-theme
 
-  if [ ! -f "tsetup.1.6.7.tar.xz" ]; then
-    wget 'https://updates.tdesktop.com/tlinux/tsetup.1.6.7.tar.xz'
-  fi
+	# Desktop Environtment
 
-  tar -xf "tsetup.1.6.7.tar.xz" -C "/opt/"
-  ln -sf "/opt/Telegram/Telegram" "/usr/bin/telegram"
+	apk add lightdm-gtk-greeter
+	rc-update add lightdm default
 
-  # Vim
+	case $DE in
+	# DWM
+	dwm)
+		apk add \
+			dunst \
+			dmenu \
+			dwm \
+			pcmanfm \
+			picom \
+			slock
+		;;
 
-  if [ ! -f "vim-8.2.tar.bz2" ]; then
-    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
-  fi
+	# XFCE 4
+	xfce)
+		apk add \
+			consolekit2 \
+			dbus \
+			polkit \
+			thunar-archive-plugin \
+			xfce-polkit \
+			xfce4 \
+			xfce4-notifyd \
+			xfce4-screensaver \
+			xfce4-screenshooter \
+			xfce4-taskmanager \
+			xfce4-timer-plugin \
+			xfce4-whiskermenu-plugin
 
-  apt-get purge -fy "vim-tiny"
+		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
+			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
+		fi
 
-  apt-get install -y \
-    gcc libncurses-dev libx11-dev libxpm-dev libxt-dev libxtst-dev make
+		rc-update add dbus default
+		rc-update add polkit default
 
-  tar -xf "vim-8.2.tar.bz2"
-  (cd "vim82" && ./configure --with-features=huge && make && make install)
-  rm -rf "vim82"
+		if [ "$IS_HARDWARE" -ne 0 ]; then
+			apk add xfce4-pulseaudio-plugin
 
-  cat <<EOF > "/usr/share/applications/vim.desktop"
-[Desktop Entry]
-Name=Vim
-GenericName=Text Editor
-Comment=Edit text files
-Exec=st vim %F
-Terminal=false
-Type=Application
-Encoding=UTF-8
-MimeType=text/plain;
-Icon=gvim
-Categories=Utility;TextEditor;Development;
-Keywords=Text;editor;
-EOF
+			# Thunar - Device detection
 
-  # XFCE Theme
+			apk add \
+				gnome-disk-utility \
+				gvfs \
+				gvfs-afc \
+				gvfs-afp \
+				gvfs-archive \
+				gvfs-avahi \
+				gvfs-cdda \
+				gvfs-dav \
+				gvfs-fuse \
+				gvfs-gphoto2 \
+				gvfs-mtp \
+				gvfs-nfs \
+				gvfs-smb \
+				thunar-volman
 
-  chmod u+s "/usr/sbin/hddtemp"
+			rc-update add fuse default
+		fi
+		;;
+	esac
 
-    # Materia
+	# New user
 
-  if [ ! -f "materia-gtk-theme-v20190315.tar.gz" ]; then
-    wget -O "materia-gtk-theme-v20190315.tar.gz" \
-      'https://github.com/nana-4/materia-theme/archive/v20190315.tar.gz'
-  fi
+	if [ -n "$NEW_USER" ]; then
+		if ! id "$NEW_USER" 2> /dev/null; then
+			adduser -s "/bin/zsh" -D "$NEW_USER"
+		fi
 
-  tar -xf "materia-gtk-theme-v20190315.tar.gz"
-  (cd "materia-theme-20190315" && "./install.sh")
-  rm -rf "materia-theme-20190315"
-
-    # Papirus
-
-  if [ ! -f "papirus-icon-theme-v20190817.tar.gz" ]; then
-    wget -O "papirus-icon-theme-v20190817.tar.gz" \
-      'https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/archive/20190817.tar.gz'
-  fi
-
-  tar -xf "papirus-icon-theme-v20190817.tar.gz"
-  (
-    cd "papirus-icon-theme-20190817"
-    cp -rf "Papirus" "ePapirus" "Papirus-Dark" "Papirus-Light" \
-      "/usr/share/icons/"
-    find "/usr/share/icons/" -name "*Papirus*" \
-      -exec cp "AUTHORS" "LICENSE" '{}' \;
-    find "/usr/share/icons/" -name "*Papirus*" \
-      -exec gtk-update-icon-cache -q '{}' \;
-  )
-  rm -rf "papirus-icon-theme-20190817"
-elif [ "$IS_GUI" -eq 0 ]; then
-  # Vim
-
-  if [ ! -f "vim-8.2.tar.bz2" ]; then
-    wget 'ftp://ftp.vim.org/pub/vim/unix/vim-8.2.tar.bz2'
-  fi
-
-  apt-get purge -fy "vim-*"
-  apt-get install -y gcc libncurses-dev make
-  tar -xf "vim-8.2.tar.bz2"
-  (cd "vim82" && "./configure" && make && make install)
-  rm -rf "vim82"
+		for GROUP in audio cdrom cdrw dialout disk floppy games lp netdev optical power rfkill scanner storage usb users video; do
+			addgroup "$NEW_USER" "$GROUP" || true
+		done
+	fi
 fi
 
 ############
 # Cleaning #
 ############
 
-apt-get autoremove -y > "/dev/null"
-find "/var/cache/apt/" -mindepth 1 -delete
-find "/var/lib/apt/lists/" -mindepth 1 -delete
+find "/var/cache/apk/" -mindepth 1 -delete
 find "/var/log/" -mindepth 1 -delete
-

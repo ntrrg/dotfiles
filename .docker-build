@@ -1,3 +1,4 @@
 Dockerfile@ntrrg/dotfiles
-alpine.Dockerfile@ntrrg/dotfiles:alpine
+Dockerfile@ntrrg/dotfiles:alpine
+debian.Dockerfile@ntrrg/dotfiles:debian
 

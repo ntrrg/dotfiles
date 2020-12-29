@@ -22,10 +22,12 @@ jobs:
       - name: "Build and push 'latest'"
         run: |
           docker build -t $DOCKER_IMAGE .
+          docker tag $DOCKER_IMAGE $DOCKER_IMAGE:alpine
           docker push $DOCKER_IMAGE
-
-      - name: "Build and push 'alpine'"
-        run: |
-          docker build -t $DOCKER_IMAGE:alpine -f alpine.Dockerfile .
           docker push $DOCKER_IMAGE:alpine
+
+      - name: "Build and push 'debian'"
+        run: |
+          docker build -t $DOCKER_IMAGE:debian -f debian.Dockerfile .
+          docker push $DOCKER_IMAGE:debian
 

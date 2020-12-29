@@ -91,7 +91,7 @@ function precmd() {
 PS1='%B%(?..%F{red}(%?%)%f )%n %(!.%F{red}☢%f.%F{green}☮%f)›%b '
 RPS1='%B$vcs_info_msg_0_╞ %F{green}%1~%f ╡%b'
 
-# PROMPT - Git
+## Git
 
 autoload -U vcs_info
 zstyle ':vcs_info:*' enable git
@@ -142,15 +142,51 @@ setopt globcomplete
 
 # Keyboard shortcuts
 
+bindkey '^?' backward-delete-char
+bindkey '' backward-delete-char
+
+bindkey "^[[2~" overwrite-mode
+bindkey "[2~" overwrite-mode
+
+bindkey "^[[3~" delete-char
+bindkey "[3~" delete-char
+
 bindkey "5D" backward-word
 bindkey "5C" forward-word
-bindkey "\e[1~" beginning-of-line
-bindkey "\e[4~" end-of-line
+bindkey "[1;5D" backward-word
+bindkey "[1;5C" forward-word
+
+bindkey "[1~" beginning-of-line
+bindkey "[4~" end-of-line
+
+bindkey "[5~" up-line-or-search
+bindkey "[6~" down-line-or-search
+
 bindkey "^R" history-incremental-pattern-search-backward
 bindkey "^F" history-incremental-pattern-search-forward
-bindkey "^U" backward-kill-line
-bindkey "${terminfo[kpp]}" up-line-or-search
-bindkey "${terminfo[knp]}" down-line-or-search
+
+bindkey "[Z" reverse-menu-complete
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
+## Vim mode
+
+bindkey -v
+
+PS1_ORIG="$PS1"
+
+function zle-line-init zle-keymap-select {
+  VIM_NORMAL='%F{green}N'
+  VIM_INSERT='%F{yellow}I'
+  VIM_MODE="[${${KEYMAP/vicmd/$VIM_NORMAL}/(main|viins)/$VIM_INSERT}%f]"
+  PS1="$VIM_MODE $PS1_ORIG"
+  zle reset-prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 # Alias
 

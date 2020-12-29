@@ -4,96 +4,100 @@
 
 set -e
 
-main() {
-  case $1 in
-    -h | --help )
-      show_help
-      ;;
+_get_arch() {
+	case "$(uname -m)" in
+	x86_64 | amd64)
+		echo "amd64"
+		;;
 
-    -d | --delete )
-      delete "$2"
-      ;;
+	x86 | i386 | i486 | i686)
+		echo "386"
+		;;
 
-    -l | --list )
-      ls "$GOENVS"
-      ;;
+	armv8* | arm64 | aarch64)
+		echo "arm64"
+		;;
 
-    * )
-      activate "$1"
-      ;;
-  esac
+	armv6*)
+		echo "armv6l"
+		;;
+
+	*)
+		echo "can't define Go architecture for '$(uname -m)'" > /dev/stderr
+		return 1
+		;;
+	esac
 }
 
-activate() {
-  GORELEASE="${1:-$(get_latest_release)}"
-  GOENV="go$GORELEASE.linux-$GOARCH"
-  GOROOT="$GOENVS/$GOENV"
+GOARCH="${GOARCH:-"$(_get_arch)"}"
+GOENVS="${GOENVS:-"$HOME/.local/share/go"}"
+GOMIRROR="${GOMIRROR:-"https://dl.google.com/go"}"
 
-  if [ ! -d "$GOROOT" ]; then
-    PACKAGE="$GOENV.tar.gz"
-    wget -cqO "/tmp/$PACKAGE" "$GOMIRROR/$PACKAGE"
-    mkdir -p "$GOROOT"
-    tar -C "$GOROOT" --strip-components 1 -xpf "/tmp/$PACKAGE"
-  fi
+_main() {
+	case $1 in
+	-d | --delete)
+		_delete "$2"
+		;;
 
-  "$GOROOT/bin/go" version > /dev/null || (
-    rm -rf "$GOROOT"
-    activate
-    return $?
-  )
+	-h | --help)
+		_show_help
+		;;
 
-  GOPATH="${GOPATH:-$HOME/go}"
-  PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+	-l | --list)
+		ls "$GOENVS"
+		;;
 
-  echo "export GOROOT=$GOROOT"
-  echo "export GOPATH=$GOPATH"
-  echo "export PATH=$PATH"
+	*)
+		_activate "$1"
+		;;
+	esac
 }
 
-delete() {
-  GORELEASE="$1"
-  GOENV="go$GORELEASE.linux-$GOARCH"
-  GOROOT="$GOENVS/$GOENV"
+_activate() {
+	GORELEASE="${1:-"$(_get_latest_release)"}"
+	GOENV="go$GORELEASE.linux-$GOARCH"
+	GOROOT="$GOENVS/$GOENV"
 
-  rm -r "$GOROOT"
+	if [ ! -d "$GOROOT" ]; then
+		PACKAGE="$GOENV.tar.gz"
+		wget -cqO "/tmp/$PACKAGE" "$GOMIRROR/$PACKAGE"
+		mkdir -p "$GOROOT"
+		tar -C "$GOROOT" --strip-components 1 -xpf "/tmp/$PACKAGE"
+	fi
+
+	"$GOROOT/bin/go" version > /dev/null || (
+		rm -rf "$GOROOT"
+		_activate
+		return $?
+	)
+
+	GOPATH="${GOPATH:-"$HOME/go"}"
+	PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+
+	echo "export GOROOT=$GOROOT"
+	echo "export GOPATH=$GOPATH"
+	echo "export PATH=$PATH"
 }
 
-get_arch() {
-  case "$(uname -m)" in
-    x86_64 | amd64 )
-      echo "amd64"
-      ;;
+_delete() {
+	GORELEASE="$1"
+	GOENV="go$GORELEASE.linux-$GOARCH"
+	GOROOT="$GOENVS/$GOENV"
 
-    x86 | i386 | i486 | i686 )
-      echo "386"
-      ;;
-
-    armv8* | arm64 | aarch64 )
-      echo "arm64"
-      ;;
-
-    armv6* )
-      echo "armv6l"
-      ;;
-
-    * )
-      echo "can't define Go architecture for '$(uname -m)'"
-      return 1
-      ;;
-  esac
+	rm -r "$GOROOT"
 }
 
-get_latest_release() {
-  wget -qO - 'https://golang.org/dl/?mode=json' |
-    grep -m 1 "version" |
-    cut -d '"' -f 4 |
-    sed "s/go//"
+_get_latest_release() {
+	wget -qO - 'https://golang.org/dl/?mode=json' |
+		grep -m 1 "version" |
+		cut -d '"' -f 4 |
+		sed "s/go//"
 }
 
-show_help() {
-  BIN_NAME="$(basename "$0")"
+_show_help() {
+	BIN_NAME="$(basename "$0")"
 
-  cat <<EOF
+	cat << EOF
 $BIN_NAME - manage Go environments.
 
 Usage: \$($BIN_NAME [RELEASE])
@@ -124,9 +128,4 @@ Released under the MIT License
 EOF
 }
 
-GOARCH="${GOARCH:-$(get_arch)}"
-GOENVS="${GOENVS:-$HOME/.local/share/go}"
-GOMIRROR="${GOMIRROR:-https://dl.google.com/go}"
-
-main "$@"
-
+_main "$@"

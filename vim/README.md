@@ -18,8 +18,9 @@
   2. Buffer number.
   3. File base name.
   4. Modified tag, `[+]` if modified, `[-]` if file can't be modified or none
-     if any changes were saved.
-  5. Line number, column number and virtual column number.
+     if all changes were saved.
+  5. Line number, column number (byte count) and virtual column number
+     (Unicode point count).
   6. Percentage through file.
   7. Terminal in use.
   8. File format (`dos` -> `\r\n`, `mac` -> `\r`, `unix` -> `\n`).
@@ -30,7 +31,7 @@
 * Monokai-like color scheme
 
 * Improved Go syntax hightlight (including module files, templates and Markdown
-  code hightlight).
+  code snippets hightlight).
 
 * Key shortcuts.
 

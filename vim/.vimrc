@@ -93,6 +93,7 @@ autocmd Filetype make setlocal noexpandtab
 autocmd Filetype markdown setlocal tabstop=4 shiftwidth=4
 autocmd Filetype python setlocal tabstop=4 shiftwidth=4
 autocmd Filetype rst setlocal tabstop=4 shiftwidth=4
+autocmd Filetype sh setlocal noexpandtab
 
 " Searching
 set incsearch

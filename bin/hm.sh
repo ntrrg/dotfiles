@@ -2,10 +2,12 @@
 # Copyright (c) 2019 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-  BIN_NAME="$(basename "$0")"
+set -e
 
-  cat <<EOF
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	BIN_NAME="$(basename "$0")"
+
+	cat << EOF
 $BIN_NAME - make a memory measure human-readable.
 
 Usage: $BIN_NAME [OPTIONS] AMOUNT
@@ -23,91 +25,91 @@ Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
 
-  exit
+	exit
 fi
 
-get_index_by_prefix() {
-  case "$1" in
-    B )
-      echo 0
-      ;;
+_get_index_by_prefix() {
+	case "$1" in
+	B)
+		echo 0
+		;;
 
-    K | Ki )
-      echo 1
-      ;;
+	K | Ki)
+		echo 1
+		;;
 
-    M | Mi )
-      echo 2
-      ;;
+	M | Mi)
+		echo 2
+		;;
 
-    G | Gi )
-      echo 3
-      ;;
+	G | Gi)
+		echo 3
+		;;
 
-    T | Ti )
-      echo 4
-      ;;
+	T | Ti)
+		echo 4
+		;;
 
-    P | Pi )
-      echo 5
-      ;;
-  esac
+	P | Pi)
+		echo 5
+		;;
+	esac
 }
 
-get_prefix_by_index() {
-  case "$1" in
-    0 )
-      echo "B"
-      ;;
+_get_prefix_by_index() {
+	case "$1" in
+	0)
+		echo "B"
+		;;
 
-    1 )
-      echo "KiB"
-      ;;
+	1)
+		echo "KiB"
+		;;
 
-    2 )
-      echo "MiB"
-      ;;
+	2)
+		echo "MiB"
+		;;
 
-    3 )
-      echo "GiB"
-      ;;
+	3)
+		echo "GiB"
+		;;
 
-    4 )
-      echo "TiB"
-      ;;
+	4)
+		echo "TiB"
+		;;
 
-    5 )
-      echo "PiB"
-      ;;
-  esac
+	5)
+		echo "PiB"
+		;;
+	esac
 }
 
 PREFIX="B"
 
 if [ "$1" = "-p" ] || [ "$1" = "--prefix" ]; then
-  PREFIX="$2"
-  shift; shift
+	PREFIX="$2"
+	shift
+	shift
 fi
 
 AMOUNT="$1"
 
 if [ -z "$AMOUNT" ]; then
-  AMOUNT="$(cat -)"
+	AMOUNT="$(cat -)"
 fi
 
 if [ -z "$AMOUNT" ]; then
-  AMOUNT=0
+	AMOUNT=0
 fi
 
-I="$(get_index_by_prefix "$PREFIX")"
+I="$(_get_index_by_prefix "$PREFIX")"
 
 while true; do
-  if [ "$I" -eq 5 ] || [ "$(echo "$AMOUNT < 1024" | bc)" -eq 1 ]; then
-    echo "$AMOUNT$(get_prefix_by_index "$I")"
-    exit
-  fi
+	if [ "$I" -eq 5 ] || [ "$(echo "$AMOUNT < 1024" | bc)" -eq 1 ]; then
+		echo "$AMOUNT$(_get_prefix_by_index "$I")"
+		exit
+	fi
 
-  AMOUNT=$(echo "scale=2; $AMOUNT / 1024" | bc)
-  I=$(echo "$I + 1" | bc)
+	AMOUNT=$(echo "scale=2; $AMOUNT / 1024" | bc)
+	I="$((I + 1))"
 done
-
