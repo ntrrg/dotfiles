@@ -3,11 +3,11 @@
 set -eu
 
 BASEPATH="${BASEPATH:-"/tmp"}"
-BUILD_PKGS="${BUILD_PKGS:-1}"
 DE="${DE:-"xfce"}"
 IS_GUI="${IS_GUI:-1}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
+NEW_USER="${NEW_USER:-""}"
 
 ################
 # Installation #
@@ -265,9 +265,7 @@ EOF
 	# Apps
 
 	apk add \
-		chromium \
 		evince \
-		firefox \
 		flatpak \
 		gimp \
 		inkscape \
@@ -321,14 +319,16 @@ EOF
 			slock
 		;;
 
+	# KDE Plasma
+	kde)
+		apk add plasma
+		;;
+
 	# XFCE 4
-	xfce)
+	xfce | xfce-full)
 		apk add \
-			consolekit2 \
 			dbus \
-			polkit \
 			thunar-archive-plugin \
-			xfce-polkit \
 			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
@@ -342,30 +342,45 @@ EOF
 		fi
 
 		rc-update add dbus default
-		rc-update add polkit default
 
 		if [ "$IS_HARDWARE" -ne 0 ]; then
 			apk add xfce4-pulseaudio-plugin
+		fi
 
-			# Thunar - Device detection
-
+		if [ "$DE" = "xfce-full" ]; then
 			apk add \
-				gnome-disk-utility \
-				gvfs \
-				gvfs-afc \
-				gvfs-afp \
-				gvfs-archive \
-				gvfs-avahi \
-				gvfs-cdda \
-				gvfs-dav \
-				gvfs-fuse \
-				gvfs-gphoto2 \
-				gvfs-mtp \
-				gvfs-nfs \
-				gvfs-smb \
-				thunar-volman
+				consolekit2 \
+				mousepad \
+				mousepad-lang \
+				polkit \
+				xfce4-terminal \
+				xfce4-terminal-lang \
+				xfce-polkit \
+				xfdesktop-lang
 
-			rc-update add fuse default
+			rc-update add polkit default
+
+			if [ "$IS_HARDWARE" -ne 0 ]; then
+				# Thunar - Device detection
+
+				apk add \
+					gnome-disk-utility \
+					gvfs \
+					gvfs-afc \
+					gvfs-afp \
+					gvfs-archive \
+					gvfs-avahi \
+					gvfs-cdda \
+					gvfs-dav \
+					gvfs-fuse \
+					gvfs-gphoto2 \
+					gvfs-mtp \
+					gvfs-nfs \
+					gvfs-smb \
+					thunar-volman
+
+				rc-update add fuse default
+			fi
 		fi
 		;;
 	esac

@@ -32,11 +32,11 @@
       <property name="&lt;Super&gt;space" type="string" value="xfce4-appfinder --collapsed"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
       <property name="&lt;Super&gt;k" type="string" value="xkill"/>
-      <property name="&lt;Super&gt;t" type="string" value="exo-open --launch TerminalEmulator"/>
+      <property name="&lt;Super&gt;t" type="string" value="st"/>
       <property name="&lt;Super&gt;m" type="string" value="telegram-desktop"/>
       <property name="&lt;Super&gt;f" type="string" value="exo-open --launch FileManager"/>
       <property name="&lt;Super&gt;i" type="string" value="xcalib -i -a"/>
-      <property name="&lt;Super&gt;Delete" type="string" value="pkexec /usr/sbin/xfce4-pm-helper --suspend"/>
+      <property name="&lt;Super&gt;Delete" type="string" value="st su -c pm-suspend-hybrid"/>
       <property name="Print" type="string" value="xfce4-screenshooter"/>
       <property name="XF86Search" type="string" value="xfce4-appfinder --collapsed"/>
       <property name="XF86AudioRaiseVolume" type="string" value="pactl -- set-sink-volume @DEFAULT_SINK@ +5%"/>
