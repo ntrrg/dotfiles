@@ -36,7 +36,7 @@
       <property name="&lt;Super&gt;m" type="string" value="telegram-desktop"/>
       <property name="&lt;Super&gt;f" type="string" value="exo-open --launch FileManager"/>
       <property name="&lt;Super&gt;i" type="string" value="xcalib -i -a"/>
-      <property name="&lt;Super&gt;Delete" type="string" value="st su -c pm-suspend-hybrid"/>
+      <property name="&lt;Super&gt;Delete" type="string" value="st su -c pm-suspend"/>
       <property name="Print" type="string" value="xfce4-screenshooter"/>
       <property name="XF86Search" type="string" value="xfce4-appfinder --collapsed"/>
       <property name="XF86AudioRaiseVolume" type="string" value="pactl -- set-sink-volume @DEFAULT_SINK@ +5%"/>
