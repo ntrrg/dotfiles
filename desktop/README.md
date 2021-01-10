@@ -63,6 +63,7 @@
   * <kbd>⌘</kbd> + <kbd>→</kbd> -> Toggle horizontal maximize window.
   * <kbd>Alt</kbd> + <kbd>F10</kbd> -> Toggle maximize window.
   * <kbd>Alt</kbd> + <kbd>F11</kbd> -> Toggle full screen window.
+  * <kbd>Alt</kbd> + <kbd>F12</kbd> -> Toggle always visible window.
   * <kbd>Alt</kbd> + <kbd>F7</kbd> -> Move window.
   * <kbd>Alt</kbd> + <kbd>F4</kbd> -> Close window.
 
