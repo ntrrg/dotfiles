@@ -1,7 +1,7 @@
 [user]
 	email = ntrrgx@gmail.com
 	name = Miguel Angel Rivera Notararigo
-	signingkey = 371A46E3EA29C7BA
+	signingkey = 3D1B29B605EE7608
 [core]
 	editor = vim
 	eol = lf
