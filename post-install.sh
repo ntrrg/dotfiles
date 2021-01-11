@@ -265,7 +265,9 @@ EOF
 	# Apps
 
 	apk add \
+		chromium \
 		evince \
+		firefox \
 		flatpak \
 		gimp \
 		inkscape \
@@ -304,9 +306,6 @@ EOF
 
 	# Desktop Environtment
 
-	apk add lightdm-gtk-greeter
-	rc-update add lightdm default
-
 	case $DE in
 	# DWM
 	dwm)
@@ -319,13 +318,11 @@ EOF
 			slock
 		;;
 
-	# KDE Plasma
-	kde)
-		apk add plasma
-		;;
-
 	# XFCE 4
 	xfce | xfce-full)
+		apk add lightdm-gtk-greeter
+		rc-update add lightdm default
+
 		apk add \
 			dbus \
 			thunar-archive-plugin \
@@ -334,8 +331,7 @@ EOF
 			xfce4-screensaver \
 			xfce4-screenshooter \
 			xfce4-taskmanager \
-			xfce4-timer-plugin \
-			xfce4-whiskermenu-plugin
+			xfce4-timer-plugin
 
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
@@ -351,12 +347,10 @@ EOF
 			apk add \
 				consolekit2 \
 				mousepad \
-				mousepad-lang \
 				polkit \
-				xfce4-terminal \
-				xfce4-terminal-lang \
 				xfce-polkit \
-				xfdesktop-lang
+				xfce4-terminal \
+				xfce4-whiskermenu-plugin
 
 			rc-update add polkit default
 
@@ -381,6 +375,23 @@ EOF
 
 				rc-update add fuse default
 			fi
+
+			# Language packages
+
+			echo "Installing language packages.."
+
+			ALL_PKGS="$(apk search "*")"
+			LANG_PKGS=""
+
+			for PKG in $(apk info); do
+				PKG_LANG="$PKG-lang"
+
+				if echo "$ALL_PKGS" | grep -q "^$PKG_LANG-\d"; then
+					LANG_PKGS="$LANG_PKGS $PKG_LANG"
+				fi
+			done
+
+			apk add $LANG_PKGS
 		fi
 		;;
 	esac
