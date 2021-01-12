@@ -82,9 +82,10 @@ set expandtab tabstop=2 shiftwidth=2
 set noendofline nofixendofline
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
-autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
 autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtmltmpl
+autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
 autocmd BufRead,BufNewFile *.tmpl setlocal filetype=gohtmltmpl
+autocmd BufRead,BufNewFile *.trigger setlocal filetype=sh
 
 autocmd Filetype go,gomod setlocal noexpandtab
 autocmd Filetype c setlocal noexpandtab
