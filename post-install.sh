@@ -358,7 +358,6 @@ EOF
 				# Thunar - Device detection
 
 				apk add \
-					gnome-disk-utility \
 					gvfs \
 					gvfs-afc \
 					gvfs-afp \
@@ -403,7 +402,8 @@ EOF
 			adduser -s "/bin/zsh" -D "$NEW_USER"
 		fi
 
-		for GROUP in audio cdrom cdrw dialout disk floppy games lp netdev optical power rfkill scanner storage usb users video; do
+		for GROUP in audio cdrom cdrw dialout disk floppy games lp netdev optical power rfkill scanner storage usb users video wheel; do
+			addgroup "$GROUP" || true
 			addgroup "$NEW_USER" "$GROUP" || true
 		done
 	fi
