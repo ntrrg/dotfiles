@@ -69,14 +69,6 @@ fi
 
 if [ "$IS_GUI" -eq 0 ]; then
 	apk add vim
-
-	# New user
-
-	if [ -n "$NEW_USER" ]; then
-		if ! id "$NEW_USER" 2> /dev/null; then
-			adduser -s "/bin/zsh" -D "$NEW_USER"
-		fi
-	fi
 else
 	setup-xorg-base
 
@@ -286,12 +278,6 @@ EOF
 			st@ntrrg \
 			sxiv@ntrrg \
 			vim@ntrrg
-	else
-		apk add \
-			conky \
-			st \
-			sxiv \
-			vim
 	fi
 
 	# Materia
@@ -306,6 +292,10 @@ EOF
 
 	# Desktop Environtment
 
+	apk add
+		dbus \
+		lightdm-gtk-greeter
+
 	case $DE in
 	# DWM
 	dwm)
@@ -313,46 +303,50 @@ EOF
 			dunst \
 			dmenu \
 			dwm \
-			pcmanfm \
 			picom \
-			slock
+			slock \
+			spacefm
+
+		cat << EOF > "/usr/share/xsessions/dwm.desktop"
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=dwm
+Comment=Dynamic Window Manager
+Exec=dbus-launch dwm
+Icon=dwm
+Type=XSession
+EOF
 		;;
 
 	# XFCE 4
 	xfce | xfce-full)
-		apk add lightdm-gtk-greeter
-		rc-update add lightdm default
-
 		apk add \
-			dbus \
-			thunar-archive-plugin \
+			consolekit2 \
+			xfce-polkit \
 			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
 			xfce4-screenshooter \
-			xfce4-taskmanager \
 			xfce4-timer-plugin
 
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
 		fi
 
-		rc-update add dbus default
-
 		if [ "$IS_HARDWARE" -ne 0 ]; then
 			apk add xfce4-pulseaudio-plugin
 		fi
 
 		if [ "$DE" = "xfce-full" ]; then
+			rc-update add lightdm default
+
 			apk add \
-				consolekit2 \
 				mousepad \
-				polkit \
-				xfce-polkit \
+				thunar-archive-plugin \
+				xfce4-taskmanager \
 				xfce4-terminal \
 				xfce4-whiskermenu-plugin
-
-			rc-update add polkit default
 
 			if [ "$IS_HARDWARE" -ne 0 ]; then
 				# Thunar - Device detection
@@ -374,38 +368,61 @@ EOF
 
 				rc-update add fuse default
 			fi
-
-			# Language packages
-
-			echo "Installing language packages.."
-
-			ALL_PKGS="$(apk search "*")"
-			LANG_PKGS=""
-
-			for PKG in $(apk info); do
-				PKG_LANG="$PKG-lang"
-
-				if echo "$ALL_PKGS" | grep -q "^$PKG_LANG-\d"; then
-					LANG_PKGS="$LANG_PKGS $PKG_LANG"
-				fi
-			done
-
-			apk add $LANG_PKGS
 		fi
 		;;
 	esac
+fi
 
-	# New user
+#####################
+# Language packages #
+#####################
 
-	if [ -n "$NEW_USER" ]; then
-		if ! id "$NEW_USER" 2> /dev/null; then
-			adduser -s "/bin/zsh" -D "$NEW_USER"
-		fi
+if [ "$IS_GUI" -ne 0 ]; then
+	case $DE in
+	xfce-full)
+		echo "Installing language packages.."
 
-		for GROUP in audio cdrom cdrw dialout disk floppy games lp netdev optical power rfkill scanner storage usb users video wheel; do
-			addgroup "$GROUP" || true
-			addgroup "$NEW_USER" "$GROUP" || true
+		ALL_PKGS="$(apk search "*")"
+		LANG_PKGS=""
+
+		for PKG in $(apk info); do
+			PKG_LANG="$PKG-lang"
+
+			if echo "$ALL_PKGS" | grep -q "^$PKG_LANG-\d"; then
+				LANG_PKGS="$LANG_PKGS $PKG_LANG"
+			fi
 		done
+
+		apk add $LANG_PKGS
+		;;
+	esac
+fi
+
+############
+# New user #
+############
+
+if [ -n "$NEW_USER" ]; then
+	echo "Setting up the user '$NEW_USER'.."
+
+	if ! id "$NEW_USER" 2> /dev/null; then
+		adduser -s "/bin/zsh" -D "$NEW_USER"
+	fi
+
+	if [ "$IS_GUI" -ne 0 ]; then
+		case $DE in
+		xfce-full)
+			GROUPS="
+				audio cdrom cdrw dialout disk floppy games lp netdev optical power
+				rfkill scanner storage usb users video wheel
+			"
+
+			for GROUP in $GROUPS; do
+				addgroup "$GROUP" 2> /dev/null || true
+				addgroup "$NEW_USER" "$GROUP" 2> /dev/null || true
+			done
+			;;
+		esac
 	fi
 fi
 
