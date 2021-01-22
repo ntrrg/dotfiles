@@ -158,7 +158,7 @@ else
 
 	<match>
 		<test name="family">
-			<string>Helvetica</string>
+			<string>Comic Sans MS</string>
 		</test>
 
 		<edit name="family" mode="assign" binding="strong">
@@ -168,7 +168,7 @@ else
 
 	<match>
 		<test name="family">
-			<string>Verdana</string>
+			<string>Helvetica</string>
 		</test>
 
 		<edit name="family" mode="assign" binding="strong">
@@ -188,11 +188,11 @@ else
 
 	<match>
 		<test name="family">
-			<string>Comic Sans MS</string>
+			<string>Times</string>
 		</test>
 
 		<edit name="family" mode="assign" binding="strong">
-			<string>Noto Sans</string>
+			<string>Noto Serif</string>
 		</edit>
 	</match>
 
@@ -208,11 +208,35 @@ else
 
 	<match>
 		<test name="family">
-			<string>Times</string>
+			<string>Verdana</string>
 		</test>
 
 		<edit name="family" mode="assign" binding="strong">
-			<string>Noto Serif</string>
+			<string>Noto Sans</string>
+		</edit>
+	</match>
+
+	<!-- Monospace fonts -->
+
+  <match>
+    <test name="family" qual="any">
+      <string>monospace</string>
+    </test>
+  
+    <edit binding="strong" mode="prepend" name="family">
+      <string>Noto Sans Mono</string>
+    </edit>
+  </match>
+
+		<!-- MS fonts -->
+
+	<match>
+		<test name="family">
+			<string>Courier New</string>
+		</test>
+
+		<edit name="family" mode="assign" binding="strong">
+			<string>Noto Sans Mono</string>
 		</edit>
 	</match>
 </fontconfig>
@@ -231,7 +255,7 @@ EOF
     <test name="family" qual="any">
       <string>monospace</string>
     </test>
-  
+
     <edit binding="strong" mode="prepend" name="family">
       <string>Hurmit Nerd Font</string>
     </edit>
@@ -292,7 +316,7 @@ EOF
 
 	# Desktop Environtment
 
-	apk add
+	apk add \
 		dbus \
 		lightdm-gtk-greeter
 
@@ -328,7 +352,7 @@ EOF
 			xfce4-notifyd \
 			xfce4-screensaver \
 			xfce4-screenshooter \
-			xfce4-timer-plugin
+			xfce4-timer-plugin || apk fix
 
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
@@ -343,12 +367,40 @@ EOF
 
 			apk add \
 				mousepad \
+				ristretto \
 				thunar-archive-plugin \
 				xfce4-taskmanager \
 				xfce4-terminal \
 				xfce4-whiskermenu-plugin
 
 			if [ "$IS_HARDWARE" -ne 0 ]; then
+				apk add \
+					gnome-disk-utility \
+					network-manager-applet \
+					xfburn
+
+				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
+[main]
+dhcp=internal
+
+[ifupdown]
+managed=true
+EOF
+
+				rc-update add networkmanager default
+
+				if lspci | grep -q "Network controller"; then
+					apk add iwd
+
+					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
+
+[device]
+wifi.backend=iwd
+EOF
+
+					rc-update add iwd default
+				fi
+
 				# Thunar - Device detection
 
 				apk add \
@@ -413,8 +465,8 @@ if [ -n "$NEW_USER" ]; then
 		case $DE in
 		xfce-full)
 			GROUPS="
-				audio cdrom cdrw dialout disk floppy games lp netdev optical power
-				rfkill scanner storage usb users video wheel
+				audio cdrom cdrw dialout disk floppy games lp netdev optical plugdev
+				power rfkill scanner storage usb users video wheel
 			"
 
 			for GROUP in $GROUPS; do
