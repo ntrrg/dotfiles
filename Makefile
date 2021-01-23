@@ -11,7 +11,7 @@ abuild:
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
-	cp -rpf "bin" "$$HOME/.local/"
+	cp -pf $(binaries) "$$HOME/.local/bin/"
 
 .PHONY: git
 git:
