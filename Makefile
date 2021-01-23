@@ -1,4 +1,4 @@
-binaries := $(shell find bin -type f -executable -exec echo '{}' \+)
+binaries := $(shell find bin -name "*.sh")
 
 .PHONY: all
 all: gui
@@ -12,6 +12,7 @@ abuild:
 bin:
 	mkdir -p "$$HOME/.local/bin"
 	cp -pf $(binaries) "$$HOME/.local/bin/"
+	chmod -R +x "$$HOME/.local/bin"
 
 .PHONY: git
 git:
@@ -76,7 +77,7 @@ xfce:
 # Development #
 ###############
 
-pish := $(shell find . -maxdepth 1 -name "post-install*.sh" -exec echo '{}' \+)
+pish := $(shell find . -maxdepth 1 -name "post-install*.sh")
 
 .PHONY: ci
 ci: lint
