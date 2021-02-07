@@ -19,13 +19,17 @@
 * Simple smart-hide panel.
 
   1. Open applications.
-  2. Status area.
-  3. Notification area.
-  4. Audio controls.
-  5. Clock.
-  6. Timer.
+  2. Network I/O monitor.
+  3. Status area.
+  4. Notification area.
+  5. Audio controls.
+  6. Clock.
+  7. Timer.
+  8. System monitor.
+  9. Disk I/O monitor.
+  10. Temperature sensors monitor.
 
-* No title bars and desktop margin.
+* No title bars.
 
 * Keyboard shortcuts.
 

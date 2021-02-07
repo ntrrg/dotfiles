@@ -1,0 +1,12 @@
+Device=/dev/sda
+UseLabel=0
+Text=Internal eMMC
+UpdatePeriod=500
+Statistics=0
+XferRate=40
+CombineRWdata=0
+MonitorBarOrder=0
+ReadColor=rgb(78,154,6)
+WriteColor=rgb(32,74,135)
+ReadWriteColor=rgb(0,255,0)
+
