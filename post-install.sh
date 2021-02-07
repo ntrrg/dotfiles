@@ -8,6 +8,7 @@ IS_GUI="${IS_GUI:-1}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
 NEW_USER="${NEW_USER:-""}"
+LANGUAGE="${LANGUAGE:-"C"}"
 
 ################
 # Installation #
@@ -53,6 +54,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		lvm2 \
 		ntfs-3g \
 		pciutils \
+		pm-utils \
 		smartmontools \
 		usbutils \
 		util-linux
@@ -64,6 +66,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 
 	if lsmod | grep -q "bluetooth"; then
 		apk add bluez
+		rc-update add bluetooth default
 	fi
 fi
 
@@ -82,7 +85,6 @@ else
 		apk add \
 			alsa-utils \
 			pavucontrol \
-			pm-utils \
 			pulseaudio \
 			pulseaudio-utils \
 			xcalib \
@@ -278,42 +280,6 @@ EOF
 	ln -sf "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf" "/etc/fonts/conf.d/69-hurmit-nerd-font.conf"
 	fc-cache -f
 
-	# Apps
-
-	apk add \
-		chromium \
-		evince \
-		firefox \
-		flatpak \
-		gimp \
-		inkscape \
-		midori \
-		telegram-desktop \
-		transmission \
-		vlc-qt \
-		xarchiver
-
-	flatpak remote-add --if-not-exists \
-		flathub https://flathub.org/repo/flathub.flatpakrepo || true
-
-	if grep -q "@ntrrg" /etc/apk/repositories; then
-		apk add \
-			conky@ntrrg \
-			st@ntrrg \
-			sxiv@ntrrg \
-			vim@ntrrg
-	fi
-
-	# Materia
-
-	apk add \
-		materia materia-gtk3 \
-		materia-dark materia-dark-gtk3
-
-	# Papirus
-
-	apk add papirus-icon-theme
-
 	# Desktop Environtment
 
 	apk add \
@@ -351,15 +317,25 @@ EOF
 			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
-			xfce4-screenshooter \
-			xfce4-timer-plugin || apk fix
+			xfce4-screenshooter || apk fix
 
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
 		fi
 
+		# Plugins
+
+		apk add \
+			xfce4-genmon-plugin@ntrrg \
+			xfce4-netload-plugin@ntrrg \
+			xfce4-systemload-plugin@ntrrg \
+			xfce4-timer-plugin@ntrrg
+
 		if [ "$IS_HARDWARE" -ne 0 ]; then
-			apk add xfce4-pulseaudio-plugin
+			apk add \
+				xfce4-diskperf-plugin@ntrrg \
+				xfce4-pulseaudio-plugin@ntrrg \
+				xfce4-sensors-plugin
 		fi
 
 		if [ "$DE" = "xfce-full" ]; then
@@ -368,10 +344,10 @@ EOF
 			apk add \
 				mousepad \
 				ristretto \
+				thunar \
 				thunar-archive-plugin \
 				xfce4-taskmanager \
-				xfce4-terminal \
-				xfce4-whiskermenu-plugin
+				xfce4-terminal
 
 			if [ "$IS_HARDWARE" -ne 0 ]; then
 				apk add \
@@ -420,34 +396,50 @@ EOF
 
 				rc-update add fuse default
 			fi
+
+			# Plugins
+
+			apk add xfce4-whiskermenu-plugin
 		fi
 		;;
 	esac
-fi
 
-#####################
-# Language packages #
-#####################
+	# Apps
 
-if [ "$IS_GUI" -ne 0 ]; then
-	case $DE in
-	xfce-full)
-		echo "Installing language packages.."
+	apk add \
+		chromium \
+		evince \
+		firefox \
+		flatpak \
+		gimp \
+		inkscape \
+		midori \
+		telegram-desktop \
+		transmission \
+		vlc-qt \
+		xarchiver
 
-		ALL_PKGS="$(apk search "*")"
-		LANG_PKGS=""
+	flatpak remote-add --if-not-exists \
+		flathub https://flathub.org/repo/flathub.flatpakrepo || true
 
-		for PKG in $(apk info); do
-			PKG_LANG="$PKG-lang"
+	if [ "$NEW_USER" = "ntrrg" ]; then
+		apk add \
+			conky@ntrrg \
+			st@ntrrg \
+			sxiv@ntrrg \
+			vim@ntrrg
+	fi
 
-			if echo "$ALL_PKGS" | grep -q "^$PKG_LANG-\d"; then
-				LANG_PKGS="$LANG_PKGS $PKG_LANG"
-			fi
-		done
+	# Themes
 
-		apk add $LANG_PKGS
-		;;
-	esac
+	apk add \
+		materia-gtk-theme@ntrrg \
+		materia-gtk-theme-compact@ntrrg \
+		materia-gtk-theme-dark@ntrrg \
+		materia-gtk-theme-dark-compact@ntrrg \
+		materia-gtk-theme-light@ntrrg \
+		materia-gtk-theme-light-compact@ntrrg \
+		papirus-icon-theme
 fi
 
 ############
@@ -473,6 +465,15 @@ if [ -n "$NEW_USER" ]; then
 				addgroup "$GROUP" 2> /dev/null || true
 				addgroup "$NEW_USER" "$GROUP" 2> /dev/null || true
 			done
+
+			if [ ! -f "/home/$NEW_USER/.profile" ]; then
+				cat << EOF > "/home/$NEW_USER/.profile"
+export CHARSET="UTF-8"
+export LANGUAGE="$LANGUAGE"
+export LC_ALL="$LANGUAGE.UTF-8"
+export LANG="$LANGUAGE.UTF-8"
+EOF
+			fi
 			;;
 		esac
 	fi
