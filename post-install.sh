@@ -7,8 +7,9 @@ DE="${DE:-"xfce"}"
 IS_GUI="${IS_GUI:-1}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
-NEW_USER="${NEW_USER:-""}"
 LANGUAGE="${LANGUAGE:-"C"}"
+NEW_USER="${NEW_USER:-""}"
+SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
 
 ################
 # Installation #
@@ -440,6 +441,22 @@ EOF
 		materia-gtk-theme-light@ntrrg \
 		materia-gtk-theme-light-compact@ntrrg \
 		papirus-icon-theme
+fi
+
+############
+# Firewall #
+############
+
+if [ "$SETUP_FIREWALL" -ne 0 ]; then
+	iptables -Z
+	iptables -F
+	iptables -P INPUT REJECT
+	iptables -P FORWARD ACCEPT
+	iptables -P OUTPUT ACCEPT
+	iptables -A INPUT -i lo -j ACCEPT
+	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	iptables -A INPUT -p icmp -j ACCEPT
+	iptables-save
 fi
 
 ############
