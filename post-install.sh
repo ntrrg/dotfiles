@@ -456,7 +456,9 @@ if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	iptables -A INPUT -i lo -j ACCEPT
 	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 	iptables -A INPUT -p icmp -j ACCEPT
-	iptables-save
+
+	rc-service iptables save
+	rc-update add iptables default
 fi
 
 ############
