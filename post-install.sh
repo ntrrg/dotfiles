@@ -336,7 +336,7 @@ EOF
 			apk add \
 				xfce4-diskperf-plugin@ntrrg \
 				xfce4-pulseaudio-plugin@ntrrg \
-				xfce4-sensors-plugin
+				xfce4-sensors-plugin@ntrrg
 		fi
 
 		if [ "$DE" = "xfce-full" ]; then
@@ -466,7 +466,7 @@ fi
 ############
 
 if [ -n "$NEW_USER" ]; then
-	echo "Setting up the user '$NEW_USER'.."
+	echo "Setting up user '$NEW_USER'.."
 
 	if ! id "$NEW_USER" 2> /dev/null; then
 		adduser -s "/bin/zsh" -D "$NEW_USER"
