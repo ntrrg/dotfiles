@@ -268,7 +268,7 @@ syn match goSpaceError display excludenl "\s\+$"
 hi def link goSpaceError Error
 
 " -----------------------------------------------------------------------------
-" Stdlib types (Go 1.15)
+" Stdlib types (Go 1.16)
 
 syn match goStdlibType /\<tar\.Format\>/
 syn match goStdlibType /\<tar\.Header\>/
@@ -598,6 +598,7 @@ syn match goStdlibType /\<plan9obj\.FileHeader\>/
 syn match goStdlibType /\<plan9obj\.Section\>/
 syn match goStdlibType /\<plan9obj\.SectionHeader\>/
 syn match goStdlibType /\<plan9obj\.Sym\>/
+syn match goStdlibType /\<embed\.FS\>/
 syn match goStdlibType /\<encoding\.BinaryMarshaler\>/
 syn match goStdlibType /\<encoding\.BinaryUnmarshaler\>/
 syn match goStdlibType /\<encoding\.TextMarshaler\>/
@@ -755,6 +756,12 @@ syn match goStdlibType /\<build\.ImportMode\>/
 syn match goStdlibType /\<build\.MultiplePackageError\>/
 syn match goStdlibType /\<build\.NoGoError\>/
 syn match goStdlibType /\<build\.Package\>/
+syn match goStdlibType /\<constraint\.AndExpr\>/
+syn match goStdlibType /\<constraint\.Expr\>/
+syn match goStdlibType /\<constraint\.NotExpr\>/
+syn match goStdlibType /\<constraint\.OrExpr\>/
+syn match goStdlibType /\<constraint\.SyntaxError\>/
+syn match goStdlibType /\<constraint\.TagExpr\>/
 syn match goStdlibType /\<constant\.Kind\>/
 syn match goStdlibType /\<constant\.Value\>/
 syn match goStdlibType /\<doc\.Example\>/
@@ -897,6 +904,7 @@ syn match goStdlibType /\<io\.LimitedReader\>/
 syn match goStdlibType /\<io\.PipeReader\>/
 syn match goStdlibType /\<io\.PipeWriter\>/
 syn match goStdlibType /\<io\.ReadCloser\>/
+syn match goStdlibType /\<io\.ReadSeekCloser\>/
 syn match goStdlibType /\<io\.ReadSeeker\>/
 syn match goStdlibType /\<io\.ReadWriteCloser\>/
 syn match goStdlibType /\<io\.ReadWriteSeeker\>/
@@ -914,6 +922,19 @@ syn match goStdlibType /\<io\.WriteSeeker\>/
 syn match goStdlibType /\<io\.Writer\>/
 syn match goStdlibType /\<io\.WriterAt\>/
 syn match goStdlibType /\<io\.WriterTo\>/
+syn match goStdlibType /\<fs\.DirEntry\>/
+syn match goStdlibType /\<fs\.FS\>/
+syn match goStdlibType /\<fs\.File\>/
+syn match goStdlibType /\<fs\.FileInfo\>/
+syn match goStdlibType /\<fs\.FileMode\>/
+syn match goStdlibType /\<fs\.GlobFS\>/
+syn match goStdlibType /\<fs\.PathError\>/
+syn match goStdlibType /\<fs\.ReadDirFS\>/
+syn match goStdlibType /\<fs\.ReadDirFile\>/
+syn match goStdlibType /\<fs\.ReadFileFS\>/
+syn match goStdlibType /\<fs\.StatFS\>/
+syn match goStdlibType /\<fs\.SubFS\>/
+syn match goStdlibType /\<fs\.WalkDirFunc\>/
 syn match goStdlibType /\<log\.Logger\>/
 syn match goStdlibType /\<syslog\.Priority\>/
 syn match goStdlibType /\<syslog\.Writer\>/
@@ -1040,6 +1061,7 @@ syn match goStdlibType /\<url\.InvalidHostError\>/
 syn match goStdlibType /\<url\.URL\>/
 syn match goStdlibType /\<url\.Userinfo\>/
 syn match goStdlibType /\<url\.Values\>/
+syn match goStdlibType /\<os\.DirEntry\>/
 syn match goStdlibType /\<os\.File\>/
 syn match goStdlibType /\<os\.FileInfo\>/
 syn match goStdlibType /\<os\.FileMode\>/
@@ -1097,6 +1119,11 @@ syn match goStdlibType /\<runtime\.TypeAssertionError\>/
 syn match goStdlibType /\<debug\.BuildInfo\>/
 syn match goStdlibType /\<debug\.GCStats\>/
 syn match goStdlibType /\<debug\.Module\>/
+syn match goStdlibType /\<metrics\.Description\>/
+syn match goStdlibType /\<metrics\.Float64Histogram\>/
+syn match goStdlibType /\<metrics\.Sample\>/
+syn match goStdlibType /\<metrics\.Value\>/
+syn match goStdlibType /\<metrics\.ValueKind\>/
 syn match goStdlibType /\<pprof\.LabelSet\>/
 syn match goStdlibType /\<pprof\.Profile\>/
 syn match goStdlibType /\<trace\.Region\>/
@@ -1200,6 +1227,8 @@ syn match goStdlibType /\<testing\.M\>/
 syn match goStdlibType /\<testing\.PB\>/
 syn match goStdlibType /\<testing\.T\>/
 syn match goStdlibType /\<testing\.TB\>/
+syn match goStdlibType /\<fstest\.MapFS\>/
+syn match goStdlibType /\<fstest\.MapFile\>/
 syn match goStdlibType /\<quick\.CheckEqualError\>/
 syn match goStdlibType /\<quick\.CheckError\>/
 syn match goStdlibType /\<quick\.Config\>/
@@ -1216,11 +1245,13 @@ syn match goStdlibType /\<parse\.BoolNode\>/
 syn match goStdlibType /\<parse\.BranchNode\>/
 syn match goStdlibType /\<parse\.ChainNode\>/
 syn match goStdlibType /\<parse\.CommandNode\>/
+syn match goStdlibType /\<parse\.CommentNode\>/
 syn match goStdlibType /\<parse\.DotNode\>/
 syn match goStdlibType /\<parse\.FieldNode\>/
 syn match goStdlibType /\<parse\.IdentifierNode\>/
 syn match goStdlibType /\<parse\.IfNode\>/
 syn match goStdlibType /\<parse\.ListNode\>/
+syn match goStdlibType /\<parse\.Mode\>/
 syn match goStdlibType /\<parse\.NilNode\>/
 syn match goStdlibType /\<parse\.Node\>/
 syn match goStdlibType /\<parse\.NodeType\>/
@@ -1253,7 +1284,7 @@ syn match goStdlibType /\<unsafe\.Pointer\>/
 hi def link goStdlibType Type
 
 " -----------------------------------------------------------------------------
-" Stdlib functions (Go 1.15)
+" Stdlib functions (Go 1.16)
 
 syn match goStdlibFunction /\<tar\.FileInfoHeader\>/
 syn match goStdlibFunction /\<tar\.NewReader\>/
@@ -1572,6 +1603,7 @@ syn match goStdlibFunction /\<flag\.Duration\>/
 syn match goStdlibFunction /\<flag\.DurationVar\>/
 syn match goStdlibFunction /\<flag\.Float64\>/
 syn match goStdlibFunction /\<flag\.Float64Var\>/
+syn match goStdlibFunction /\<flag\.Func\>/
 syn match goStdlibFunction /\<flag\.Int\>/
 syn match goStdlibFunction /\<flag\.Int64\>/
 syn match goStdlibFunction /\<flag\.Int64Var\>/
@@ -1635,6 +1667,10 @@ syn match goStdlibFunction /\<build\.ArchChar\>/
 syn match goStdlibFunction /\<build\.IsLocalImport\>/
 syn match goStdlibFunction /\<build\.Import\>/
 syn match goStdlibFunction /\<build\.ImportDir\>/
+syn match goStdlibFunction /\<constraint\.IsGoBuild\>/
+syn match goStdlibFunction /\<constraint\.IsPlusBuild\>/
+syn match goStdlibFunction /\<constraint\.PlusBuildLines\>/
+syn match goStdlibFunction /\<constraint\.Parse\>/
 syn match goStdlibFunction /\<constant\.BitLen\>/
 syn match goStdlibFunction /\<constant\.BoolVal\>/
 syn match goStdlibFunction /\<constant\.Bytes\>/
@@ -1767,6 +1803,7 @@ syn match goStdlibFunction /\<template\.JSEscaper\>/
 syn match goStdlibFunction /\<template\.URLQueryEscaper\>/
 syn match goStdlibFunction /\<template\.Must\>/
 syn match goStdlibFunction /\<template\.New\>/
+syn match goStdlibFunction /\<template\.ParseFS\>/
 syn match goStdlibFunction /\<template\.ParseFiles\>/
 syn match goStdlibFunction /\<template\.ParseGlob\>/
 syn match goStdlibFunction /\<image\.RegisterFormat\>/
@@ -1810,14 +1847,23 @@ syn match goStdlibFunction /\<io\.Copy\>/
 syn match goStdlibFunction /\<io\.CopyBuffer\>/
 syn match goStdlibFunction /\<io\.CopyN\>/
 syn match goStdlibFunction /\<io\.Pipe\>/
+syn match goStdlibFunction /\<io\.ReadAll\>/
 syn match goStdlibFunction /\<io\.ReadAtLeast\>/
 syn match goStdlibFunction /\<io\.ReadFull\>/
 syn match goStdlibFunction /\<io\.WriteString\>/
+syn match goStdlibFunction /\<io\.NopCloser\>/
 syn match goStdlibFunction /\<io\.LimitReader\>/
 syn match goStdlibFunction /\<io\.MultiReader\>/
 syn match goStdlibFunction /\<io\.TeeReader\>/
 syn match goStdlibFunction /\<io\.NewSectionReader\>/
 syn match goStdlibFunction /\<io\.MultiWriter\>/
+syn match goStdlibFunction /\<fs\.Glob\>/
+syn match goStdlibFunction /\<fs\.ReadFile\>/
+syn match goStdlibFunction /\<fs\.ValidPath\>/
+syn match goStdlibFunction /\<fs\.WalkDir\>/
+syn match goStdlibFunction /\<fs\.ReadDir\>/
+syn match goStdlibFunction /\<fs\.Sub\>/
+syn match goStdlibFunction /\<fs\.Stat\>/
 syn match goStdlibFunction /\<ioutil\.NopCloser\>/
 syn match goStdlibFunction /\<ioutil\.ReadAll\>/
 syn match goStdlibFunction /\<ioutil\.ReadDir\>/
@@ -1841,6 +1887,7 @@ syn match goStdlibFunction /\<log\.SetFlags\>/
 syn match goStdlibFunction /\<log\.SetOutput\>/
 syn match goStdlibFunction /\<log\.SetPrefix\>/
 syn match goStdlibFunction /\<log\.Writer\>/
+syn match goStdlibFunction /\<log\.Default\>/
 syn match goStdlibFunction /\<log\.New\>/
 syn match goStdlibFunction /\<syslog\.NewLogger\>/
 syn match goStdlibFunction /\<syslog\.Dial\>/
@@ -2092,6 +2139,7 @@ syn match goStdlibFunction /\<http\.ServeFile\>/
 syn match goStdlibFunction /\<http\.ServeTLS\>/
 syn match goStdlibFunction /\<http\.SetCookie\>/
 syn match goStdlibFunction /\<http\.StatusText\>/
+syn match goStdlibFunction /\<http\.FS\>/
 syn match goStdlibFunction /\<http\.FileServer\>/
 syn match goStdlibFunction /\<http\.NotFoundHandler\>/
 syn match goStdlibFunction /\<http\.RedirectHandler\>/
@@ -2175,6 +2223,7 @@ syn match goStdlibFunction /\<os\.Chmod\>/
 syn match goStdlibFunction /\<os\.Chown\>/
 syn match goStdlibFunction /\<os\.Chtimes\>/
 syn match goStdlibFunction /\<os\.Clearenv\>/
+syn match goStdlibFunction /\<os\.DirFS\>/
 syn match goStdlibFunction /\<os\.Environ\>/
 syn match goStdlibFunction /\<os\.Executable\>/
 syn match goStdlibFunction /\<os\.Exit\>/
@@ -2201,8 +2250,10 @@ syn match goStdlibFunction /\<os\.Link\>/
 syn match goStdlibFunction /\<os\.LookupEnv\>/
 syn match goStdlibFunction /\<os\.Mkdir\>/
 syn match goStdlibFunction /\<os\.MkdirAll\>/
+syn match goStdlibFunction /\<os\.MkdirTemp\>/
 syn match goStdlibFunction /\<os\.NewSyscallError\>/
 syn match goStdlibFunction /\<os\.Pipe\>/
+syn match goStdlibFunction /\<os\.ReadFile\>/
 syn match goStdlibFunction /\<os\.Readlink\>/
 syn match goStdlibFunction /\<os\.Remove\>/
 syn match goStdlibFunction /\<os\.RemoveAll\>/
@@ -2216,7 +2267,10 @@ syn match goStdlibFunction /\<os\.Unsetenv\>/
 syn match goStdlibFunction /\<os\.UserCacheDir\>/
 syn match goStdlibFunction /\<os\.UserConfigDir\>/
 syn match goStdlibFunction /\<os\.UserHomeDir\>/
+syn match goStdlibFunction /\<os\.WriteFile\>/
+syn match goStdlibFunction /\<os\.ReadDir\>/
 syn match goStdlibFunction /\<os\.Create\>/
+syn match goStdlibFunction /\<os\.CreateTemp\>/
 syn match goStdlibFunction /\<os\.NewFile\>/
 syn match goStdlibFunction /\<os\.Open\>/
 syn match goStdlibFunction /\<os\.OpenFile\>/
@@ -2230,6 +2284,7 @@ syn match goStdlibFunction /\<exec\.CommandContext\>/
 syn match goStdlibFunction /\<signal\.Ignore\>/
 syn match goStdlibFunction /\<signal\.Ignored\>/
 syn match goStdlibFunction /\<signal\.Notify\>/
+syn match goStdlibFunction /\<signal\.NotifyContext\>/
 syn match goStdlibFunction /\<signal\.Reset\>/
 syn match goStdlibFunction /\<signal\.Stop\>/
 syn match goStdlibFunction /\<user\.LookupGroup\>/
@@ -2263,6 +2318,7 @@ syn match goStdlibFunction /\<filepath\.SplitList\>/
 syn match goStdlibFunction /\<filepath\.ToSlash\>/
 syn match goStdlibFunction /\<filepath\.VolumeName\>/
 syn match goStdlibFunction /\<filepath\.Walk\>/
+syn match goStdlibFunction /\<filepath\.WalkDir\>/
 syn match goStdlibFunction /\<plugin\.Open\>/
 syn match goStdlibFunction /\<reflect\.Copy\>/
 syn match goStdlibFunction /\<reflect\.DeepEqual\>/
@@ -2344,6 +2400,8 @@ syn match goStdlibFunction /\<debug\.SetTraceback\>/
 syn match goStdlibFunction /\<debug\.Stack\>/
 syn match goStdlibFunction /\<debug\.WriteHeapDump\>/
 syn match goStdlibFunction /\<debug\.ReadBuildInfo\>/
+syn match goStdlibFunction /\<metrics\.Read\>/
+syn match goStdlibFunction /\<metrics\.All\>/
 syn match goStdlibFunction /\<pprof\.Do\>/
 syn match goStdlibFunction /\<pprof\.ForLabels\>/
 syn match goStdlibFunction /\<pprof\.Label\>/
@@ -2496,6 +2554,8 @@ syn match goStdlibFunction /\<syscall\.Accept4\>/
 syn match goStdlibFunction /\<syscall\.Access\>/
 syn match goStdlibFunction /\<syscall\.Acct\>/
 syn match goStdlibFunction /\<syscall\.Adjtimex\>/
+syn match goStdlibFunction /\<syscall\.AllThreadsSyscall\>/
+syn match goStdlibFunction /\<syscall\.AllThreadsSyscall6\>/
 syn match goStdlibFunction /\<syscall\.AttachLsf\>/
 syn match goStdlibFunction /\<syscall\.Bind\>/
 syn match goStdlibFunction /\<syscall\.BindToDevice\>/
@@ -2648,7 +2708,9 @@ syn match goStdlibFunction /\<syscall\.Sendto\>/
 syn match goStdlibFunction /\<syscall\.SetLsfPromisc\>/
 syn match goStdlibFunction /\<syscall\.SetNonblock\>/
 syn match goStdlibFunction /\<syscall\.Setdomainname\>/
+syn match goStdlibFunction /\<syscall\.Setegid\>/
 syn match goStdlibFunction /\<syscall\.Setenv\>/
+syn match goStdlibFunction /\<syscall\.Seteuid\>/
 syn match goStdlibFunction /\<syscall\.Setfsgid\>/
 syn match goStdlibFunction /\<syscall\.Setfsuid\>/
 syn match goStdlibFunction /\<syscall\.Setgid\>/
@@ -2731,11 +2793,14 @@ syn match goStdlibFunction /\<testing\.Short\>/
 syn match goStdlibFunction /\<testing\.Verbose\>/
 syn match goStdlibFunction /\<testing\.Benchmark\>/
 syn match goStdlibFunction /\<testing\.MainStart\>/
+syn match goStdlibFunction /\<fstest\.TestFS\>/
 syn match goStdlibFunction /\<iotest\.DataErrReader\>/
+syn match goStdlibFunction /\<iotest\.ErrReader\>/
 syn match goStdlibFunction /\<iotest\.HalfReader\>/
 syn match goStdlibFunction /\<iotest\.NewReadLogger\>/
 syn match goStdlibFunction /\<iotest\.NewWriteLogger\>/
 syn match goStdlibFunction /\<iotest\.OneByteReader\>/
+syn match goStdlibFunction /\<iotest\.TestReader\>/
 syn match goStdlibFunction /\<iotest\.TimeoutReader\>/
 syn match goStdlibFunction /\<iotest\.TruncateWriter\>/
 syn match goStdlibFunction /\<quick\.Check\>/
@@ -2753,6 +2818,7 @@ syn match goStdlibFunction /\<template\.JSEscaper\>/
 syn match goStdlibFunction /\<template\.URLQueryEscaper\>/
 syn match goStdlibFunction /\<template\.Must\>/
 syn match goStdlibFunction /\<template\.New\>/
+syn match goStdlibFunction /\<template\.ParseFS\>/
 syn match goStdlibFunction /\<template\.ParseFiles\>/
 syn match goStdlibFunction /\<template\.ParseGlob\>/
 syn match goStdlibFunction /\<parse\.IsEmptyTree\>/

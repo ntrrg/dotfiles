@@ -71,7 +71,7 @@ _main() {
 				grep -v "^golang.org/"
 		)"
 
-		cd -
+		cd "$OLDPWD"
 	fi
 
 	for PACKAGE in ${PACKAGES:-$@}; do
@@ -84,13 +84,13 @@ _main() {
 		)"
 
 		if [ "$PRINT_TYPES" -eq 1 ]; then
-			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^type ")"
+			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^type " | tee)"
 
 			if [ "$PRINT_IFACES" -eq 1 ]; then
-				IDENTIFIERS="$(echo "$IDENTIFIERS" | grep " interface{ ... }$")"
+				IDENTIFIERS="$(echo "$IDENTIFIERS" | grep " interface{ ... }$" | tee)"
 			fi
 		elif [ "$PRINT_FUNCS" -eq 1 ]; then
-			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^func ")"
+			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^func " | tee)"
 		fi
 
 		IDENTIFIERS="$(echo "$IDENTIFIERS" | sed "s/ /%20/g")"
