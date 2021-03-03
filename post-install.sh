@@ -9,6 +9,7 @@ IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
 LANGUAGE="${LANGUAGE:-"C"}"
 NEW_USER="${NEW_USER:-""}"
+NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
 
 ################
@@ -343,6 +344,8 @@ EOF
 			rc-update add lightdm default
 
 			apk add \
+				libreoffice \
+				"libreoffice-lang-${LANGUAGE%_*}" \
 				mousepad \
 				ristretto \
 				thunar \
@@ -352,8 +355,11 @@ EOF
 
 			if [ "$IS_HARDWARE" -ne 0 ]; then
 				apk add \
+					cheese \
+					cups \
 					gnome-disk-utility \
 					network-manager-applet \
+					simple-scan \
 					xfburn
 
 				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
@@ -364,6 +370,7 @@ dhcp=internal
 managed=true
 EOF
 
+				rc-update add cupsd default
 				rc-update add networkmanager default
 
 				if lspci | grep -q "Network controller"; then
@@ -450,7 +457,7 @@ fi
 if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	iptables -Z
 	iptables -F
-	iptables -P INPUT REJECT
+	iptables -P INPUT DROP
 	iptables -P FORWARD ACCEPT
 	iptables -P OUTPUT ACCEPT
 	iptables -A INPUT -i lo -j ACCEPT
@@ -466,35 +473,31 @@ fi
 ############
 
 if [ -n "$NEW_USER" ]; then
-	echo "Setting up user '$NEW_USER'.."
-
 	if ! id "$NEW_USER" 2> /dev/null; then
 		adduser -s "/bin/zsh" -D "$NEW_USER"
 	fi
 
-	if [ "$IS_GUI" -ne 0 ]; then
-		case $DE in
-		xfce-full)
-			GROUPS="
-				audio cdrom cdrw dialout disk floppy games lp netdev optical plugdev
-				power rfkill scanner storage usb users video wheel
-			"
+	if [ -n "$NEW_USER_PASSWORD" ]; then
+		echo "$NEW_USER:$NEW_USER_PASSWORD" | chpasswd
+	fi
 
-			for GROUP in $GROUPS; do
-				addgroup "$GROUP" 2> /dev/null || true
-				addgroup "$NEW_USER" "$GROUP" 2> /dev/null || true
-			done
+	GROUPS="
+		audio cdrom cdrw dialout disk floppy games lp netdev optical plugdev power
+		rfkill scanner storage usb users video wheel
+	"
 
-			if [ ! -f "/home/$NEW_USER/.profile" ]; then
-				cat << EOF > "/home/$NEW_USER/.profile"
+	for GROUP in $GROUPS; do
+		addgroup "$GROUP" 2> /dev/null || true
+		addgroup "$NEW_USER" "$GROUP" 2> /dev/null || true
+	done
+
+	if [ ! -f "/home/$NEW_USER/.profile" ]; then
+		cat << EOF > "/home/$NEW_USER/.profile"
 export CHARSET="UTF-8"
 export LANGUAGE="$LANGUAGE"
 export LC_ALL="$LANGUAGE.UTF-8"
 export LANG="$LANGUAGE.UTF-8"
 EOF
-			fi
-			;;
-		esac
 	fi
 fi
 
