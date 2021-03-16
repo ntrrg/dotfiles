@@ -30,8 +30,6 @@ apk add \
 	gnupg \
 	gzip \
 	make \
-	man-pages \
-	mandoc \
 	mosh \
 	openssh \
 	p7zip \
@@ -357,6 +355,7 @@ EOF
 				apk add \
 					cheese \
 					cups \
+					cups-filters \
 					gnome-disk-utility \
 					network-manager-applet \
 					simple-scan \
@@ -433,6 +432,7 @@ EOF
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
 			conky@ntrrg \
+			dasel@ntrrg \
 			st@ntrrg \
 			sxiv@ntrrg \
 			vim@ntrrg
@@ -482,8 +482,8 @@ if [ -n "$NEW_USER" ]; then
 	fi
 
 	GROUPS="
-		audio cdrom cdrw dialout disk floppy games lp netdev optical plugdev power
-		rfkill scanner storage usb users video wheel
+		audio cdrom cdrw dialout disk floppy games lp lpadmin netdev optical
+		plugdev power rfkill scanner storage usb users video wheel
 	"
 
 	for GROUP in $GROUPS; do
