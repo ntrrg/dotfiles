@@ -56,11 +56,11 @@
   * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Tile window to the top.
   * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Tile window to the bottom.
   * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Tile window to the left.
-  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tole window to the right.
+  * <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tile window to the right.
   * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Tile window to the top-left.
   * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Tile window to the bottom-right.
   * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Tile window to the bottom-left.
-  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tole window to the top-right.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Tile window to the top-right.
   * <kbd>⌘</kbd> + <kbd>↑</kbd> -> Toggle vertical maximize window.
   * <kbd>⌘</kbd> + <kbd>↓</kbd> -> Minimize window.
   * <kbd>⌘</kbd> + <kbd>←</kbd> -> Start resize window.

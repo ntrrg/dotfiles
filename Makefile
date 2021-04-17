@@ -71,6 +71,7 @@ xfce:
 	cp -rpf "desktop/themes" "$$HOME/.local/share/"
 	# XFCE
 	mkdir -p "$$HOME/.config"
+	cp -rpf "desktop/gtk-3.0" "$$HOME/.config/"
 	cp -rpf "desktop/xfce4" "$$HOME/.config/"
 
 ###############
