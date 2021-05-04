@@ -31,6 +31,7 @@ apk add \
 	gzip \
 	make \
 	mosh \
+	nmap \
 	openssh \
 	p7zip \
 	pv \
@@ -280,137 +281,6 @@ EOF
 	ln -sf "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf" "/etc/fonts/conf.d/69-hurmit-nerd-font.conf"
 	fc-cache -f
 
-	# Desktop Environtment
-
-	apk add \
-		dbus \
-		lightdm-gtk-greeter
-
-	case $DE in
-	# DWM
-	dwm)
-		apk add \
-			dunst \
-			dmenu \
-			dwm \
-			picom \
-			slock \
-			spacefm
-
-		cat << EOF > "/usr/share/xsessions/dwm.desktop"
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Name=dwm
-Comment=Dynamic Window Manager
-Exec=dbus-launch dwm
-Icon=dwm
-Type=XSession
-EOF
-		;;
-
-	# XFCE 4
-	xfce | xfce-full)
-		apk add \
-			consolekit2 \
-			xfce-polkit \
-			xfce4 \
-			xfce4-notifyd \
-			xfce4-screensaver \
-			xfce4-screenshooter || apk fix
-
-		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
-			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
-		fi
-
-		# Plugins
-
-		apk add \
-			xfce4-genmon-plugin@ntrrg \
-			xfce4-netload-plugin@ntrrg \
-			xfce4-systemload-plugin@ntrrg \
-			xfce4-timer-plugin@ntrrg
-
-		if [ "$IS_HARDWARE" -ne 0 ]; then
-			apk add \
-				xfce4-diskperf-plugin@ntrrg \
-				xfce4-pulseaudio-plugin@ntrrg \
-				xfce4-sensors-plugin@ntrrg
-		fi
-
-		if [ "$DE" = "xfce-full" ]; then
-			rc-update add lightdm default
-
-			apk add \
-				libreoffice \
-				"libreoffice-lang-${LANGUAGE%_*}" \
-				mousepad \
-				ristretto \
-				thunar \
-				thunar-archive-plugin \
-				xfce4-taskmanager \
-				xfce4-terminal
-
-			if [ "$IS_HARDWARE" -ne 0 ]; then
-				apk add \
-					cheese \
-					cups \
-					cups-filters \
-					gnome-disk-utility \
-					network-manager-applet \
-					simple-scan \
-					xfburn
-
-				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
-[main]
-dhcp=internal
-
-[ifupdown]
-managed=true
-EOF
-
-				rc-update add cupsd default
-				rc-update add networkmanager default
-
-				if lspci | grep -q "Network controller"; then
-					apk add iwd
-
-					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
-
-[device]
-wifi.backend=iwd
-EOF
-
-					rc-update add iwd default
-				fi
-
-				# Thunar - Device detection
-
-				apk add \
-					gvfs \
-					gvfs-afc \
-					gvfs-afp \
-					gvfs-archive \
-					gvfs-avahi \
-					gvfs-cdda \
-					gvfs-dav \
-					gvfs-fuse \
-					gvfs-gphoto2 \
-					gvfs-mtp \
-					gvfs-nfs \
-					gvfs-smb \
-					thunar-volman
-
-				rc-update add fuse default
-			fi
-
-			# Plugins
-
-			apk add xfce4-whiskermenu-plugin
-		fi
-		;;
-	esac
-
 	# Apps
 
 	apk add \
@@ -426,6 +296,14 @@ EOF
 		vlc-qt \
 		xarchiver
 
+	if [ "$IS_HARDWARE" -ne 0 ]; then
+		apk add \
+			cheese \
+			cups \
+			cups-filters \
+			simple-scan
+	fi
+
 	flatpak remote-add --if-not-exists \
 		flathub https://flathub.org/repo/flathub.flatpakrepo || true
 
@@ -437,6 +315,129 @@ EOF
 			sxiv@ntrrg \
 			vim@ntrrg
 	fi
+
+	# Desktop Environtment
+
+	apk add \
+		dbus \
+		lightdm-gtk-greeter
+
+	rc-update add lightdm default
+
+	case $DE in
+	# DWM
+	dwm)
+		apk add \
+			dunst \
+			dmenu \
+			dwm \
+			picom \
+			qt5ct@ntrrg \
+			slock \
+			spacefm \
+			xsettingsd@ntrrg
+
+		cat << EOF > "/usr/share/xsessions/dwm.desktop"
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=dwm
+Comment=Dynamic Window Manager
+Exec=dbus-launch dwm
+Icon=dwm
+Type=XSession
+EOF
+		;;
+
+	# XFCE 4
+	xfce)
+		apk add \
+			consolekit2 \
+			libreoffice \
+			"libreoffice-lang-${LANGUAGE%_*}" \
+			mousepad \
+			ristretto \
+			thunar \
+			thunar-archive-plugin \
+			xfce-polkit \
+			xfce4 \
+			xfce4-notifyd \
+			xfce4-screensaver \
+			xfce4-screenshooter \
+			xfce4-taskmanager \
+			xfce4-terminal || apk fix
+
+		# Remove accessibility errors from X session error log
+		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
+			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
+		fi
+
+		# Plugins
+
+		apk add \
+			xfce4-genmon-plugin@ntrrg \
+			xfce4-netload-plugin@ntrrg \
+			xfce4-systemload-plugin@ntrrg \
+			xfce4-timer-plugin@ntrrg \
+			xfce4-whiskermenu-plugin
+
+		if [ "$IS_HARDWARE" -ne 0 ]; then
+			apk add \
+				gnome-disk-utility \
+				network-manager-applet \
+				xfburn
+
+			cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
+[main]
+dhcp=internal
+
+[ifupdown]
+managed=true
+EOF
+
+			rc-update add cupsd default
+			rc-update add networkmanager default
+
+			if lspci | grep -q "Network controller"; then
+				apk add iwd
+
+				cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
+
+[device]
+wifi.backend=iwd
+EOF
+
+				rc-update add iwd default
+			fi
+
+			# Thunar - Device detection
+
+			apk add \
+				gvfs \
+				gvfs-afc \
+				gvfs-afp \
+				gvfs-archive \
+				gvfs-avahi \
+				gvfs-cdda \
+				gvfs-dav \
+				gvfs-fuse \
+				gvfs-gphoto2 \
+				gvfs-mtp \
+				gvfs-nfs \
+				gvfs-smb \
+				thunar-volman
+
+			rc-update add fuse default
+
+			# Plugins
+
+			apk add \
+				xfce4-diskperf-plugin@ntrrg \
+				xfce4-pulseaudio-plugin@ntrrg \
+				xfce4-sensors-plugin@ntrrg
+		fi
+		;;
+	esac
 
 	# Themes
 

@@ -18,6 +18,7 @@ apt install -y \
 	make \
 	man \
 	mosh \
+	nmap \
 	openssh \
 	p7zip \
 	pv \

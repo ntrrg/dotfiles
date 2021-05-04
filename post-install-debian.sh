@@ -28,6 +28,7 @@ apt-get install -y \
 	man \
 	mosh \
 	netselect \
+	nmap \
 	p7zip-full \
 	p7zip-rar \
 	pv \
