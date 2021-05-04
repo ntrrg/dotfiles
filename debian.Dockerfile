@@ -13,7 +13,7 @@ RUN \
   cd / && rm -rf /tmp/post-install
 WORKDIR "/home/$NEW_USER"
 COPY . dotfiles
-RUN chown -R "$NEW_USER":"$NEW_USER" dotfiles
+RUN chown -R "$NEW_USER":"$NEW_USER" "/home/$NEW_USER"
 USER "$NEW_USER"
 RUN cd dotfiles && make tui
 CMD ["/bin/zsh"]
