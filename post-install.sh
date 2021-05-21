@@ -12,6 +12,19 @@ NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 
+###########
+# Helpers #
+###########
+
+apk_add() {
+	_REPO="@$1"
+	shift
+
+	if grep "$_REPO" "/etc/apk/repositories"; then
+		apk add $(echo "$@" | xargs -n 1 printf "%s$_REPO")
+	fi
+}
+
 ################
 # Installation #
 ################
@@ -305,15 +318,14 @@ EOF
 	fi
 
 	flatpak remote-add --if-not-exists \
-		flathub https://flathub.org/repo/flathub.flatpakrepo || true
+		flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
-		apk add \
-			conky@ntrrg \
-			dasel@ntrrg \
-			st@ntrrg \
-			sxiv@ntrrg \
-			vim@ntrrg
+		apk_add @ntrrg \
+			conky \
+			st \
+			sxiv \
+			vim
 	fi
 
 	# Desktop Environtment
@@ -334,10 +346,12 @@ EOF
 			dmenu \
 			dwm \
 			picom \
-			qt5ct@ntrrg \
 			slock \
-			spacefm \
-			xsettingsd@ntrrg
+			spacefm
+
+		apk_add @ntrrg \
+			qt5ct \
+			xsettingsd
 
 		cat << EOF > "/usr/share/xsessions/dwm.desktop"
 [Desktop Entry]
@@ -377,11 +391,13 @@ EOF
 		# Plugins
 
 		apk add \
-			xfce4-genmon-plugin@ntrrg \
-			xfce4-netload-plugin@ntrrg \
-			xfce4-systemload-plugin@ntrrg \
-			xfce4-timer-plugin@ntrrg \
 			xfce4-whiskermenu-plugin
+
+		apk_add @ntrrg \
+			xfce4-genmon-plugin \
+			xfce4-netload-plugin \
+			xfce4-systemload-plugin \
+			xfce4-timer-plugin
 
 		if [ "$IS_HARDWARE" -ne 0 ]; then
 			apk add \
@@ -433,10 +449,10 @@ EOF
 
 			# Plugins
 
-			apk add \
-				xfce4-diskperf-plugin@ntrrg \
-				xfce4-pulseaudio-plugin@ntrrg \
-				xfce4-sensors-plugin@ntrrg
+			apk_add @ntrrg \
+				xfce4-diskperf-plugin \
+				xfce4-pulseaudio-plugin \
+				xfce4-sensors-plugin
 		fi
 		;;
 	esac
@@ -444,13 +460,15 @@ EOF
 	# Themes
 
 	apk add \
-		materia-gtk-theme@ntrrg \
-		materia-gtk-theme-compact@ntrrg \
-		materia-gtk-theme-dark@ntrrg \
-		materia-gtk-theme-dark-compact@ntrrg \
-		materia-gtk-theme-light@ntrrg \
-		materia-gtk-theme-light-compact@ntrrg \
 		papirus-icon-theme
+
+	apk_add @ntrrg \
+		materia-gtk-theme \
+		materia-gtk-theme-compact \
+		materia-gtk-theme-dark \
+		materia-gtk-theme-dark-compact \
+		materia-gtk-theme-light \
+		materia-gtk-theme-light-compact
 fi
 
 ############
@@ -486,14 +504,14 @@ if [ -n "$NEW_USER" ]; then
 		echo "$NEW_USER:$NEW_USER_PASSWORD" | chpasswd
 	fi
 
-	GROUPS="
+	_GROUPS="
 		audio cdrom cdrw dialout disk floppy games lp lpadmin netdev optical
 		plugdev power rfkill scanner storage usb users video wheel
 	"
 
-	for GROUP in $GROUPS; do
-		addgroup "$GROUP" 2> /dev/null || true
-		addgroup "$NEW_USER" "$GROUP" 2> /dev/null || true
+	for _GROUP in $_GROUPS; do
+		addgroup "$_GROUP" 2> /dev/null || true
+		addgroup "$NEW_USER" "$_GROUP" 2> /dev/null || true
 	done
 
 	if [ ! -f "/home/$NEW_USER/.profile" ]; then
