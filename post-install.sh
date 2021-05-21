@@ -327,6 +327,8 @@ EOF
 	case $DE in
 	# DWM
 	dwm)
+		# https://github.com/bakkeby/dwm-flexipatch
+
 		apk add \
 			dunst \
 			dmenu \
@@ -456,6 +458,8 @@ fi
 ############
 
 if [ "$SETUP_FIREWALL" -ne 0 ]; then
+	apk add iptables
+
 	iptables -Z
 	iptables -F
 	iptables -P INPUT DROP
