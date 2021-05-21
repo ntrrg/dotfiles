@@ -27,6 +27,8 @@ hostinfo() {
     * )
       if [ -e /sys/class/dmi/id/product_name ]; then
         DEVICE="$(cat /sys/class/dmi/id/sys_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
+      elif cat /proc/cpuinfo | grep -q "Raspberry"; then
+        DEVICE="$(cat /proc/cpuinfo | grep "Raspberry" | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ') ($(uname -m))"
       elif which getprop > /dev/null; then
         DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
       fi
@@ -37,7 +39,7 @@ hostinfo() {
         OS="$OS - Android $(getprop ro.build.version.release)"
       fi
 
-      CPU="$(cat /proc/cpuinfo | grep '^model name')"
+      CPU="$(lscpu | grep '^Model name')"
 
       if [ -z "$CPU" ]; then
         CPU="$(cat /proc/cpuinfo | grep '^Processor')"
