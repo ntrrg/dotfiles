@@ -370,7 +370,6 @@ EOF
 		apk add \
 			consolekit2 \
 			libreoffice \
-			"libreoffice-lang-${LANGUAGE%_*}" \
 			mousepad \
 			ristretto \
 			thunar \
@@ -382,6 +381,10 @@ EOF
 			xfce4-screenshooter \
 			xfce4-taskmanager \
 			xfce4-terminal || apk fix
+
+		if [ -n "$LANGUAGE" ] && [ "$LANGUAGE" != "C" ]; then
+			apk add "libreoffice-lang-${LANGUAGE%_*}"
+		fi
 
 		# Remove accessibility errors from X session error log
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
