@@ -17,11 +17,11 @@ SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 ###########
 
 apk_add() {
-	_REPO="@$1"
+	_REPO="$1"
 	shift
 
-	if grep "$_REPO" "/etc/apk/repositories"; then
-		apk add $(echo "$@" | xargs -n 1 printf "%s$_REPO")
+	if grep -q "$_REPO" "/etc/apk/repositories"; then
+		apk add $(echo "$@" | xargs -n 1 printf "%s$_REPO ")
 	fi
 }
 
