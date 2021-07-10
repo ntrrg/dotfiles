@@ -390,7 +390,11 @@ EOF
 			xfce4-terminal || apk fix
 
 		if [ "$LANGUAGE" != "C" ]; then
-			apk add "libreoffice-lang-${LANGUAGE%_*}"
+			_LANG="${LANGUAGE%_*}"
+			apk add "libreoffice-lang-$_LANG" || true
+
+			_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
+			apk add "libreoffice-lang-$_LANG" || true
 		fi
 
 		# Remove accessibility errors from X session error log
