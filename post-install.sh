@@ -2,12 +2,15 @@
 
 set -eu
 
+ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 DE="${DE:-"xfce"}"
+HAS_BLUETOOTH="${HAS_BLUETOOTH:-1}"
+HAS_WIRELESS="${HAS_WIRELESS:-1}"
 IS_GUI="${IS_GUI:-1}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
-LANGUAGE="${LANGUAGE:-"C"}"
+LANGUAGE="${LANGUAGE:-"en_US"}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
@@ -73,12 +76,12 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		usbutils \
 		util-linux
 
-	if lspci | grep -q "Network controller"; then
+	if [ "$HAS_WIRELESS" -ne 0 ]; then
 		apk add wireless-tools wpa_supplicant
 		rc-update add wpa_supplicant boot
 	fi
 
-	if lsmod | grep -q "bluetooth"; then
+	if [ "$HAS_BLUETOOTH" -ne 0 ]; then
 		apk add bluez
 		rc-update add bluetooth default
 	fi
@@ -101,6 +104,7 @@ else
 			pavucontrol \
 			pulseaudio \
 			pulseaudio-utils \
+			testdisk \
 			xcalib \
 			xrandr
 
@@ -309,6 +313,9 @@ EOF
 		vlc-qt \
 		xarchiver
 
+	apk_add @ntrrg \
+		shotcut
+
 	if [ "$IS_HARDWARE" -ne 0 ]; then
 		apk add \
 			cheese \
@@ -382,7 +389,7 @@ EOF
 			xfce4-taskmanager \
 			xfce4-terminal || apk fix
 
-		if [ -n "$LANGUAGE" ] && [ "$LANGUAGE" != "C" ]; then
+		if [ "$LANGUAGE" != "C" ]; then
 			apk add "libreoffice-lang-${LANGUAGE%_*}"
 		fi
 
@@ -394,7 +401,9 @@ EOF
 		# Plugins
 
 		apk add \
-			xfce4-whiskermenu-plugin
+			xfce4-clipman-plugin \
+			xfce4-whiskermenu-plugin \
+			xfce4-xkb-plugin
 
 		apk_add @ntrrg \
 			xfce4-genmon-plugin \
@@ -419,7 +428,7 @@ EOF
 			rc-update add cupsd default
 			rc-update add networkmanager default
 
-			if lspci | grep -q "Network controller"; then
+			if [ "$HAS_WIRELESS" -ne 0 ]; then
 				apk add iwd
 
 				cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
@@ -490,6 +499,10 @@ if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 	iptables -A INPUT -p icmp -j ACCEPT
 
+	if [ "$ALLOW_SSH" -ne 0 ]; then
+		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+	fi
+
 	rc-service iptables save
 	rc-update add iptables default
 fi
@@ -524,6 +537,8 @@ export LANGUAGE="$LANGUAGE"
 export LC_ALL="$LANGUAGE.UTF-8"
 export LANG="$LANGUAGE.UTF-8"
 EOF
+
+		chown "$NEW_USER:$NEW_USER" "/home/$NEW_USER/.profile"
 	fi
 fi
 
