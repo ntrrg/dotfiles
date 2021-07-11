@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -eux
 
 ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
@@ -14,19 +14,6 @@ LANGUAGE="${LANGUAGE:-"en_US"}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
-
-###########
-# Helpers #
-###########
-
-apk_add() {
-	_REPO="$1"
-	shift
-
-	if grep -q "$_REPO" "/etc/apk/repositories"; then
-		apk add $(echo "$@" | xargs -n 1 printf "%s$_REPO ")
-	fi
-}
 
 ################
 # Installation #
@@ -73,6 +60,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		pciutils \
 		pm-utils \
 		smartmontools \
+		testdisk \
 		usbutils \
 		util-linux
 
@@ -104,7 +92,6 @@ else
 			pavucontrol \
 			pulseaudio \
 			pulseaudio-utils \
-			testdisk \
 			xcalib \
 			xrandr
 
@@ -303,18 +290,27 @@ EOF
 	apk add \
 		chromium \
 		evince \
-		firefox \
 		flatpak \
 		gimp \
+		libreoffice \
 		inkscape \
-		midori \
 		telegram-desktop \
 		transmission \
 		vlc-qt \
 		xarchiver
 
-	apk_add @ntrrg \
-		shotcut
+	if [ "$LANGUAGE" != "C" ]; then
+		_LANG="${LANGUAGE%_*}"
+		apk add "libreoffice-lang-$_LANG" || true
+
+		_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
+		apk add "libreoffice-lang-$_LANG" || true
+	fi
+
+	# Remove accessibility errors from X session error log
+	if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
+		echo "NO_AT_BRIDGE=1" >> "/etc/environment"
+	fi
 
 	if [ "$IS_HARDWARE" -ne 0 ]; then
 		apk add \
@@ -322,26 +318,22 @@ EOF
 			cups \
 			cups-filters \
 			simple-scan
+
+		rc-update add cupsd default
 	fi
 
 	flatpak remote-add --if-not-exists \
 		flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
-		apk_add @ntrrg \
-			conky \
-			st \
-			sxiv \
-			vim
+		apk add \
+			conky@ntrrg \
+			st@ntrrg \
+			sxiv@ntrrg \
+			vim@ntrrg
 	fi
 
 	# Desktop Environtment
-
-	apk add \
-		dbus \
-		lightdm-gtk-greeter
-
-	rc-update add lightdm default
 
 	case $DE in
 	# DWM
@@ -356,9 +348,9 @@ EOF
 			slock \
 			spacefm
 
-		apk_add @ntrrg \
-			qt5ct \
-			xsettingsd
+		apk add \
+			qt5ct@ntrrg \
+			xsettingsd@ntrrg
 
 		cat << EOF > "/usr/share/xsessions/dwm.desktop"
 [Desktop Entry]
@@ -375,45 +367,22 @@ EOF
 	# XFCE 4
 	xfce)
 		apk add \
-			consolekit2 \
-			libreoffice \
+			dbus \
+			lightdm-gtk-greeter \
 			mousepad \
 			ristretto \
 			thunar \
 			thunar-archive-plugin \
-			xfce-polkit \
 			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
 			xfce4-screenshooter \
 			xfce4-taskmanager \
-			xfce4-terminal || apk fix
+			xfce4-terminal
 
-		if [ "$LANGUAGE" != "C" ]; then
-			_LANG="${LANGUAGE%_*}"
-			apk add "libreoffice-lang-$_LANG" || true
+		rc-update add lightdm default
 
-			_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
-			apk add "libreoffice-lang-$_LANG" || true
-		fi
-
-		# Remove accessibility errors from X session error log
-		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
-			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
-		fi
-
-		# Plugins
-
-		apk add \
-			xfce4-clipman-plugin \
-			xfce4-whiskermenu-plugin \
-			xfce4-xkb-plugin
-
-		apk_add @ntrrg \
-			xfce4-genmon-plugin \
-			xfce4-netload-plugin \
-			xfce4-systemload-plugin \
-			xfce4-timer-plugin
+		apk add consolekit2 xfce-polkit || apk fix
 
 		if [ "$IS_HARDWARE" -ne 0 ]; then
 			apk add \
@@ -429,7 +398,6 @@ dhcp=internal
 managed=true
 EOF
 
-			rc-update add cupsd default
 			rc-update add networkmanager default
 
 			if [ "$HAS_WIRELESS" -ne 0 ]; then
@@ -462,13 +430,26 @@ EOF
 				thunar-volman
 
 			rc-update add fuse default
+		fi
 
-			# Plugins
+		# Plugins
 
-			apk_add @ntrrg \
-				xfce4-diskperf-plugin \
-				xfce4-pulseaudio-plugin \
-				xfce4-sensors-plugin
+		apk add \
+			xfce4-clipman-plugin \
+			xfce4-whiskermenu-plugin \
+			xfce4-xkb-plugin
+
+		apk add \
+			xfce4-genmon-plugin@ntrrg \
+			xfce4-netload-plugin@ntrrg \
+			xfce4-systemload-plugin@ntrrg \
+			xfce4-timer-plugin@ntrrg
+
+		if [ "$IS_HARDWARE" -ne 0 ]; then
+			apk add \
+				xfce4-diskperf-plugin@ntrrg \
+				xfce4-pulseaudio-plugin@ntrrg \
+				xfce4-sensors-plugin@ntrrg
 		fi
 		;;
 	esac
@@ -478,13 +459,13 @@ EOF
 	apk add \
 		papirus-icon-theme
 
-	apk_add @ntrrg \
-		materia-gtk-theme \
-		materia-gtk-theme-compact \
-		materia-gtk-theme-dark \
-		materia-gtk-theme-dark-compact \
-		materia-gtk-theme-light \
-		materia-gtk-theme-light-compact
+	apk add \
+		materia-gtk-theme@ntrrg \
+		materia-gtk-theme-compact@ntrrg \
+		materia-gtk-theme-dark@ntrrg \
+		materia-gtk-theme-dark-compact@ntrrg \
+		materia-gtk-theme-light@ntrrg \
+		materia-gtk-theme-light-compact@ntrrg
 fi
 
 ############
