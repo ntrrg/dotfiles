@@ -1,9 +1,14 @@
 #!/bin/sh
 
-set -eu
+set -eux
 
+ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
+HAS_BLUETOOTH="${HAS_BLUETOOTH:-0}"
+HAS_WIRELESS="${HAS_WIRELESS:-0}"
+LANGUAGE="${LANGUAGE:-"en_US"}"
+SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 
 ################
 # Installation #
@@ -21,6 +26,7 @@ apt-get install -y \
 	htop \
 	iftop \
 	file \
+	fuse \
 	gnupg \
 	gzip \
 	locales \
@@ -30,7 +36,6 @@ apt-get install -y \
 	netselect \
 	nmap \
 	p7zip-full \
-	p7zip-rar \
 	pv \
 	rclone \
 	rsync \
@@ -54,27 +59,60 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		ntfs-3g \
 		pciutils \
 		smartmontools \
+		testdisk \
 		usbutils \
 		vbetool
 
-	if lspci | grep -q "Network controller"; then
+	if [ "$HAS_WIRELESS" -ne 0 ]; then
 		apt-get install -y rfkill wireless-tools wpasupplicant
 	fi
 
-	if lsmod | grep -q "bluetooth"; then
+	if [ "$HAS_BLUETOOTH" -ne 0 ]; then
 		apt-get install -y bluez
 	fi
 fi
 
-localedef -ci "en_US" -f "UTF-8" -A "/usr/share/locale/locale.alias" \
-	"en_US.UTF-8"
-
-# Vim
+localedef -ci "$LANGUAGE" -f "UTF-8" -A "/usr/share/locale/locale.alias" \
+	"$LANGUAGE.UTF-8"
 
 apt-get purge -fy "vim-*"
 apt-get install -y vim
 
-# New user
+############
+# Firewall #
+############
+
+if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
+	apt-get install -y iptables
+
+	iptables -Z
+	iptables -F
+	iptables -P INPUT DROP
+	iptables -P FORWARD ACCEPT
+	iptables -P OUTPUT ACCEPT
+	iptables -A INPUT -i lo -j ACCEPT
+	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	iptables -A INPUT -p icmp -j ACCEPT
+
+	if [ "$ALLOW_SSH" -ne 0 ]; then
+		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+	fi
+
+	iptables-save > "/etc/iptables.up.rules"
+
+	cat << EOF > "/etc/network/if-pre-up.d/iptables"
+#!/bin/sh
+
+/sbin/iptables-restore < /etc/iptables.up.rules
+EOF
+
+	chmod +x "/etc/network/if-pre-up.d/iptables"
+	systemctl enable iptables.service
+fi
+
+############
+# New user #
+############
 
 if [ -n "$NEW_USER" ]; then
 	if ! id "$NEW_USER" 2> /dev/null; then

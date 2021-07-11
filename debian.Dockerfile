@@ -4,7 +4,7 @@ ARG MIRROR="http://deb.debian.org/debian"
 WORKDIR "/tmp/post-install"
 COPY post-install-debian.sh .
 RUN \
-  echo "deb $MIRROR bullseye main contrib non-free" > /etc/apt/sources.list && \
+  echo "deb $MIRROR bullseye main contrib" > /etc/apt/sources.list && \
   apt-get update && apt-get upgrade -y && \
   apt-get install -y sudo && \
   echo "\n$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \

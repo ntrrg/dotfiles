@@ -472,7 +472,7 @@ fi
 # Firewall #
 ############
 
-if [ "$SETUP_FIREWALL" -ne 0 ]; then
+if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
 	apk add iptables
 
 	iptables -Z
