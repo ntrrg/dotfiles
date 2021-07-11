@@ -26,7 +26,7 @@ apt-get install -y \
 	htop \
 	iftop \
 	file \
-	fuse \
+	fuse3 \
 	gnupg \
 	gzip \
 	locales \
