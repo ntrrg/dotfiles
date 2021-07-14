@@ -290,6 +290,7 @@ EOF
 	apk add \
 		chromium \
 		evince \
+		firefox \
 		flatpak \
 		gimp \
 		libreoffice \
