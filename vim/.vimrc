@@ -84,8 +84,10 @@ set noendofline nofixendofline
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
 autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtmltmpl
 autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
+autocmd BufRead,BufNewFile *.svelte setlocal filetype=html
 autocmd BufRead,BufNewFile *.tmpl setlocal filetype=gohtmltmpl
 autocmd BufRead,BufNewFile *.trigger setlocal filetype=sh
+autocmd BufRead,BufNewFile *.vue setlocal filetype=html
 
 autocmd Filetype go,gomod setlocal noexpandtab
 autocmd Filetype c setlocal noexpandtab
