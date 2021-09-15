@@ -6,10 +6,10 @@ set -eu
 # Installation #
 ################
 
-apt update
-apt upgrade -y
+apt-get update
+apt-get upgrade -y
 
-apt install -y \
+apt-get install -y \
 	bc \
 	elinks \
 	file \
@@ -37,4 +37,4 @@ apt install -y \
 # Cleaning #
 ############
 
-apt autoremove -y > "/dev/null"
+apt-get autoremove -y > "/dev/null"
