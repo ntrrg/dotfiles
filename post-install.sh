@@ -5,6 +5,7 @@ set -eux
 ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 DE="${DE:-"xfce"}"
+EXTRA_APPS="${EXTRA_APPS:-1}"
 HAS_BLUETOOTH="${HAS_BLUETOOTH:-1}"
 HAS_WIRELESS="${HAS_WIRELESS:-1}"
 IS_GUI="${IS_GUI:-1}"
@@ -290,22 +291,35 @@ EOF
 	apk add \
 		chromium \
 		evince \
+		ffmpeg \
+		ffmpeg-libs \
 		firefox \
-		flatpak \
 		gimp \
-		libreoffice \
 		inkscape \
 		telegram-desktop \
 		transmission \
 		vlc-qt \
 		xarchiver
 
-	if [ "$LANGUAGE" != "C" ]; then
-		_LANG="${LANGUAGE%_*}"
-		apk add "libreoffice-lang-$_LANG" || true
+	if [ "$EXTRA_APPS" -ne 0 ]; then
+		apk add \
+			audacity \
+			blender \
+			flatpak \
+			libreoffice \
+			obs-studio \
+			shotcut
 
-		_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
-		apk add "libreoffice-lang-$_LANG" || true
+		flatpak remote-add --if-not-exists \
+			flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
+
+		if [ "$LANGUAGE" != "C" ]; then
+			_LANG="${LANGUAGE%_*}"
+			apk add "libreoffice-lang-$_LANG" || true
+
+			_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
+			apk add "libreoffice-lang-$_LANG" || true
+		fi
 	fi
 
 	# Remove accessibility errors from X session error log
@@ -322,9 +336,6 @@ EOF
 
 		rc-update add cupsd default
 	fi
-
-	flatpak remote-add --if-not-exists \
-		flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
