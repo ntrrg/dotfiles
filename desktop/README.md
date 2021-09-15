@@ -71,3 +71,14 @@
   * <kbd>Alt</kbd> + <kbd>F7</kbd> -> Move window.
   * <kbd>Alt</kbd> + <kbd>F4</kbd> -> Close window.
 
+  **Work Spaces:**
+
+  * <kbd>⌘</kbd> + <kbd>1</kbd> -> Go to Workspace 1.
+  * <kbd>⌘</kbd> + <kbd>2</kbd> -> Go to Workspace 2.
+  * <kbd>⌘</kbd> + <kbd>3</kbd> -> Go to Workspace 3.
+  * <kbd>⌘</kbd> + <kbd>4</kbd> -> Go to Workspace 4.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>1</kbd> -> Move window to Workspace 1.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>2</kbd> -> Move window to Workspace 2.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>3</kbd> -> Move window to Workspace 3.
+  * <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>4</kbd> -> Move window to Workspace 4.
+
