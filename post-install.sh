@@ -518,7 +518,7 @@ if [ -n "$NEW_USER" ]; then
 	fi
 
 	_GROUPS="
-		audio cdrom cdrw dialout disk floppy games lp lpadmin netdev optical
+		audio cdrom cdrw dialout disk floppy games input lp lpadmin netdev optical
 		plugdev power rfkill scanner storage usb users video wheel
 	"
 
