@@ -26,13 +26,14 @@ apk add \
 	bc \
 	bzip2 \
 	elinks \
-	git \
-	htop \
-	iftop \
 	file \
 	fuse \
+	git \
+	git-lfs \
 	gnupg \
 	gzip \
+	htop \
+	iftop \
 	make \
 	mosh \
 	nmap \

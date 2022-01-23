@@ -14,6 +14,7 @@ apt-get install -y \
 	elinks \
 	file \
 	git \
+	git-lfs \
 	gnupg \
 	make \
 	man \

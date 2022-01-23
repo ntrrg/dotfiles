@@ -22,13 +22,14 @@ apt-get install -y \
 	busybox \
 	bzip2 \
 	elinks \
-	git \
-	htop \
-	iftop \
 	file \
 	fuse3 \
+	git \
+	git-lfs \
 	gnupg \
 	gzip \
+	htop \
+	iftop \
 	locales \
 	make \
 	man \
