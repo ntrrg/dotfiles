@@ -8,7 +8,9 @@ set fileformats=unix,dos,mac
 set sessionoptions-=options
 set sessionoptions-=folds
 
+" -----------------------------------------------------------------------------
 " Interface
+
 set nonumber
 set relativenumber
 set ruler
@@ -71,7 +73,9 @@ function! TabStyle()
   return &expandtab == 1 ? "S" : "T"
 endfunction
 
+" -----------------------------------------------------------------------------
 " File formatting and editing
+
 syntax on
 
 set listchars=precedes:…,tab:-›,space:·,trail:·,extends:…,eol:¶
@@ -98,21 +102,27 @@ autocmd Filetype python setlocal tabstop=4 shiftwidth=4
 autocmd Filetype rst setlocal tabstop=4 shiftwidth=4
 autocmd Filetype sh setlocal noexpandtab
 
+" -----------------------------------------------------------------------------
 " Searching
+
 set incsearch
 set hlsearch
 set magic
 
+" -----------------------------------------------------------------------------
 " Keys
+
 set backspace=indent,eol,start
 
-" Keys - vimgrep
+" vimgrep
 nnoremap [q :cprev<CR>
 nnoremap ]q :cnext<CR>
 nnoremap [Q :cfirst<CR>
 nnoremap ]Q :clast<CR>
 
+" -----------------------------------------------------------------------------
 " Commands
 
+" -----------------------------------------------------------------------------
 " Plugins
 " filetype plugin indent on
