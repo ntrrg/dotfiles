@@ -3,16 +3,26 @@ binaries := $(shell find bin -name "*.sh")
 .PHONY: all
 all: gui
 
-.PHONY: abuild
-abuild:
-	cp -rf "alpine/.abuild" "$$HOME/"
-	chmod -R a=,u=rwX "$$HOME/.abuild"
-
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
 	cp -pf $(binaries) "$$HOME/.local/bin/"
 	chmod -R +x "$$HOME/.local/bin"
+
+.PHONY: gui
+gui: tui fonts conky xfce
+
+.PHONY: tui
+tui: bin git gpg ssh vim zsh
+
+###########
+# Actions #
+###########
+
+.PHONY: abuild
+abuild:
+	cp -rf "alpine/.abuild" "$$HOME/"
+	chmod -R a=,u=rwX "$$HOME/.abuild"
 
 .PHONY: git
 git:
@@ -28,9 +38,6 @@ ssh:
 	mkdir -p "$$HOME/.ssh"
 	chmod -R a=,u=rwX "$$HOME/.ssh"
 
-.PHONY: tui
-tui: bin git gpg ssh vim zsh
-
 .PHONY: vim
 vim:
 	cp -rpf "vim/.vim" "vim/.vimrc" "$$HOME/"
@@ -44,16 +51,13 @@ zsh:
 .PHONY: conky
 conky:
 	mkdir -p "$$HOME/.config"
-	cp -rpf "desktop/conky" "$$HOME/.config/"
+	cp -rpf "gui/conky" "$$HOME/.config/"
 
 .PHONY: fonts
 fonts:
 	mkdir -p "$$HOME/.local/share/"
-	cp -rpf "desktop/fonts" "$$HOME/.local/share/"
+	cp -rpf "gui/fonts" "$$HOME/.local/share/"
 	fc-cache -f
-
-.PHONY: gui
-gui: tui fonts conky xfce
 
 .PHONY: xdg
 xdg:
@@ -61,18 +65,17 @@ xdg:
 		"$$HOME/Public" "$$HOME/Documents" "$$HOME/Music" "$$HOME/Pictures" \
 		"$$HOME/Videos"
 	mkdir -p "$$HOME/.config"
-	cp -pf "desktop/xdg/user-dirs.dirs" "desktop/xdg/user-dirs.locale" \
-		"$$HOME/.config/"
+	cp -pf "gui/xdg/user-dirs.dirs" "gui/xdg/user-dirs.locale" "$$HOME/.config/"
 
 .PHONY: xfce
 xfce:
 	# XFWM theme
 	mkdir -p "$$HOME/.local/share"
-	cp -rpf "desktop/themes" "$$HOME/.local/share/"
+	cp -rpf "gui/themes" "$$HOME/.local/share/"
 	# XFCE
 	mkdir -p "$$HOME/.config"
-	cp -rpf "desktop/gtk-3.0" "$$HOME/.config/"
-	cp -rpf "desktop/xfce4" "$$HOME/.config/"
+	cp -rpf "gui/gtk-3.0" "$$HOME/.config/"
+	cp -rpf "gui/xfce4" "$$HOME/.config/"
 
 ###############
 # Development #
