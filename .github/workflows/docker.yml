@@ -21,9 +21,12 @@ jobs:
 
       - name: "Build and push 'latest'"
         run: |
-          docker build -t $DOCKER_IMAGE .
-          docker tag $DOCKER_IMAGE $DOCKER_IMAGE:alpine
+          docker build -t $DOCKER_IMAGE --build-arg MIRROR="http://dl-cdn.alpinelinux.org/alpine/edge" .
           docker push $DOCKER_IMAGE
+
+      - name: "Build and push 'alpine'"
+        run: |
+          docker build -t $DOCKER_IMAGE:alpine .
           docker push $DOCKER_IMAGE:alpine
 
       - name: "Build and push 'debian'"
