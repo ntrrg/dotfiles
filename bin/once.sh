@@ -3,12 +3,11 @@
 # Released under the MIT License
 
 set -eu
-set -o pipefail
 
-_TEMP="${TEMP:-"/tmp"}"
+_TMPDIR="${TMPDIR:-"/tmp"}"
 _USER="${USER:-"$(whoami)"}"
 
-_BASEDIR="$_TEMP/once.sh"
+_BASEDIR="$_TMPDIR/once.sh"
 _CLEAN_ON_EXIT=0
 _FILE=""
 _REF="$_USER"
@@ -106,11 +105,9 @@ _on_exit() {
 	local _err=$?
 
 	_clean
+	trap - INT
+	trap - EXIT
 	return $_err
-}
-
-_on_int() {
-	echo "Terminating..." > /dev/stderr
 }
 
 _show_help() {
@@ -139,7 +136,7 @@ EOF
 	return
 }
 
-trap _on_int SIGINT
+trap true INT
 trap _on_exit EXIT
 
 _main "$@"
