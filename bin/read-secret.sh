@@ -2,13 +2,20 @@
 # Copyright (c) 2019 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-_enable_echo() {
-	stty echo
+_stty_state="$(stty -g)"
+
+_on_exit() {
+	local _err=$?
+
+	stty "$_stty_state"
+	trap - INT
+	trap - EXIT
+	return $_err
 }
 
-trap _enable_echo EXIT
+trap true INT
+trap _on_exit EXIT
+
 stty -echo
 IFS= read -r SECRET
-_enable_echo
-trap - EXIT
 printf "$SECRET"
