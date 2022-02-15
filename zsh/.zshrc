@@ -90,7 +90,7 @@ function precmd() {
   vcs_info
 }
 
-PS1='%B%(?..%F{red}(%?%)%f )%n %(!.%F{red}☢%f.%F{green}☮%f)›%b '
+PS1='%B%(?..%F{red}(%?%)%f )%n %(!.%F{red}#%f.%F{green}$%f)%b '
 RPS1='%B$vcs_info_msg_0_╞ %F{green}%1~%f ╡%b'
 
 ## Git
