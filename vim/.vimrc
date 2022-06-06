@@ -22,7 +22,7 @@ set showcmd
 set splitbelow
 set splitright
 
-if ! has("gui_running")
+if ! has('gui_running')
   set t_Co=256
 endif
 
@@ -70,7 +70,7 @@ set statusline+=\|\ %Y\
 set statusline+=\|
 
 function! TabStyle()
-  return &expandtab == 1 ? "S" : "T"
+  return &expandtab == 1 ? 'S' : 'T'
 endfunction
 
 " -----------------------------------------------------------------------------
@@ -86,21 +86,23 @@ set expandtab tabstop=2 shiftwidth=2
 set noendofline nofixendofline
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
-autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtmltmpl
-autocmd BufRead,BufNewFile *.gotxt setlocal filetype=gotexttmpl
+autocmd BufRead,BufNewFile go.sum setlocal filetype=gosum
+autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtml
+autocmd BufRead,BufNewFile *.gotmpl,*.gotxt,*.tmpl setlocal filetype=gotmpl
 autocmd BufRead,BufNewFile *.svelte setlocal filetype=html
-autocmd BufRead,BufNewFile *.tmpl setlocal filetype=gohtmltmpl
 autocmd BufRead,BufNewFile *.trigger setlocal filetype=sh
+autocmd BufRead,BufNewFile *.v setlocal filetype=v
 autocmd BufRead,BufNewFile *.vue setlocal filetype=html
 
-autocmd Filetype go,gomod setlocal noexpandtab
 autocmd Filetype c setlocal noexpandtab
 autocmd Filetype cpp setlocal noexpandtab
+autocmd Filetype go,gomod,gosum setlocal noexpandtab
 autocmd Filetype make setlocal noexpandtab
 autocmd Filetype markdown setlocal tabstop=4 shiftwidth=4
 autocmd Filetype python setlocal tabstop=4 shiftwidth=4
 autocmd Filetype rst setlocal tabstop=4 shiftwidth=4
 autocmd Filetype sh setlocal noexpandtab
+autocmd Filetype v setlocal noexpandtab
 
 " -----------------------------------------------------------------------------
 " Searching
@@ -125,4 +127,5 @@ nnoremap ]Q :clast<CR>
 
 " -----------------------------------------------------------------------------
 " Plugins
+
 " filetype plugin indent on

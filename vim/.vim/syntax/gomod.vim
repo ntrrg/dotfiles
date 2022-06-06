@@ -1,92 +1,122 @@
-" gomod.vim: Vim syntax file for go.mod file
-"
+" Vim syntax file
+" Language:     Go
+" Maintainer:   Miguel Angel Rivera Notararigo (https://ntrrg.dev)
+" Filenames:    go.mod
+" Last Change:  2022 May 30
+" NOTE:         Go modules. Based on gomod.vim from https://github.com/fatih/vim-go.
+
 " Quit when a (custom) syntax file was already loaded
-if exists("b:current_syntax")
+if exists('b:current_syntax')
   finish
 endif
 
-syntax case match
+syn case match
 
-" match keywords
-syntax keyword gomodModule  module
-syntax keyword gomodGo      go      contained
-syntax keyword gomodRequire require
-syntax keyword gomodExclude exclude
-syntax keyword gomodReplace replace
+syn include @goModName syntax/gomod-name.vim
+syn include @goModVersion syntax/gomod-semver.vim
 
-" require, exclude, replace, and go can be also grouped into block
-syntax region gomodRequire start='require (' end=')' transparent contains=gomodRequire,gomodVersion
-syntax region gomodExclude start='exclude (' end=')' transparent contains=gomodExclude,gomodVersion
-syntax region gomodReplace start='replace (' end=')' transparent contains=gomodReplace,gomodVersion
-syntax match  gomodGo            '^go .*$'           transparent contains=gomodGo,gomodGoVersion
+" -----------------------------------------------------------------------------
+" Comments
 
-" set highlights
-highlight default link gomodModule  Keyword
-highlight default link gomodGo      Keyword
-highlight default link gomodRequire Keyword
-highlight default link gomodExclude Keyword
-highlight default link gomodReplace Keyword
+syn region gomodComment start="//" end="$" display contains=@Spell
 
-" comments are always in form of // ...
-syntax region gomodComment  start="//" end="$" contains=@Spell
-highlight default link gomodComment Comment
+hi def link gomodComment Comment
 
-" make sure quoted import paths are higlighted
-syntax region gomodString start=+"+ skip=+\\\\\|\\"+ end=+"+ 
-highlight default link gomodString  String 
+" -----------------------------------------------------------------------------
+" Module
 
-" replace operator is in the form of '=>'
-syntax match gomodReplaceOperator "\v\=\>"
-highlight default link gomodReplaceOperator Operator
+syn keyword gomodModule  contained         module
+syn match   gomodModuleN display contained /\s.\+$/hs=s+1
 
-" match go versions
-syntax match gomodGoVersion "1\.\d\+" contained
-highlight default link gomodGoVersion Identifier
+hi def link gomodModule  Keyword
+hi def link gomodModuleN Identifier
 
+syn region gomodModuleInline start="^module\s" end="$" transparent display
+  \ keepend contains=gomodComment,gomodModule,gomodModuleN
 
-" highlight versions:
-"  * vX.Y.Z-pre
-"  * vX.Y.Z
-"  * vX.0.0-yyyyymmddhhmmss-abcdefabcdef
-"  * vX.Y.Z-pre.0.yyyymmddhhmmss-abcdefabcdef
-"  * vX.Y.(Z+1)-0.yyyymmddhhss-abcdefabcdef
-"  see https://godoc.org/golang.org/x/tools/internal/semver for more
-"  information about how semantic versions are parsed and
-"  https://golang.org/cmd/go/ for how pseudo-versions and +incompatible
-"  are applied.
+" -----------------------------------------------------------------------------
+" Go version
 
+syn keyword gomodGoVersion  contained         go
+syn match   gomodGoVersionN display contained /\s\d\+\(\.\d\+\)*/hs=s+1
 
-" match vX.Y.Z and their prereleases
-syntax match gomodVersion "v\d\+\.\d\+\.\d\+\%(-\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\)\?\%(+\%([0-9A-Za-z-]\+\)\(\.[0-9A-Za-z-]\+\)*\)\?"
-"                          ^--- version ---^^------------ pre-release  ---------------------^^--------------- metadata ---------------------^
-"   	                     ^--------------------------------------- semantic version -------------------------------------------------------^
+hi def link gomodGoVersion  Keyword
+hi def link gomodGoVersionN Float
 
-" match pseudo versions
-" without a major version before the commit (e.g.  vX.0.0-yyyymmddhhmmss-abcdefabcdef)
-syntax match gomodVersion  "v\d\+\.0\.0-\d\{14\}-\x\+"
-" when most recent version before target is a pre-release
-syntax match gomodVersion  "v\d\+\.\d\+\.\d\+-\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\%(+\%([0-9A-Za-z-]\+\)\(\.[0-9A-Za-z-]\+\)*\)\?\.0\.\d\{14}-\x\+"
-"                          ^--- version ---^^--- ------ pre-release -----------------^^--------------- metadata ---------------------^
-"                     	   ^------------------------------------- semantic version --------------------------------------------------^
-" most recent version before the target is X.Y.Z
-syntax match gomodVersion "v\d\+\.\d\+\.\d\+\%(+\%([0-9A-Za-z-]\+\)\(\.[0-9A-Za-z-]\+\)*\)\?-0\.\d\{14}-\x\+"
-"                          ^--- version ---^^--------------- metadata ---------------------^
+syn region gomodGoInline start="^go\s" end="$" transparent display
+  \ contains=gomodComment,gomodGoVersion,gomodGoVersionN
 
-" match incompatible vX.Y.Z and their prereleases
-syntax match gomodVersion "v[2-9]\{1}\d*\.\d\+\.\d\+\%(-\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\)\?\%(+\%([0-9A-Za-z-]\+\)\(\.[0-9A-Za-z-]\+\)*\)\?+incompatible"
-"                          ^------- version -------^^------------- pre-release ---------------------^^--------------- metadata ---------------------^
-"               	         ^------------------------------------------- semantic version -----------------------------------------------------------^
+" -----------------------------------------------------------------------------
+" Directives
 
-" match incompatible pseudo versions
-" incompatible without a major version before the commit (e.g.  vX.0.0-yyyymmddhhmmss-abcdefabcdef)
-syntax match gomodVersion "v[2-9]\{1}\d*\.0\.0-\d\{14\}-\x\++incompatible"
-" when most recent version before target is a pre-release
-syntax match gomodVersion "v[2-9]\{1}\d*\.\d\+\.\d\+-\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\%(+\%([0-9A-Za-z-]\+\)\(\.[0-9A-Za-z-]\+\)*\)\?\.0\.\d\{14}-\x\++incompatible"
-"                          ^------- version -------^^---------- pre-release -----------------^^--------------- metadata ---------------------^
-"                     	   ^---------------------------------------- semantic version ------------------------------------------------------^
-" most recent version before the target is X.Y.Z
-syntax match gomodVersion "v[2-9]\{1}\d*\.\d\+\.\d\+\%(+\%([0-9A-Za-z-]\+\)\%(\.[0-9A-Za-z-]\+\)*\)\?-0\.\d\{14}-\x\++incompatible"
-"                          ^------- version -------^^---------------- metadata ---------------------^
-highlight default link gomodVersion Identifier
+" Require
 
-let b:current_syntax = "gomod"
+syn keyword gomodRequire contained require
+
+hi def link gomodRequire Keyword
+
+" ( )
+syn match gomodRequireOperator display contained /(\|)/
+
+hi def link gomodRequireOperator Operator
+
+syn region gomodRequireInline start="^require\s\+[^(]" end="$" transparent
+  \ display keepend contains=gomodComment,gomodRequire,@goModName,@goModVersion
+
+syn region gomodRequireBlock start="^require\s*(" end=")" transparent fold
+  \ keepend contains=gomodComment,gomodRequire,gomodRequireOperator,@goModName,@goModVersion
+
+" Exclude
+
+syn keyword gomodExclude contained exclude
+
+hi def link gomodExclude Keyword
+
+" ( )
+syn match gomodExcludeOperator display contained /(\|)/
+
+hi def link gomodExcludeOperator Operator
+
+syn region gomodExcludeInline start="^exclude\s\+[^(]" end="$" transparent
+  \ display keepend contains=gomodComment,gomodExclude,@goModName,@goModVersion
+
+syn region gomodExcludeBlock start="^exclude\s*(" end=")" transparent fold
+  \ keepend contains=gomodComment,gomodExclude,gomodExcludeOperator,@goModName,@goModVersion
+
+" Replace
+
+syn keyword gomodReplace contained replace
+
+hi def link gomodReplace Keyword
+
+" ( ) =>
+syn match gomodReplaceOperator display contained /(\|)\|=>/
+
+hi def link gomodReplaceOperator Operator
+
+syn region gomodReplaceInline start="^replace\s\+[^(]" end="$" transparent
+  \ display keepend contains=gomodComment,gomodReplace,gomodReplaceOperator,@goModName,@goModVersion
+
+syn region gomodReplaceBlock start="^replace\s*(" end=")" transparent fold
+  \ keepend contains=gomodComment,gomodReplace,gomodReplaceOperator,@goModName,@goModVersion
+
+" Reract
+
+syn keyword gomodReract contained retract
+
+hi def link gomodReract Keyword
+
+" ( ) [ ] ,
+syn match gomodRetractOperator display contained /(\|)\|\[\|\]\|,/
+
+hi def link gomodRetractOperator Operator
+
+syn region gomodRetractInline start="^retract\s\+[^(]" end="$" transparent
+  \ display keepend contains=gomodComment,gomodReract,gomodRetractOperator,@goModVersion
+
+syn region gomodRetractBlock start="^retract\s*(" end=")" transparent fold
+  \ keepend contains=gomodComment,gomodReract,gomodRetractOperator,@goModVersion
+
+" -----------------------------------------------------------------------------
+
+let b:current_syntax = 'gomod'

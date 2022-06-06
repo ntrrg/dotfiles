@@ -30,8 +30,7 @@
 
 * Monokai-like color scheme
 
-* Improved Go syntax hightlight (including module files, templates and Markdown
-  code snippets hightlight).
+* Improved Go and V syntax hightlight.
 
 * Key shortcuts.
 
