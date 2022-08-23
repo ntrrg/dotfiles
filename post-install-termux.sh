@@ -6,23 +6,17 @@ set -eu
 # Installation #
 ################
 
-apt-get update
-apt-get upgrade -y
-
 apt-get install -y \
-	bc \
-	elinks \
 	file \
 	git \
 	git-lfs \
 	gnupg \
+	iproute2 \
 	make \
 	man \
 	mosh \
-	nmap \
 	openssh \
 	p7zip \
-	pv \
 	rclone \
 	rsync \
 	screen \
@@ -30,9 +24,18 @@ apt-get install -y \
 	termux-api \
 	transmission \
 	unzip \
-	vim \
 	wget \
 	zsh
+
+# Apps
+
+apt-get install -y \
+	bc \
+	elinks \
+	nmap \
+	pv \
+	time \
+	vim
 
 ############
 # Cleaning #

@@ -2,19 +2,26 @@
 
 set -eux
 
+ALLOW_MOSH="${ALLOW_MOSH:-1}"
 ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
-DE="${DE:-"xfce"}"
-EXTRA_APPS="${EXTRA_APPS:-1}"
+DE="${DE:-"none"}"
+EXTRA_APPS="${EXTRA_APPS:-0}"
 HAS_BLUETOOTH="${HAS_BLUETOOTH:-1}"
 HAS_WIRELESS="${HAS_WIRELESS:-1}"
-IS_GUI="${IS_GUI:-1}"
+IS_GUI="${IS_GUI:-0}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
 IS_LAPTOP="${IS_LAPTOP:-1}"
 LANGUAGE="${LANGUAGE:-"en_US"}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
+
+NTALPINE="${NTALPINE:-"/media/ntDisk/srv/baul/data/_/Software/Linux/Mirrors/ntalpine/main"}"
+
+ntapk() {
+	apk -X "$NTALPINE" --allow-untrusted --no-cache "$@"
+}
 
 ################
 # Installation #
@@ -23,23 +30,18 @@ SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 cd "$BASEPATH"
 
 apk add \
-	bc \
 	bzip2 \
-	elinks \
 	file \
 	fuse \
 	git \
 	git-lfs \
 	gnupg \
 	gzip \
-	htop \
-	iftop \
 	make \
 	mosh \
-	nmap \
 	openssh \
 	p7zip \
-	pv \
+	patch \
 	rclone \
 	rsync \
 	screen \
@@ -77,16 +79,35 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 	fi
 fi
 
+# Apps.
+
+apk add \
+	bc \
+	elinks \
+	htop \
+	iftop \
+	nmap \
+	pv \
+	time
+
 if [ "$IS_GUI" -eq 0 ]; then
-	apk add vim
+	# Apps.
+
+	ntapk add vim-tiny || apk add vim
 else
 	setup-xorg-base
 
 	apk add \
+		dbus \
+		lightdm-gtk-greeter \
 		xkill \
 		xdg-user-dirs \
 		xdg-utils \
 		xhost
+
+	if [ "$NEW_USER" != "ntrrg" ]; then
+		rc-update add lightdm default
+	fi
 
 	if [ "$IS_HARDWARE" -ne 0 ]; then
 		apk add \
@@ -104,6 +125,12 @@ else
 			apk add acpi cpufreqd hdparm
 			rc-update add cpufreqd default
 		fi
+	fi
+
+	# Remove accessibility errors from X session error log.
+
+	if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
+		echo "NO_AT_BRIDGE=1" >> "/etc/environment"
 	fi
 
 	# Fonts
@@ -302,14 +329,23 @@ EOF
 		vlc-qt \
 		xarchiver
 
+	if [ "$NEW_USER" = "ntrrg" ]; then
+		ntapk add \
+			conky \
+			st \
+			sxiv \
+			vim-huge
+	fi
+
 	if [ "$EXTRA_APPS" -ne 0 ]; then
 		apk add \
 			audacity \
 			blender \
 			flatpak \
 			libreoffice \
+			#manuskript \
 			obs-studio \
-			shotcut
+			scribus
 
 		flatpak remote-add --if-not-exists \
 			flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
@@ -323,32 +359,22 @@ EOF
 		fi
 	fi
 
-	# Remove accessibility errors from X session error log
-	if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
-		echo "NO_AT_BRIDGE=1" >> "/etc/environment"
-	fi
-
 	if [ "$IS_HARDWARE" -ne 0 ]; then
 		apk add \
 			cheese \
 			cups \
 			cups-filters \
+			scrcpy \
 			simple-scan
 
 		rc-update add cupsd default
 	fi
 
-	if [ "$NEW_USER" = "ntrrg" ]; then
-		apk add \
-			conky@ntrrg \
-			st@ntrrg \
-			sxiv@ntrrg \
-			vim@ntrrg
-	fi
-
 	# Desktop Environtment
 
 	case $DE in
+	none) ;;
+
 	# DWM
 	dwm)
 		# https://github.com/bakkeby/dwm-flexipatch
@@ -361,9 +387,9 @@ EOF
 			slock \
 			spacefm
 
-		apk add \
-			qt5ct@ntrrg \
-			xsettingsd@ntrrg
+		ntapk add \
+			qt5ct \
+			xsettingsd
 
 		cat << EOF > "/usr/share/xsessions/dwm.desktop"
 [Desktop Entry]
@@ -380,30 +406,32 @@ EOF
 	# XFCE 4
 	xfce)
 		apk add \
-			dbus \
-			lightdm-gtk-greeter \
-			mousepad \
-			ristretto \
 			thunar \
 			thunar-archive-plugin \
 			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
-			xfce4-screenshooter \
-			xfce4-taskmanager \
-			xfce4-terminal
+			xfce4-screenshooter
 
-		rc-update add lightdm default
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			apk add \
+				mousepad \
+				ristretto \
+				xfce4-taskmanager \
+				xfce4-terminal
+		fi
 
 		apk add consolekit2 xfce-polkit || apk fix
 
 		if [ "$IS_HARDWARE" -ne 0 ]; then
-			apk add \
-				gnome-disk-utility \
-				network-manager-applet \
-				xfburn
+			apk add xfburn
 
-			cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
+			if [ "$NEW_USER" != "ntrrg" ]; then
+				apk add \
+					gnome-disk-utility \
+					network-manager-applet
+
+				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
 [main]
 dhcp=internal
 
@@ -411,38 +439,39 @@ dhcp=internal
 managed=true
 EOF
 
-			rc-update add networkmanager default
+				rc-update add networkmanager default
 
-			if [ "$HAS_WIRELESS" -ne 0 ]; then
-				apk add iwd
+				if [ "$HAS_WIRELESS" -ne 0 ]; then
+					apk add iwd
 
-				cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
+					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
 
 [device]
 wifi.backend=iwd
 EOF
 
-				rc-update add iwd default
+					rc-update add iwd default
+				fi
+
+				# Thunar - Device detection
+
+				apk add \
+					gvfs \
+					gvfs-afc \
+					gvfs-afp \
+					gvfs-archive \
+					gvfs-avahi \
+					gvfs-cdda \
+					gvfs-dav \
+					gvfs-fuse \
+					gvfs-gphoto2 \
+					gvfs-mtp \
+					gvfs-nfs \
+					gvfs-smb \
+					thunar-volman
+
+				rc-update add fuse default
 			fi
-
-			# Thunar - Device detection
-
-			apk add \
-				gvfs \
-				gvfs-afc \
-				gvfs-afp \
-				gvfs-archive \
-				gvfs-avahi \
-				gvfs-cdda \
-				gvfs-dav \
-				gvfs-fuse \
-				gvfs-gphoto2 \
-				gvfs-mtp \
-				gvfs-nfs \
-				gvfs-smb \
-				thunar-volman
-
-			rc-update add fuse default
 		fi
 
 		# Plugins
@@ -452,18 +481,15 @@ EOF
 			xfce4-whiskermenu-plugin \
 			xfce4-xkb-plugin
 
-		apk add \
-			xfce4-genmon-plugin@ntrrg \
-			xfce4-netload-plugin@ntrrg \
-			xfce4-systemload-plugin@ntrrg \
-			xfce4-timer-plugin@ntrrg
-
-		if [ "$IS_HARDWARE" -ne 0 ]; then
-			apk add \
-				xfce4-diskperf-plugin@ntrrg \
-				xfce4-pulseaudio-plugin@ntrrg \
-				xfce4-sensors-plugin@ntrrg
-		fi
+		ntapk add \
+			xfce4-diskperf-plugin \
+			xfce4-docklike-plugin \
+			xfce4-genmon-plugin \
+			xfce4-netload-plugin \
+			xfce4-pulseaudio-plugin \
+			xfce4-sensors-plugin \
+			xfce4-systemload-plugin \
+			xfce4-timer-plugin
 		;;
 	esac
 
@@ -472,13 +498,13 @@ EOF
 	apk add \
 		papirus-icon-theme
 
-	apk add \
-		materia-gtk-theme@ntrrg \
-		materia-gtk-theme-compact@ntrrg \
-		materia-gtk-theme-dark@ntrrg \
-		materia-gtk-theme-dark-compact@ntrrg \
-		materia-gtk-theme-light@ntrrg \
-		materia-gtk-theme-light-compact@ntrrg
+	ntapk add \
+		materia-gtk-theme \
+		materia-gtk-theme-compact \
+		materia-gtk-theme-dark \
+		materia-gtk-theme-dark-compact \
+		materia-gtk-theme-light \
+		materia-gtk-theme-light-compact
 fi
 
 ############
@@ -499,6 +525,10 @@ if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
 
 	if [ "$ALLOW_SSH" -ne 0 ]; then
 		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+		if [ "$ALLOW_MOSH" -ne 0 ]; then
+			iptables -A INPUT -p udp --dport 60000:61000 -j ACCEPT
+		fi
 	fi
 
 	rc-service iptables save

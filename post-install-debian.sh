@@ -2,6 +2,7 @@
 
 set -eux
 
+ALLOW_MOSH="${ALLOW_MOSH:-1}"
 ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 IS_HARDWARE="${IS_HARDWARE:-1}"
@@ -18,26 +19,19 @@ cd "$BASEPATH"
 
 apt-get install -y \
 	apt-transport-https \
-	bc \
 	busybox \
 	bzip2 \
-	elinks \
 	file \
 	fuse3 \
 	git \
 	git-lfs \
 	gnupg \
 	gzip \
-	htop \
-	iftop \
 	locales \
 	make \
 	man \
 	mosh \
-	netselect \
-	nmap \
 	p7zip-full \
-	pv \
 	rclone \
 	rsync \
 	screen \
@@ -76,8 +70,20 @@ fi
 localedef -ci "$LANGUAGE" -f "UTF-8" -A "/usr/share/locale/locale.alias" \
 	"$LANGUAGE.UTF-8"
 
+# Apps
+
 apt-get purge -fy "vim-*"
-apt-get install -y vim
+
+apt-get install -y \
+	bc \
+	elinks \
+	htop \
+	iftop \
+	netselect \
+	nmap \
+	pv \
+	time \
+	vim
 
 ############
 # Firewall #
@@ -97,6 +103,10 @@ if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
 
 	if [ "$ALLOW_SSH" -ne 0 ]; then
 		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+		if [ "$ALLOW_MOSH" -ne 0 ]; then
+			iptables -A INPUT -p udp --dport 60000:61000 -j ACCEPT
+		fi
 	fi
 
 	iptables-save > "/etc/iptables.up.rules"
