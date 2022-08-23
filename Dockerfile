@@ -1,6 +1,6 @@
-FROM alpine:3.15
+FROM alpine:3.16
 ARG NEW_USER="ntrrg"
-ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.15"
+ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.16"
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
@@ -8,9 +8,11 @@ RUN \
   echo "$MIRROR/community" >> /etc/apk/repositories && \
   ([ "${MIRROR##*/}" = "edge" ] && echo "$MIRROR/testing" >> /etc/apk/repositories || true) && \
   apk update && apk upgrade alpine-keys && apk upgrade --available && \
-  apk add doas docs lang && \
+  apk add doas docs lang sudo && \
+  echo "$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
   echo "permit nopass $NEW_USER as root" >> /etc/doas.conf && \
-  BASEPATH="/tmp/post-install" NEW_USER="$NEW_USER" IS_GUI=0 IS_HARDWARE=0 \
+  sudo true && \
+  BASEPATH="/tmp/post-install" NEW_USER="$NEW_USER" IS_HARDWARE=0 \
   /tmp/post-install/post-install.sh && \
   cd / && rm -rf /tmp/post-install
 WORKDIR "/home/$NEW_USER"
