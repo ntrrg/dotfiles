@@ -35,7 +35,7 @@ syn match goBuildKeyword display contained "go:build"
 
 syn keyword goBuildDirectives contained
   \ aix android darwin dragonfly freebsd illumos linux nacl netbsd openbsd
-  \ plan9 solaris windows 
+  \ plan9 solaris unix windows 
   \
   \ 386 amd64 amd64p32 arm arm64 arm64be armbe mips mips64 mips64le mipsle
   \ mips64p32 mips64p32le ppc ppc64 ppc64le s390 s390x sparc sparc64
@@ -84,7 +84,7 @@ syn match goOperator display /&&\|||/
 " ( ) [ ] { } . : , ; ~
 syn match goOperator display /[()\[\]{}.:,;~]/
 
-hi def link goOperator Operator
+"hi def link goOperator Operator
 
 " -----------------------------------------------------------------------------
 " Keywords

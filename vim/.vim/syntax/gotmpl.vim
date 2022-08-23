@@ -59,7 +59,7 @@ syn cluster goTmplSyntax add=goTmplBuiltins
 
 syn keyword goTmplConditional contained else if with
 syn keyword goTmplRepeat      contained range
-syn keyword goTmplStatement   contained end
+syn keyword goTmplStatement   contained break continue end
 
 hi def link goTmplConditional Conditional
 hi def link goTmplRepeat      Repeat
