@@ -22,9 +22,9 @@ _main() {
 
 	local _mode="$(
 		cvt "$_x" "$_y" "$_refresh" |
-		grep "Modeline" |
-		sed "s/Modeline //" |
-		sed "s/\"//g"
+			grep "Modeline" |
+			sed "s/Modeline //" |
+			sed 's/"//g'
 	)"
 
 	local _mode_name="$(printf "$_mode" | cut -d " " -f 1)"
