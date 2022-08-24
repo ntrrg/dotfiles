@@ -339,13 +339,14 @@ EOF
 
 	if [ "$EXTRA_APPS" -ne 0 ]; then
 		apk add \
-			audacity \
 			blender \
 			flatpak \
 			libreoffice \
-			#manuskript \
 			obs-studio \
-			scribus
+			scribus \
+			tenacity
+
+		#apk add manuskript
 
 		flatpak remote-add --if-not-exists \
 			flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
