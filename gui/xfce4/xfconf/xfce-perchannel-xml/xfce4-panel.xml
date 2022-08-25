@@ -80,7 +80,7 @@
     </property>
     <property name="plugin-10" type="string" value="xfce4-timer-plugin"/>
     <property name="plugin-11" type="string" value="systemload">
-      <property name="system-monitor-command" type="string" value="st htop"/>
+      <property name="system-monitor-command" type="string" value="alacritty -e htop"/>
       <property name="cpu" type="empty">
         <property name="label" type="string" value=""/>
       </property>

@@ -1,4 +1,4 @@
-binaries := $(shell find bin -name "*.sh")
+scripts := $(shell find bin -name "*.sh")
 
 .PHONY: all
 all: gui
@@ -6,11 +6,11 @@ all: gui
 .PHONY: bin
 bin:
 	mkdir -p "$$HOME/.local/bin"
-	cp -pf $(binaries) "$$HOME/.local/bin/"
+	cp -pf $(scripts) "$$HOME/.local/bin/"
 	chmod -R +x "$$HOME/.local/bin"
 
 .PHONY: gui
-gui: tui fonts conky xfce
+gui: tui fonts alacritty conky xfce
 
 .PHONY: tui
 tui: bin git gpg ssh vim zsh
@@ -47,6 +47,11 @@ zsh:
 	cp -rpf "zsh/.zprofile" "zsh/.zshenv" "zsh/.zshrc" "$$HOME/"
 
 # GUI
+
+.PHONY: alacritty
+alacritty:
+	mkdir -p "$$HOME/.config"
+	cp -rpf "gui/alacritty" "$$HOME/.config/"
 
 .PHONY: conky
 conky:
@@ -88,5 +93,5 @@ ci: lint
 
 .PHONY: lint
 lint:
-	shfmt -s -p -i 0 -sr -kp -d $(binaries) $(pish)
+	shfmt -s -p -i 0 -sr -kp -d $(scripts) $(pish)
 

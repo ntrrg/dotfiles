@@ -87,8 +87,9 @@ apk add \
 	htop \
 	iftop \
 	nmap \
-	pv \
-	time
+	pv
+
+#apk add time
 
 if [ "$IS_GUI" -eq 0 ]; then
 	# Apps.
@@ -330,6 +331,9 @@ EOF
 		xarchiver
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
+		apk add \
+			alacritty
+
 		ntapk add \
 			conky \
 			st \

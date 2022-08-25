@@ -22,13 +22,13 @@
     <property name="action-4" type="empty">
       <property name="type" type="int" value="0"/>
       <property name="pattern" type="string" value="man"/>
-      <property name="command" type="string" value="st %S"/>
+      <property name="command" type="string" value="alacritty -e %S"/>
       <property name="save" type="bool" value="false"/>
     </property>
     <property name="action-2" type="empty">
       <property name="type" type="int" value="0"/>
       <property name="pattern" type="string" value="$"/>
-      <property name="command" type="string" value="st %s"/>
+      <property name="command" type="string" value="alacritty -e %s"/>
       <property name="save" type="bool" value="false"/>
     </property>
     <property name="action-1" type="empty">
@@ -39,7 +39,7 @@
     </property>
     <property name="action-6" type="empty">
       <property name="pattern" type="string" value="#"/>
-      <property name="command" type="string" value="st su -c %s"/>
+      <property name="command" type="string" value="alacritty -e su -c %s"/>
     </property>
     <property name="action-7" type="empty">
       <property name="pattern" type="string" value="?"/>

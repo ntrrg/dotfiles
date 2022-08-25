@@ -44,7 +44,7 @@
       <property name="&lt;Super&gt;space" type="string" value="xfce4-appfinder --collapsed"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
       <property name="&lt;Super&gt;k" type="string" value="xkill"/>
-      <property name="&lt;Super&gt;t" type="string" value="st"/>
+      <property name="&lt;Super&gt;t" type="string" value="alacritty"/>
       <property name="&lt;Super&gt;m" type="string" value="telegram-desktop"/>
       <property name="&lt;Super&gt;f" type="string" value="exo-open --launch FileManager"/>
       <property name="&lt;Super&gt;i" type="string" value="xcalib -i -a"/>
