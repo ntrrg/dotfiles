@@ -65,7 +65,7 @@ hostinfo() {
  ▗██▖  ▗██▖
  █\e[32m▐▌\e[0m█  █▐▌█   $DATE
  ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $DEVICE
-  ▐▌\e[32m▝█▙\e[0m ▐▌    \033[1mOS:\033[0m $OS
+  ▐▌\e[32m▝█▙▖\e[0m▐▌    \033[1mOS:\033[0m $OS
  ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   \033[1mCPU:\033[0m $CPU
  █▐▌█  █\e[32m▐▌\e[0m█   \033[1mRAM:\033[0m $URAM/$TRAM $([ $TSWAP != "0B" ] && echo "\033[1mSwap:\033[0m $USWAP/$TSWAP")
  ▝██▘  ▝██▘   \033[1mNET:\033[0m $(hostname) - $IP
