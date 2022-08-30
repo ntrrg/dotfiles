@@ -24,8 +24,7 @@ _main() {
 
 	local _file="$1"
 
-	gpg -c --cipher-algo AES256 --yes --passphrase "$_pass" \
-		-o "${_file##*/}.gpg" "$_file"
+	gpg -c --cipher-algo AES256 --yes --passphrase "$_pass" -o - "$_file"
 }
 
 _show_help() {
