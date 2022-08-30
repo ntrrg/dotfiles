@@ -63,6 +63,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		ntfs-3g \
 		pciutils \
 		pm-utils \
+		powertop \
 		smartmontools \
 		testdisk \
 		usbutils \
