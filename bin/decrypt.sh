@@ -24,8 +24,7 @@ _main() {
 
 	local _file="$1"
 
-	gpg -dq --batch --yes --passphrase "$_pass" \
-		-o "${_file%.gpg}" "$_file"
+	gpg -dq --batch --yes --passphrase "$_pass" -o - "$_file"
 }
 
 _show_help() {
