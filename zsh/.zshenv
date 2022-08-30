@@ -1,4 +1,4 @@
-if [ -n "$_ZSH_ENV" ]; then
+if [ -z "$_ZSH_ENV" ]; then
   export _ZSH_ENV=1
 
   fpath=($HOME/.local/share/zsh/vendor-functions $HOME/.local/share/zsh/vendor-completions $fpath)
