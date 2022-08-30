@@ -15,7 +15,7 @@ _TRACK_ARGS=1
 _USE_REF=0
 
 _main() {
-	local _args="$0 $@"
+	local _args="$0 $*"
 	local _opts="hr:su:"
 	local _lopts="help,ignore-args,ref:,system,user:"
 
@@ -64,7 +64,7 @@ _main() {
 
 	mkdir -p -m 777 "$_BASEDIR"
 
-	_FILE="$_BASEDIR/$(_get_name "$@")"
+	_FILE="$_BASEDIR/$(_get_name "$*")"
 
 	if [ -f "$_FILE" ]; then
 		echo "command already running" > /dev/stderr
@@ -90,7 +90,7 @@ _get_name() {
 		return
 	fi
 
-	local _name="$@"
+	local _name="$*"
 
 	if [ $_TRACK_ARGS -eq 0 ]; then
 		_name="$1"

@@ -4,42 +4,55 @@
 
 set -e
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	BIN_NAME="$(basename "$0")"
+_main() {
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+		_show_help
+		return
+	fi
+
+	if [ $# -eq 0 ]; then
+		echo "no suffix provided" > /dev/stderr
+		return 1
+	fi
+
+	local _suffix="$1"
+	shift
+
+	local _all="$(apk search "*")"
+	local _pkgs="$@"
+
+	if [ -z "$_pkgs" ]; then
+		_pkgs="$(apk info | sort | grep -v "\-$_suffix\$")"
+	fi
+
+	local _pkg=""
+
+	for _pkg in $_pkgs; do
+		local _subpkg="$_pkg-$_suffix"
+
+		if echo "$_all" | grep -q "^$_subpkg-\d"; then
+			echo "$_subpkg"
+		fi
+	done
+}
+
+_show_help() {
+	local _name="${0##*/}"
 
 	cat << EOF
-$BIN_NAME - find Alpine subpackages.
+$_name - find Alpine subpackages.
 
-Usage: $BIN_NAME SUFFIX [PACKAGE]...
+Usage: $_name SUFFIX [PACKAGE]...
 
 Find subpackages for given packages with the given suffix, if no packages are
-given, the full list of installed packages will be used.
+specified, installed packages will be used.
 
 Options:
-  -h, --help            Show this help message
+  -h, --help   Show this help message
 
 Copyright (c) 2021 Miguel Angel Rivera Notararigo
 Released under the MIT License
 EOF
+}
 
-	exit
-fi
-
-if [ $# -eq 0 ]; then
-	echo "no suffix provided" > "/dev/stderr"
-	exit 1
-fi
-
-SUFFIX="$1"
-shift
-
-ALL_PKGS="$(apk search "*")"
-PKGS="${@:-"$(apk info | sort)"}"
-
-for PKG in $PKGS; do
-	SUBPKG="$PKG-$SUFFIX"
-
-	if echo "$ALL_PKGS" | grep -q "^$SUBPKG-\d"; then
-		echo "$SUBPKG"
-	fi
-done
+_main "$@"

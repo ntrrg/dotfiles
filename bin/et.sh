@@ -4,16 +4,17 @@
 
 set -eu
 
-COUNT=0
-SLEEP=0
-VERBOSE=0
+export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
+
+_COUNT=0
+_SLEEP=0
 
 _main() {
-	OPTS="hn:s:v"
-	LOPTS="count:,help,sleep:,verbose"
+	local _opts="hn:s:"
+	local _lopts="count:,help,sleep:"
 
 	eval set -- "$(
-		getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
+		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
 	)"
 
 	while [ $# -gt 0 ]; do
@@ -24,17 +25,13 @@ _main() {
 			;;
 
 		-n | --count)
-			COUNT="$2"
+			_COUNT="$2"
 			shift
 			;;
 
 		-s | --sleep)
-			SLEEP="$2"
+			_SLEEP="$2"
 			shift
-			;;
-
-		-v | --verbose)
-			VERBOSE=1
 			;;
 
 		--)
@@ -46,43 +43,37 @@ _main() {
 		shift
 	done
 
-	until _run "$@"; do
-		ERR="$?"
-		COUNT="$((COUNT - 1))"
+	until "$@"; do
+		local _err="$?"
+		_COUNT="$((_COUNT - 1))"
 
-		if [ "$COUNT" -eq 0 ]; then
-			return "$ERR"
+		if [ "$_COUNT" -eq 0 ]; then
+			return "$_err"
+		elif [ "$_COUNT" -eq 1 ]; then
+			log.sh "1 try remaining.."
+		elif [ "$_COUNT" -gt 1 ]; then
+			log.sh "$_COUNT tries remaining.."
 		fi
 
-		[ "$COUNT" -gt 0 ] && _log "$COUNT tries remaining.."
-		_log "Waiting for $SLEEP.."
-		sleep $SLEEP
+		log.sh "waiting for $_SLEEP.."
+		sleep $_SLEEP
 	done
 }
 
-_log() {
-	[ "$VERBOSE" -eq 0 ] && return
-	printf "$@\n"
-}
-
-_run() {
-	[ "$VERBOSE" -ne 0 ] && echo "\$ $@"
-	"$@"
-}
-
 _show_help() {
-	BIN_NAME="$(basename "$0")"
+	local _name="${0##*/}"
 
 	cat << EOF
-$BIN_NAME - (Ensure Task) run a command until it gets done.
+$_name - (Ensure Task) run a command until it gets done.
 
-Usage: $BIN_NAME [OPTIONS] [--] COMMAND
+Usage: $_name [OPTIONS] [--] COMMAND
 
 Options:
   -h, --help         Show this help message
   -n, --count=MAX    Run the given command for MAX times before failing
   -s, --sleep=TIME   Delay each run of the given command for TIME time
-  -v, --verbose      Show information about what is happening
+
+For logging options see 'log.sh --help'.
 
 Copyright (c) 2017 Miguel Angel Rivera Notararigo
 Released under the MIT License

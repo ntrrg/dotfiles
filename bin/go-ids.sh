@@ -4,20 +4,24 @@
 
 set -eu
 
-command -v go > /dev/null ||
-	echo "can't find the Go toolchain" > /dev/stderr
+_GO="${GO:-"go"}"
+_PRINT_TYPES=0
+_PRINT_IFACES=0
+_PRINT_FUNCS=0
+_SHORT=0
 
-PRINT_TYPES=0
-PRINT_IFACES=0
-PRINT_FUNCS=0
-SHORT=0
+command -v "$_GO" > "/dev/null" ||
+	(
+		echo "can't find go toolchain" > "/dev/stderr"
+		exit 1
+	)
 
 _main() {
-	OPTS="fhist"
-	LOPTS="funcs,help,ifaces,short,types"
+	local _opts="fhist"
+	local _lopts="funcs,help,ifaces,short,types"
 
 	eval set -- "$(
-		getopt --options "$OPTS" --longoptions "$LOPTS" --name "$0" -- "$@"
+		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
 	)"
 
 	while [ $# -gt 0 ]; do
@@ -28,25 +32,25 @@ _main() {
 			;;
 
 		-f | --funcs)
-			PRINT_TYPES=0
-			PRINT_IFACES=0
-			PRINT_FUNCS=1
+			_PRINT_TYPES=0
+			_PRINT_IFACES=0
+			_PRINT_FUNCS=1
 			;;
 
 		-i | --ifaces)
-			PRINT_TYPES=1
-			PRINT_IFACES=1
-			PRINT_FUNCS=0
+			_PRINT_TYPES=1
+			_PRINT_IFACES=1
+			_PRINT_FUNCS=0
 			;;
 
 		-t | --types)
-			PRINT_TYPES=1
-			PRINT_IFACES=0
-			PRINT_FUNCS=0
+			_PRINT_TYPES=1
+			_PRINT_IFACES=0
+			_PRINT_FUNCS=0
 			;;
 
 		-s | --short)
-			SHORT=1
+			_SHORT=1
 			;;
 
 		--)
@@ -58,76 +62,90 @@ _main() {
 		shift
 	done
 
-	if [ $# -eq 0 ]; then
-		cd "$(go env "GOROOT")"
+	_go_ids "$@"
+}
 
-		PACKAGES="$(
-			go list "..." |
-				grep -v "^_" |
-				grep -v "^cmd/" |
-				grep -v "^internal/" |
-				grep -v "/internal$" |
-				grep -v "/internal/" |
-				grep -v "^golang.org/"
-		)"
+_go_ids() {
+	local _pkgs="$@"
 
-		cd "$OLDPWD"
+	if [ -z "$_pkgs" ]; then
+		_pkgs="$(_stdlib_pkgs)"
 	fi
 
-	for PACKAGE in ${PACKAGES:-$@}; do
-		IDENTIFIERS="$(
-			go doc -short "$PACKAGE" |
-				sed "s/^[[:space:]]*//g" |
-				grep -v "^const" |
-				grep -v "^var" |
-				tee
-		)"
+	local _pkg=""
 
-		if [ "$PRINT_TYPES" -eq 1 ]; then
-			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^type " | tee)"
+	for _pkg in $_pkgs; do
+		local ids="$(_pkg_ids "$_pkg")"
 
-			if [ "$PRINT_IFACES" -eq 1 ]; then
-				IDENTIFIERS="$(echo "$IDENTIFIERS" | grep " interface{ ... }$" | tee)"
+		if [ "$_PRINT_TYPES" -eq 1 ]; then
+			ids="$(echo "$ids" | grep "^type " | tee)"
+
+			if [ "$_PRINT_IFACES" -eq 1 ]; then
+				ids="$(echo "$ids" | grep " interface{ ... }$" | tee)"
 			fi
-		elif [ "$PRINT_FUNCS" -eq 1 ]; then
-			IDENTIFIERS="$(echo "$IDENTIFIERS" | grep "^func " | tee)"
+		elif [ "$_PRINT_FUNCS" -eq 1 ]; then
+			ids="$(echo "$ids" | grep "^func " | tee)"
 		fi
 
-		IDENTIFIERS="$(echo "$IDENTIFIERS" | sed "s/ /%20/g")"
+		ids="$(echo "$ids" | sed "s/ /%20/g")"
+		local _id=""
 
-		for IDENTIFIER in $IDENTIFIERS; do
-			if echo "$IDENTIFIER" | grep -q "^type"; then
-				IDENTIFIER="$(
-					echo "$IDENTIFIER" |
+		for _id in $ids; do
+			if echo "$_id" | grep -q "^type"; then
+				_id="$(
+					echo "$_id" |
 						sed "s/%20/ /g" |
-						cut -d " " -f 2
+						cut -d " " -f 2 |
+						cut -d "[" -f 1
 				)"
-			elif echo "$IDENTIFIER" | grep -q "^func"; then
-				IDENTIFIER="$(
-					echo "$IDENTIFIER" |
+			elif echo "$_id" | grep -q "^func"; then
+				_id="$(
+					echo "$_id" |
 						sed "s/%20/ /g" |
 						cut -d " " -f 2 |
 						cut -d "(" -f 1
 				)"
 			fi
 
-			if [ "$SHORT" -eq 1 ]; then
-				echo "$(basename "$PACKAGE").$IDENTIFIER"
+			if [ "$_SHORT" -eq 1 ]; then
+				echo "${_pkg##*/}.$_id"
 			else
-				echo "$PACKAGE.$IDENTIFIER"
+				echo "$_pkg.$_id"
 			fi
 		done
 	done
 }
 
+_pkg_ids() {
+	local _pkg="$1"
+
+	"$_GO" doc -short "$_pkg" |
+		sed "s/^[[:space:]]+//g" |
+		grep -v "^const" |
+		grep -v "^var" |
+		tee
+}
+
+_stdlib_pkgs() {
+	cd "$("$_GO" env "GOROOT")"
+
+	"$_GO" list "..." |
+		grep -v "^_" |
+		grep -v "^cmd/" |
+		grep -v "^internal/" |
+		grep -v "/internal$" |
+		grep -v "/internal/" |
+		grep -v "^golang.org/"
+}
+
 _show_help() {
-	BIN_NAME="$(basename "$0")"
+	local _name="${0##*/}"
 
 	cat << EOF
-$BIN_NAME - Print exported data types and functions from the given Go package
+$_name - Print exported data types and functions from the given Go packages
 (or the standard library if none).
 
-Usage: $BIN_NAME [-f | -i | -t] [PACKAGE]...
+Usage: $_name [-f | -i | -t] [OPTIONS] [PACKAGE]...
 
 Options:
   -f, --funcs    Print functions

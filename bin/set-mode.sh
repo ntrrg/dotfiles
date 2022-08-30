@@ -4,7 +4,14 @@
 
 set -eu
 
+export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
+
 _main() {
+	if [ $# -eq 0 ]; then
+		log.sh -f "no mode or options given"
+		return 1
+	fi
+
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 		_show_help
 		return
