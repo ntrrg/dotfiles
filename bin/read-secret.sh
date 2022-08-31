@@ -17,5 +17,5 @@ trap true INT
 trap _on_exit EXIT
 
 stty -echo
-IFS= read -r SECRET
-printf "$SECRET"
+IFS= read -r _secret
+printf "$_secret"

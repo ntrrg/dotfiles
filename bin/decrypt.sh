@@ -2,7 +2,7 @@
 # Copyright (c) 2022 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -eu
+set -e
 
 _main() {
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -18,13 +18,13 @@ _main() {
 		shift
 	fi
 
-	if [ -z "$_pass" ]; then
-		_pass="$(cat -)"
+	if [ -n "$_pass" ]; then
+		_pass="--yes --batch --passphrase '$_pass'"
 	fi
 
-	local _file="$1"
+	local _file="${1:-"-"}"
 
-	gpg -dq --batch --yes --passphrase "$_pass" -o - "$_file"
+	gpg -dq --no-symkey-cache $_pass -o - "$_file"
 }
 
 _show_help() {
@@ -33,9 +33,11 @@ _show_help() {
 	cat << EOF
 $_name - decrypt the given file.
 
-Usage: $_name [-p PASSPHRASE] ENCRYPTED_FILE
+Usage: $_name [-p PASSPHRASE] [ENCRYPTED_FILE]
 
-If no passphrase is given, it will be read from STDIN.
+If no passphrase is given, it will be prompted.
+
+If no file is given, it will be read from STDIN.
 
 Options:
   -h, --help              Show this help message
