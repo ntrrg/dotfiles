@@ -205,7 +205,7 @@ Levels:
   If no level is given, -i will be used.
 
 Environment variables:
-	* 'LOGCOLORIZE' colorize logging level identifier. ($_COLORIZE)
+  * 'LOGCOLORIZE' colorize logging level identifier. ($_COLORIZE)
   * 'LOGDATE' preprends date to every message using the given format. ($_DATE)
   * 'LOGFILE' determines where messages will be printed. ($_FILE)
   * 'LOGLEVEL' determines which level of messages will be printed. ($_LEVEL)
