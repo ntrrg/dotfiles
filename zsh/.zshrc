@@ -1,74 +1,176 @@
-hostinfo() {
-  local DATE="$(date "+%Y/%m/%d %H:%M:%S %z | w%V")"
-  local DEVICE="$(hostname) ($(uname -m))"
-  local OS="$(uname -r)"
-  local CPU=""
-  local URAM=""
-  local TRAM=""
-  local USWAP=""
-  local TSWAP=""
-  local IP=""
+_get_word_size() {
+  case "$(uname -m)" in
+
+  x86_64 | amd64 | armv8* | arm64 | aarch64 )
+    echo "64-Bit"
+    ;;
+
+  x86 | i386 | i486 | i686 | armv7* | armv6* )
+    echo "32-Bit"
+    ;;
+
+  * )
+    echo "0-Bit"
+    ;;
+
+  esac
+}
+
+_get_os() {
+  local _os
 
   case "$(uname -s)" in
+
     Darwin* )
-      CPU="$(sysctl -n machdep.cpu.brand_string)"
+      _os="MacOS"
+      ;;
 
-      local RAM="$(top -l 1 | grep "PhysMem:" | tr -s " ")"
-      local FRAM="$(echo $RAM | cut -d ' ' -f 6)"
-      TRAM="$(echo $RAM | cut -d ' ' -f 2)"
-      URAM="$(echo "$TRAM - $FRAM" | sed "s/[a-zA-Z]//g" | bc)"
+    CYGWIN* )
+      _os="Cygwin"
+      ;;
 
-      TSWAP="0B"
-      USWAP="0B"
+    MINGW* )
+      _os="MinGw"
+      ;;
 
-      IP="$(ifconfig | grep "inet " | cut -d " " -f 2 | xargs)"
+    FreeBSD* )
+      _os="FreeBSD"
+      ;;
+
+    * )
+      if uname -r | grep -q '\-Microsoft$'; then
+        _os="Windows"
+      elif command -v termux-info > /dev/null; then
+        _os="Termux"
+      elif command -v getprop > /dev/null; then
+        _os="Android"
+      else
+        _os="Linux"
+      fi
+      ;;
+
+  esac
+
+  echo "$_os"
+}
+
+hostinfo() {
+  local _date="$(date "+%Y/%m/%d %H:%M:%S %z | w%V")"
+  local _dev="$(hostname) ($(uname -m))"
+  local _os="$(_get_os)"
+  local _cpu=""
+  local _word="$(_get_word_size)"
+  local _tram="0B"
+  local _uram="0B"
+  local _tswap="0B"
+  local _uswap="0B"
+  local _host="$(hostname)"
+  local _ip=""
+
+  case "$(_get_os)" in
+    MacOS )
+      _cpu="$(sysctl -n machdep.cpu.brand_string)"
+
+      local _ram="$(top -l 1 | grep "PhysMem:" | tr -s " ")"
+      local _fram="$(echo $_ram | cut -d ' ' -f 6)"
+      _tram="$(echo $_ram | cut -d ' ' -f 2)"
+      _uram="$(echo "$_tram - $_fram" | sed 's/[a-zA-Z]//g' | bc)"
+
+      _ip="$(ifconfig | grep "inet " | cut -d " " -f 2 | xargs)"
+      ;;
+
+    Windows )
+      # Device
+
+      if [ "$SLOW" = "1" ]; then
+        _dev="Windows Subsystem for Linux"
+      else
+        local _info="$(powershell.exe -Command '$oldProgressPreference = $progressPreference; $progressPreference = "SilentlyContinue"; Get-ComputerInfo; $progressPrefereqnce = $oldProgressPreferenc')"
+        local _brand="$(echo "$_info" | grep CsManufacturer | cut -d ':' -f 2 | sed 's/^ //' | sed 's/ Inc\.//' | sed 's/[^[:print:]]//')"
+        local _model="$(echo "$_info" | grep CsModel | cut -d ':' -f 2 | sed 's/^ //' | sed 's/[^[:print:]]//')"
+        _dev="$_brand $_model"
+      fi
+
+      # OS
+
+      if [ -e /etc/os-release ]; then
+        _os="WSL - $(source /etc/os-release; echo $PRETTY_NAME)"
+      fi
+
+      # CPU
+
+      _cpu="$(cat /proc/cpuinfo | grep -i '^Model name')"
+
+      if [ -z "$_cpu" ]; then
+        _cpu="$(cat /proc/cpuinfo | grep -i '^Processor')"
+      fi
+
+      _cpu="$(echo $_cpu | sed 's/.*: *//' | tr -s ' ' ' ' | tail -n 1 | sed 's/^\s\+//' | sed 's/\s\+$//')"
+
+      # Memory
+
+      local _ram="$(free -b | grep "Mem" | tr -s " ")"
+      local _fram="$(echo $_ram | cut -d ' ' -f 4)"
+      _tram="$(echo $_ram | cut -d ' ' -f 2)"
+      _uram="$(echo "$_tram - $_fram" | bc | hm.sh)"
+      _tram="$(echo "$_tram" | hm.sh)"
+
+      local _swap="$(free -b | grep "Swap" | tr -s " ")"
+      local _fswap="$(echo $_swap | cut -d ' ' -f 4)"
+      _tswap="$(echo $_swap | cut -d ' ' -f 2)"
+      _uswap="$(echo "$_tswap - $_fswap" | bc | hm.sh)"
+      _tswap="$(echo "$_tswap" | hm.sh)"
+
+      # Network
+
+      _ip="$(ip a 2> /dev/null | grep "inet " | sed 's/ *inet *//' | sed 's/\/.*//' | xargs)"
       ;;
 
     * )
       if [ -e /sys/class/dmi/id/product_name ]; then
-        DEVICE="$(cat /sys/class/dmi/id/sys_vendor | sed "s/ Inc\.//g") $(cat /sys/class/dmi/id/product_name) ($(uname -m))"
+        _dev="$(cat /sys/class/dmi/id/sys_vendor | sed 's/ Inc\.//') $(cat /sys/class/dmi/id/product_name)"
       elif cat /proc/cpuinfo | grep -q "Raspberry"; then
-        DEVICE="$(cat /proc/cpuinfo | grep "Raspberry" | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ') ($(uname -m))"
-      elif which getprop > /dev/null; then
-        DEVICE="$(getprop ro.product.manufacturer) $(getprop ro.product.model) ($(uname -m))"
+        _dev="$(cat /proc/cpuinfo | grep "Raspberry" | tail -n 1 | sed 's/.*: *//' | tr -s ' ' ' ')"
+      elif command -v getprop > /dev/null; then
+        _dev="$(getprop ro.product.manufacturer) $(getprop ro.product.model))"
       fi
 
       if [ -e /etc/os-release ]; then
-        OS="$OS - $(source /etc/os-release; echo $PRETTY_NAME)"
-      elif which getprop > /dev/null; then
-        OS="$OS - Android $(getprop ro.build.version.release)"
+        _os="$(source /etc/os-release; echo $PRETTY_NAME)"
+      elif command -v getprop > /dev/null; then
+        _os="Android $(getprop ro.build.version.release)"
       fi
 
-      CPU="$(lscpu | grep '^Model name')"
+      _cpu="$(cat /proc/cpuinfo | grep -i '^Model name')"
 
-      if [ -z "$CPU" ]; then
-        CPU="$(cat /proc/cpuinfo | grep '^Processor')"
+      if [ -z "$_cpu" ]; then
+        _cpu="$(cat /proc/cpuinfo | grep -i '^Processor')"
       fi
 
-      CPU="$(echo $CPU | tail -n 1 | sed "s/.*: *//" | tr -s ' ' ' ')"
+      _cpu="$(echo $_cpu | sed 's/.*: *//' | tr -s ' ' ' ' | tail -n 1 | sed 's/^\s\+//' | sed 's/\s\+$//')"
 
-      local RAM="$(free -b | grep "Mem" | tr -s " ")"
-      local FRAM="$(echo $RAM | cut -d ' ' -f 7)"
-      TRAM="$(echo $RAM | cut -d ' ' -f 2)"
-      URAM="$(echo "$TRAM - $FRAM" | bc | hm.sh)"
-      TRAM="$(echo "$TRAM" | hm.sh)"
+      local _ram="$(free -b | grep "Mem" | tr -s " ")"
+      local _fram="$(echo $_ram | cut -d ' ' -f 7)"
+      _tram="$(echo $_ram | cut -d ' ' -f 2)"
+      _uram="$(echo "$_tram - $_fram" | bc | hm.sh)"
+      _tram="$(echo "$_tram" | hm.sh)"
 
-      local SWAP="$(free -b | grep "Swap" | tr -s " ")"
-      TSWAP="$(echo $SWAP | cut -d ' ' -f 2 | hm.sh)"
-      USWAP="$(echo $SWAP | cut -d ' ' -f 3 | hm.sh)"
+      local _swap="$(free -b | grep "Swap" | tr -s " ")"
+      _tswap="$(echo $_swap | cut -d ' ' -f 2 | hm.sh)"
+      _uswap="$(echo $_swap | cut -d ' ' -f 3 | hm.sh)"
 
-      IP="$(ip a | grep "inet " | sed "s/ *inet *//" | sed "s/\/.*//" | xargs)"
+      _ip="$(ip a | grep "inet " | sed 's/ *inet *//' | sed 's/\/.*//' | xargs)"
       ;;
   esac
 
   echo "
  ▗██▖  ▗██▖
- █\e[32m▐▌\e[0m█  █▐▌█   $DATE
- ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $DEVICE
-  ▐▌\e[32m▝█▙▖\e[0m▐▌    \033[1mOS:\033[0m $OS
- ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   \033[1mCPU:\033[0m $CPU
- █▐▌█  █\e[32m▐▌\e[0m█   \033[1mRAM:\033[0m $URAM/$TRAM $([ $TSWAP != "0B" ] && echo "\033[1mSwap:\033[0m $USWAP/$TSWAP")
- ▝██▘  ▝██▘   \033[1mNET:\033[0m $(hostname) - $IP
+ █\e[32m▐▌\e[0m█  █▐▌█   $_date
+ ▝██\e[42m▘\e[0;32m▙\e[0m ▝██▘   $_dev
+  ▐▌\e[32m▝█▙▖\e[0m▐▌    \033[1mOS:\033[0m $_os ($(uname -r))
+ ▗██▖\e[32m▝█\e[0;42m▗\e[0m██▖   \033[1mCPU:\033[0m $_cpu ($(uname -m) $(_get_word_size))
+ █▐▌█  █\e[32m▐▌\e[0m█   \033[1mRAM:\033[0m $_uram/$_tram $([ $_tswap != "0B" ] && echo "\033[1mSwap:\033[0m $_uswap/$_tswap")
+ ▝██▘  ▝██▘   \033[1mNET:\033[0m $_host - $_ip
 "
 }
 
