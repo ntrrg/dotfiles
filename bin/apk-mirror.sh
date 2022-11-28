@@ -4,7 +4,7 @@
 
 set -e
 
-_ALPINEMIRROR="${ALPINEMIRROR:-"rsync://rsync.alpinelinux.org/alpine"}"
+_ALPINE_MIRROR="${ALPINE_MIRROR:-"rsync://rsync.alpinelinux.org/alpine"}"
 
 _main() {
 	if [ $# -eq 0 ]; then
@@ -12,10 +12,40 @@ _main() {
 		return 1
 	fi
 
-	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-		_show_help
-		return
-	fi
+	local _flags="-aHX"
+
+	local _opts="hz"
+	local _lopts="compress,help,no-linux"
+
+	eval set -- "$(
+		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
+	)"
+
+	while [ $# -gt 0 ]; do
+		case $1 in
+		-h | --help)
+			_show_help
+			return
+			;;
+
+		--no-linux)
+			local _flags="-rlt"
+			;;
+
+		-z | --compress)
+			local _flags="${_flags}z"
+			;;
+
+		--)
+			shift
+			break
+			;;
+		esac
+
+		shift
+	done
+
+	local _flags="${_flags}h"
 
 	local _dest="${1%/}"
 	shift
@@ -31,8 +61,8 @@ _main() {
 		_target="${_target%/}"
 		cmd.sh mkdir -p "$_dest/$_target"
 
-		cmd.sh rsync -aHXzh --delete-after --progress \
-			"$_ALPINEMIRROR/$_target/" "$_dest/$_target/"
+		cmd.sh rsync "$_flags" --delete-after --progress \
+			"$_ALPINE_MIRROR/$_target/" "$_dest/$_target/"
 	done
 }
 
@@ -42,14 +72,16 @@ _show_help() {
 	cat << EOF
 $_name - clone Alpine Linux mirrors easily.
 
-Usage: $_name DEST TARGET...
+Usage: $_name [--no-linux] [OPTIONS] DEST TARGET...
 
 Options:
-  -h, --help   Show this help message
+  -z, --compress   Use compression during
+  -h, --help       Show this help message
+      --no-linux   Allow mirroring to non-Linux file systems.
 
 Environment variables:
-  * 'ALPINEMIRROR' is the rsync mirror used to download the Alpine packages.
-    ($_ALPINEMIRROR)
+  * 'ALPINE_MIRROR' is the rsync mirror used to download the Alpine packages.
+    ($_ALPINE_MIRROR)
 
 Examples:
 
