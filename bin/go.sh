@@ -101,11 +101,12 @@ _main() {
 			local _repo="$_GOSH/src"
 
 			if [ ! -d "$_repo" ]; then
-				log.sh "cloning go git repository.."
+				log.sh "cloning git repository.."
 				git clone --bare "$_GOGITMIRROR" "$_repo"
 			else
-				log.sh "updating go git repository.."
-				git -C "$_repo" fetch -fpt origin || true
+				log.sh "updating git repository.."
+				git -C "$_repo" fetch -fpPt origin || true
+				git -C "$_repo" gc
 			fi
 
 			local _ref="$_rel"
@@ -154,8 +155,7 @@ _main() {
 	esac
 
 	log.sh "activating release $_rel.."
-	rm -f "$_GOSH/go"
-	ln -s "$_env" "$_GOSH/go"
+	ln -sf "$_env" "$_GOSH/go"
 }
 
 _get_arch() {
