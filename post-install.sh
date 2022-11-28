@@ -17,7 +17,7 @@ NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 
-NTALPINE="${NTALPINE:-"/media/ntDisk/srv/baul/data/_/Software/Linux/Mirrors/ntalpine/main"}"
+NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/_/Software/Linux/Mirrors/ntalpine/edge/main"}"
 
 ntapk() {
 	apk -X "$NTALPINE" --allow-untrusted --no-cache "$@"
@@ -71,12 +71,18 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 
 	if [ "$HAS_WIRELESS" -ne 0 ]; then
 		apk add wireless-tools wpa_supplicant
-		rc-update add wpa_supplicant boot
+
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			rc-update add wpa_supplicant boot
+		fi
 	fi
 
 	if [ "$HAS_BLUETOOTH" -ne 0 ]; then
 		apk add bluez
-		rc-update add bluetooth default
+
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			rc-update add bluetooth default
+		fi
 	fi
 fi
 
@@ -95,6 +101,7 @@ apk add \
 if [ "$IS_GUI" -eq 0 ]; then
 	# Apps.
 
+	apk del vim
 	ntapk add vim-tiny || apk add vim
 else
 	setup-xorg-base
@@ -319,13 +326,9 @@ EOF
 	# Apps
 
 	apk add \
-		chromium \
-		evince \
 		ffmpeg \
 		ffmpeg-libs \
 		firefox \
-		gimp \
-		inkscape \
 		telegram-desktop \
 		transmission \
 		vlc-qt \
@@ -337,15 +340,24 @@ EOF
 
 		ntapk add \
 			conky \
+			mupdf \
 			st \
-			sxiv \
-			vim-huge
+			sxiv
+
+		apk del vim
+		ntapk add vim-huge
 	fi
 
 	if [ "$EXTRA_APPS" -ne 0 ]; then
 		apk add \
 			blender \
+			chromium \
+			evince \
 			flatpak \
+			gimp \
+			inkscape \
+			kdenlive \
+			krita \
 			libreoffice \
 			obs-studio \
 			scribus \
@@ -373,7 +385,9 @@ EOF
 			scrcpy \
 			simple-scan
 
-		rc-update add cupsd default
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			rc-update add cupsd default
+		fi
 	fi
 
 	# Desktop Environtment
@@ -434,8 +448,18 @@ EOF
 
 			if [ "$NEW_USER" != "ntrrg" ]; then
 				apk add \
-					gnome-disk-utility \
-					network-manager-applet
+					gnome-disk-utility
+
+				# NetworkManager
+
+				apk add \
+					network-manager-applet \
+					networkmanager-adsl \
+					networkmanager-l2tp \
+					networkmanager-openvpn \
+					networkmanager-ovs \
+					networkmanager-ppp \
+					networkmanager-wwan
 
 				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
 [main]
@@ -448,7 +472,8 @@ EOF
 				rc-update add networkmanager default
 
 				if [ "$HAS_WIRELESS" -ne 0 ]; then
-					apk add iwd
+					apk add iwd \
+						networkmanager-wifi
 
 					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
 
@@ -457,6 +482,10 @@ wifi.backend=iwd
 EOF
 
 					rc-update add iwd default
+				fi
+
+				if [ "$HAS_BLUETOOTH" -ne 0 ]; then
+					apk add networkmanager-bluetooth
 				fi
 
 				# Thunar - Device detection
