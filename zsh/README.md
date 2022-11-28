@@ -41,7 +41,7 @@
   1. Vim mode (`I` for *Insert* mode, `N` for *Normal* mode).
   2. Last command exit status (none if `0`).
   3. Username.
-  4. User permissions.
+  4. User permissions (`$` for regular user, `#` for super user).
   5. Git information (reference, staged files, modified files).
   6. Current directory.
 
