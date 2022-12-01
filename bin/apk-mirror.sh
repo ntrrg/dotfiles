@@ -15,7 +15,7 @@ _main() {
 	local _flags="-aHX"
 
 	local _opts="hz"
-	local _lopts="compress,help,no-linux"
+	local _lopts="compress,help,non-linux"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -28,7 +28,7 @@ _main() {
 			return
 			;;
 
-		--no-linux)
+		--non-linux)
 			local _flags="-rlt"
 			;;
 
@@ -75,9 +75,9 @@ $_name - clone Alpine Linux mirrors easily.
 Usage: $_name [--no-linux] [OPTIONS] DEST TARGET...
 
 Options:
-  -z, --compress   Use compression during
-  -h, --help       Show this help message
-      --no-linux   Allow mirroring to non-Linux file systems.
+  -z, --compress    Use compression during
+  -h, --help        Show this help message
+      --non-linux   Allow mirroring to non-Linux file systems.
 
 Environment variables:
   * 'ALPINE_MIRROR' is the rsync mirror used to download the Alpine packages.
@@ -91,11 +91,11 @@ Examples:
 
   * Clone edge branch for aarch64 and x86_64 architectures:
 
-    $_name ~/Downloads/alpine edge/{community,main,testing}/{aarch64,x86_64}
+    $_name ~/Downloads/alpine edge/{main,community,testing}/{aarch64,x86_64}
 
   * Clone stable branches 3.14, 3.15 and 3.16 without releases:
 
-    $_name ~/Downloads/alpine v3.1{4,5,6}/{community,main}
+    $_name ~/Downloads/alpine v3.1{4,5,6}/{main,community}
 
 Copyright (c) 2022 Miguel Angel Rivera Notararigo
 Released under the MIT License
