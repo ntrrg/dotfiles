@@ -61,7 +61,7 @@ _main() {
 		_target="${_target%/}"
 		cmd.sh mkdir -p "$_dest/$_target"
 
-		cmd.sh rsync "$_flags" --delete-after --progress \
+		cmd.sh rsync "$_flags" --delay-updates --delete-after --progress \
 			"$_ALPINE_MIRROR/$_target/" "$_dest/$_target/"
 	done
 }
