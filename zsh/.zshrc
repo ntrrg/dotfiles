@@ -150,10 +150,15 @@ hostinfo() {
     Windows )
       # Device
 
-      local _dev_info="$(powershell.exe -Command '$oldProgressPreference = $progressPreference; $progressPreference = "SilentlyContinue"; Get-ComputerInfo; $progressPrefereqnce = $oldProgressPreferenc')"
-      local _brand="$(echo "$_dev_info" | grep CsManufacturer | cut -d ':' -f 2 | sed 's/ Inc\.//' | _clean_text)"
-      local _model="$(echo "$_dev_info" | grep CsModel | cut -d ':' -f 2 | _clean_text)"
-      _dev="$_brand $_model"
+      _dev="Windows Subsystem for Linux"
+
+      if command -v powershell.exe > /dev/null; then
+        local _dev_info="$(powershell.exe -Command '$oldProgressPreference = $progressPreference; $progressPreference = "SilentlyContinue"; Get-ComputerInfo; $progressPrefereqnce = $oldProgressPreferenc')"
+        local _brand="$(echo "$_dev_info" | grep CsManufacturer | cut -d ':' -f 2 | sed 's/ Inc\.//' | _clean_text)"
+        local _model="$(echo "$_dev_info" | grep CsModel | cut -d ':' -f 2 | _clean_text)"
+
+        _dev="$_brand $_model"
+      fi
 
       # OS
 
@@ -195,7 +200,7 @@ hostinfo() {
       _ip="$(ip a 2> /dev/null | grep 'inet ' | sed 's/ *inet *//' | sed 's/\/.*//' | xargs)"
       ;;
 
-    * )
+    * ) # Linux
       # Device
 
       if [ -e /sys/class/dmi/id/product_name ]; then
