@@ -10,4 +10,11 @@
   <property name="last-show-hidden" type="bool" value="false"/>
   <property name="last-window-maximized" type="bool" value="false"/>
   <property name="last-side-pane" type="string" value="ThunarShortcutsPane"/>
+  <property name="hidden-devices" type="array">
+    <value type="string" value="data"/>
+  </property>
+  <property name="misc-status-bar-active-info" type="uint" value="13"/>
+  <property name="last-image-preview-visible" type="bool" value="false"/>
+  <property name="last-toolbar-item-order" type="string" value="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18"/>
+  <property name="last-toolbar-visible-buttons" type="string" value="0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0"/>
 </channel>
