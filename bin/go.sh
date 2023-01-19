@@ -8,15 +8,15 @@ export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 
 _ACTION="build"
 _GO="${GO:-"go"}"
+_GO_GIT_MIRROR="${GO_GIT_MIRROR:-"https://go.googlesource.com/go"}"
+_GO_MIRROR="${GO_MIRROR:-"https://go.dev/dl"}"
 _GOSH="${GOSH:-"$HOME/.local/lib/go.sh"}"
-_GOENVS="${GOENVS:-"$_GOSH/envs"}"
-_GOGITMIRROR="${GOGITMIRROR:-"https://go.googlesource.com/go"}"
-_GOMIRROR="${GOMIRROR:-"https://go.dev/dl"}"
+_GOSH_ENVS="${GOSH_ENVS:-"$_GOSH/envs"}"
 _TMPDIR="${TMPDIR:-"/tmp"}"
 
 _main() {
-	local _opts="bdhil"
-	local _lopts="bin,delete,help,init,list"
+	local _opts="bdhils"
+	local _lopts="bin,build,delete,help,init,list"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -38,7 +38,7 @@ _main() {
 			;;
 
 		-i | --init)
-			mkdir -p "$_GOSH" "$_GOENVS"
+			mkdir -p "$_GOSH" "$_GOSH_ENVS"
 
 			local _GOPATH=""
 
@@ -56,8 +56,12 @@ _main() {
 			;;
 
 		-l | --list)
-			ls "$_GOENVS"
+			ls "$_GOSH_ENVS"
 			return
+			;;
+
+		-s | --build)
+			_ACTION="build"
 			;;
 
 		--)
@@ -77,7 +81,7 @@ _main() {
 		_rel="$1"
 	fi
 
-	local _env="$_GOENVS/$_rel"
+	local _env="$_GOSH_ENVS/$_rel"
 
 	case $_ACTION in
 	binary)
@@ -88,7 +92,7 @@ _main() {
 			local _dl_pkg="$_TMPDIR/$_pkg"
 
 			log.sh "downloading binary release $_rel.."
-			wget -cO "$_dl_pkg" "$_GOMIRROR/$_pkg"
+			wget -cO "$_dl_pkg" "$_GO_MIRROR/$_pkg"
 
 			log.sh "decompressing binary release $_rel.. ($_dl_pkg)"
 			mkdir "$_env"
@@ -102,7 +106,7 @@ _main() {
 
 			if [ ! -d "$_repo" ]; then
 				log.sh "cloning git repository.."
-				git clone --bare "$_GOGITMIRROR" "$_repo"
+				git clone --bare "$_GO_GIT_MIRROR" "$_repo"
 			else
 				log.sh "updating git repository.."
 				git -C "$_repo" fetch -fpPt origin || true
@@ -134,7 +138,7 @@ _main() {
 
 				GOBOOSTRAP=1 CGO_ENABLED=0 _main "$_ref"
 
-				GOROOT_BOOTSTRAP="$_GOENVS/go$_ref"
+				GOROOT_BOOTSTRAP="$_GOSH_ENVS/go$_ref"
 			fi
 
 			(unset GOROOT && cd "$_env/src" && ./make.bash)
@@ -184,7 +188,7 @@ _get_arch() {
 }
 
 _get_latest_release() {
-	wget -qO - "$_GOMIRROR/?mode=json" |
+	wget -qO - "$_GO_MIRROR/?mode=json" |
 		grep -m 1 "version" |
 		cut -d '"' -f 4 |
 		sed "s/go//"
@@ -200,7 +204,7 @@ _show_help() {
 	cat << EOF
 $_name - manage Go environments.
 
-Usage: $_name [-b] [RELEASE]
+Usage: $_name [-b | -s] [RELEASE]
    or: $_name -l
    or: $_name -d RELEASE
    or: \$($_name --init)
@@ -213,14 +217,15 @@ Options:
   -h, --help     Show this help message
   -i, --init     Setup the environment for using $_name
   -l, --list     List all the local releases
+  -s, --build    Build given release from source (default)
 
 Environment variables:
-  * 'GOENVS' points to the directory that will hold insalled Go releases.
-    ($_GOENVS)
-  * 'GOGITMIRROR' is the mirror used to clone the Go source code.
-  * 'GOMIRROR' is the mirror used to download the Go assets.
+  * 'GO_GIT_MIRROR' is the mirror used to clone the Go source code.
+  * 'GO_MIRROR' is the mirror used to download the Go assets.
   * 'GOSH' points to the directory that will hold go.sh utilities.
     ($_GOSH)
+  * 'GOSH_ENVS' points to the directory that will hold installed Go releases.
+    ($_GOSH_ENVS)
 
 Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License
