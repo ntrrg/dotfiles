@@ -87,6 +87,7 @@ set noendofline nofixendofline
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
 autocmd BufRead,BufNewFile go.sum setlocal filetype=gosum
+autocmd BufRead,BufNewFile *.astro setlocal filetype=html
 autocmd BufRead,BufNewFile *.gohtml setlocal filetype=gohtml
 autocmd BufRead,BufNewFile *.gotmpl,*.gotxt,*.tmpl setlocal filetype=gotmpl
 autocmd BufRead,BufNewFile *.slide setlocal filetype=markdown
