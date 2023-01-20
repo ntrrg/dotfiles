@@ -94,6 +94,8 @@ autocmd BufRead,BufNewFile *.svelte setlocal filetype=html
 autocmd BufRead,BufNewFile *.trigger setlocal filetype=sh
 autocmd BufRead,BufNewFile *.v setlocal filetype=v
 autocmd BufRead,BufNewFile *.vue setlocal filetype=html
+autocmd BufRead,BufNewFile *.zig setlocal filetype=zig
+autocmd BufRead,BufNewFile *.zir setlocal filetype=zir
 
 autocmd Filetype c setlocal noexpandtab
 autocmd Filetype cpp setlocal noexpandtab
@@ -104,6 +106,7 @@ autocmd Filetype python setlocal tabstop=4 shiftwidth=4
 autocmd Filetype rst setlocal tabstop=4 shiftwidth=4
 autocmd Filetype sh setlocal noexpandtab
 autocmd Filetype v setlocal noexpandtab
+autocmd Filetype zig,zir setlocal tabstop=4 shiftwidth=4
 
 " -----------------------------------------------------------------------------
 " Searching
