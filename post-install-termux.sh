@@ -34,7 +34,6 @@ apt-get install -y \
 	elinks \
 	nmap \
 	pv \
-	time \
 	vim
 
 ############
