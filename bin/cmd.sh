@@ -12,6 +12,11 @@ _main() {
 		return
 	fi
 
+	if [ "$1" = "-n" ] || [ "$1" = "--dry-run" ]; then
+		_DRY_RUN=1
+		shift
+	fi
+
 	printf "> $*\n"
 
 	if is-falsy.sh "$_DRY_RUN"; then
@@ -28,7 +33,8 @@ $_name - execute a command and print what would be executed.
 Usage: $_name COMMAND [ARGS]
 
 Options:
-  -h, --help   Show this help message
+  -n, --dry-run   Do not execute, just print
+  -h, --help      Show this help message
 
 Environment variables:
   * 'DRY_RUN' determines if the given command will be printed, but not
