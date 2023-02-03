@@ -149,8 +149,7 @@ _main() {
 		log.sh "deleting release $_rel.. ($_env)"
 
 		if [ ! -d "$_env" ]; then
-			log.sh -e "no env for release $_rel"
-			return 1
+			log.sh -f "no env for release $_rel"
 		fi
 
 		rm -r "$_env"
@@ -181,8 +180,8 @@ _get_arch() {
 		;;
 
 	*)
-		log.sh -f "cannot define architecture for '$(uname -m)'"
-		exit 1
+		log.sh -w "cannot define architecture for '$(uname -m)'"
+		return 1
 		;;
 	esac
 }
@@ -226,6 +225,8 @@ Environment variables:
     ($_GOSH)
   * 'GOSH_ENVS' points to the directory that will hold installed Go releases.
     ($_GOSH_ENVS)
+
+For logging options see 'log.sh --help'.
 
 Copyright (c) 2019 Miguel Angel Rivera Notararigo
 Released under the MIT License

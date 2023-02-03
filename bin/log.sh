@@ -4,12 +4,12 @@
 
 set -eu
 
-_COLORIZE="${LOGCOLORIZE:-1}"
-_DATE="${LOGDATE:-""}"
-_FILE="${LOGFILE:-"/dev/stderr"}"
-_LEVEL="${LOGLEVEL:-"WARN"}"
-_LEVELIZE="${LOGLEVELIZE:-1}"
-_PREFIX="${LOGPREFIX:-""}"
+_COLORIZE="${LOG_COLORIZE:-1}"
+_DATE="${LOG_DATE:-""}"
+_FILE="${LOG_FILE:-"/dev/stderr"}"
+_LEVEL="${LOG_LEVEL:-"WARN"}"
+_LEVELIZE="${LOG_LEVELIZE:-1}"
+_PREFIX="${LOG_PREFIX:-""}"
 
 _main() {
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -69,6 +69,10 @@ _main() {
 	fi
 
 	printf "$_level_text$_date$_PREFIX%s\n" "$(printf "$@")" >> "$_FILE"
+
+	if [ "$_level" = "FATAL" ]; then
+		exit 1
+	fi
 }
 
 _index_to_level() {
@@ -198,19 +202,19 @@ Options:
 Levels:
   -d, --debug   Log message with DEBUG level.
   -e, --error   Log message with ERROR level.
-  -f, --fatal   Log message with FATAL level.
+  -f, --fatal   Log message with FATAL level and exit.
   -i, --info    Log message with INFO level.
   -w, --warn    Log message with WARN level.
 
   If no level is given, -i will be used.
 
 Environment variables:
-  * 'LOGCOLORIZE' colorize logging level identifier. ($_COLORIZE)
-  * 'LOGDATE' preprends date to every message using the given format. ($_DATE)
-  * 'LOGFILE' determines where messages will be printed. ($_FILE)
-  * 'LOGLEVEL' determines which level of messages will be printed. ($_LEVEL)
-  * 'LOGLEVELIZE' prepreds logging level to every message. ($_LEVELIZE)
-  * 'LOGPREFIX' preprends its content to every message. ($_PREFIX)
+  * 'LOG_COLORIZE' colorize logging level identifier. ($_COLORIZE)
+  * 'LOG_DATE' preprends date to every message using the given format. ($_DATE)
+  * 'LOG_FILE' determines where messages will be printed. ($_FILE)
+  * 'LOG_LEVEL' determines which level of messages will be printed. ($_LEVEL)
+  * 'LOG_LEVELIZE' prepreds logging level to every message. ($_LEVELIZE)
+  * 'LOG_PREFIX' preprends its content to every message. ($_PREFIX)
 
 Copyright (c) 2022 Miguel Angel Rivera Notararigo
 Released under the MIT License

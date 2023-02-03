@@ -9,7 +9,6 @@ export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 _main() {
 	if [ $# -eq 0 ]; then
 		log.sh -f "no mode or options given"
-		return 1
 	fi
 
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -56,6 +55,8 @@ Usage: $_name [OPTIONS] OUTPUT X Y [REFRESH]
 Options:
   -l, --list   List available screens
   -h, --help   Show this help message
+
+For logging options see 'log.sh --help'.
 
 Copyright (c) 2022 Miguel Angel Rivera Notararigo
 Released under the MIT License

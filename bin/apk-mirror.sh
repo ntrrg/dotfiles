@@ -9,7 +9,6 @@ _ALPINE_MIRROR="${ALPINE_MIRROR:-"rsync://rsync.alpinelinux.org/alpine"}"
 _main() {
 	if [ $# -eq 0 ]; then
 		log.sh -f "no destination or options given"
-		return 1
 	fi
 
 	local _flags="-aHX"
@@ -52,7 +51,6 @@ _main() {
 
 	if [ ! -d "$_dest" ]; then
 		log.sh -f "destination is not a directory or doesn't exist"
-		return 1
 	fi
 
 	local _target=""
@@ -60,7 +58,6 @@ _main() {
 	for _target in "$@"; do
 		_target="${_target%/}"
 		cmd.sh mkdir -p "$_dest/$_target"
-
 		cmd.sh rsync "$_flags" --delay-updates --delete-after --progress \
 			"$_ALPINE_MIRROR/$_target/" "$_dest/$_target/"
 	done
@@ -96,6 +93,8 @@ Examples:
   * Clone stable branches 3.14, 3.15 and 3.16 without releases:
 
     $_name ~/Downloads/alpine v3.1{4,5,6}/{main,community}
+
+For logging options see 'log.sh --help'.
 
 Copyright (c) 2022 Miguel Angel Rivera Notararigo
 Released under the MIT License
