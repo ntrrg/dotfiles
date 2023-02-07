@@ -49,6 +49,7 @@
 
   **Windows management:**
 
+  * <kbd>⌘</kbd> + <kbd>Return</kbd> -> Window menu.
   * <kbd>⌘</kbd> + <kbd>D</kbd> -> Minimize/maximize all windows (show desktop).
   * <kbd>Alt</kbd> + <kbd>Tab</kbd> -> Cycle windows.
   * <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd> -> Reverse cycle windows.
