@@ -1,18 +1,21 @@
-if [ -z "$_ZSH_ENV" ]; then
-  export _ZSH_ENV=1
+export CHARSET="UTF-8"
+export LANGUAGE="en_US"
+export LC_ALL="$LANGUAGE.$CHARSET"
+export LC_ADDRESS="$LANGUAGE.$CHARSET"
+export LC_COLLATE="$LANGUAGE.$CHARSET"
+export LC_CTYPE="$LANGUAGE.$CHARSET"
+export LC_IDENTIFICATION="$LANGUAGE.$CHARSET"
+export LC_MEASUREMENT="$LANGUAGE.$CHARSET"
+export LC_MESSAGES="$LANGUAGE.$CHARSET"
+export LC_MONETARY="$LANGUAGE.$CHARSET"
+export LC_NAME="$LANGUAGE.$CHARSET"
+export LC_NUMERIC="$LANGUAGE.$CHARSET"
+export LC_PAPER="$LANGUAGE.$CHARSET"
+export LC_TELEPHONE="$LANGUAGE.$CHARSET"
+export LC_TIME="$LANGUAGE.$CHARSET"
+export LANG="$LANGUAGE.$CHARSET"
 
-  fpath=($HOME/.local/share/zsh/vendor-functions $HOME/.local/share/zsh/vendor-completions $fpath)
-
-  export PATH="$HOME/go/bin:$HOME/bin:$HOME/.local/bin:$PATH"
-
-  export CHARSET="UTF-8"
-  export LANGUAGE="en_US"
-  export LC_ALL="en_US.UTF-8"
-  export LANG="en_US.UTF-8"
-
-  export BROWSER="firefox"
-  export EDITOR="vim -e"
-  export PAGER="less"
-  export VISUAL="vim"
-fi
-
+export BROWSER="firefox"
+export EDITOR="vim -e"
+export PAGER="less"
+export VISUAL="vim"

@@ -44,7 +44,13 @@ vim:
 
 .PHONY: zsh
 zsh:
-	cp -rpf "zsh/.zprofile" "zsh/.zshenv" "zsh/.zshrc" "$$HOME/"
+	cp -rpf \
+		"zsh/.zlogin" \
+		"zsh/.zlogout" \
+		"zsh/.zprofile" \
+		"zsh/.zshenv" \
+		"zsh/.zshrc" \
+		"$$HOME/"
 
 # GUI
 
