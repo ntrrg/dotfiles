@@ -2,20 +2,29 @@
 
 set -eux
 
-ALLOW_MOSH="${ALLOW_MOSH:-1}"
-ALLOW_SSH="${ALLOW_SSH:-1}"
 BASEPATH="${BASEPATH:-"/tmp"}"
+
+CHARSET="${CHARSET:-"UTF-8"}"
+LANGUAGE="${LANGUAGE:-"en_US"}"
+
 IS_HARDWARE="${IS_HARDWARE:-1}"
 HAS_BLUETOOTH="${HAS_BLUETOOTH:-0}"
 HAS_WIRELESS="${HAS_WIRELESS:-0}"
-LANGUAGE="${LANGUAGE:-"en_US"}"
+
 SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
+ALLOW_SSH="${ALLOW_SSH:-1}"
+ALLOW_MOSH="${ALLOW_MOSH:-1}"
 
 ################
 # Installation #
 ################
 
 cd "$BASEPATH"
+
+apt-get install -y locales
+
+localedef -ci "$LANGUAGE" -f "$CHARSET" -A "/usr/share/locale/locale.alias" \
+	"$LANGUAGE.$CHARSET"
 
 apt-get install -y \
 	apt-transport-https \
@@ -27,7 +36,6 @@ apt-get install -y \
 	git-lfs \
 	gnupg \
 	gzip \
-	locales \
 	make \
 	man \
 	mosh \
@@ -66,9 +74,6 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		apt-get install -y bluez
 	fi
 fi
-
-localedef -ci "$LANGUAGE" -f "UTF-8" -A "/usr/share/locale/locale.alias" \
-	"$LANGUAGE.UTF-8"
 
 # Apps
 
