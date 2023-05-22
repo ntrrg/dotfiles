@@ -269,6 +269,7 @@ hostinfo() {
 "
 }
 
+. "$HOME/.zprofile"
 hostinfo
 zle -N hostinfo
 

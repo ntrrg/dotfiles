@@ -16,6 +16,6 @@ export LC_TIME="$LANGUAGE.$CHARSET"
 export LANG="$LANGUAGE.$CHARSET"
 
 export BROWSER="firefox"
-export EDITOR="vim -e"
+export EDITOR="vim"
 export PAGER="less"
 export VISUAL="vim"
