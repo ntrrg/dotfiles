@@ -4,7 +4,7 @@
 
 set -e
 
-_RSYNC="${RSYNC:-"rsync"}"
+_CMD="${CMD:-"rsync"}"
 
 _main() {
 	if [ $# -eq 0 ]; then
@@ -16,7 +16,7 @@ _main() {
 		return
 	fi
 
-	local _cmd="$_RSYNC"
+	local _cmd="$_CMD"
 
 	while [ $# -gt 0 ]; do
 		if [ "$1" = "--" ]; then
@@ -68,15 +68,15 @@ _show_help() {
 	local _name="${0##*/}"
 
 	cat << EOF
-$_name - rsync helper for directory synchronization with shell expansion.
+$_name - directory synchronization with shell expansion.
 
-Usage: $_name [RSYNC_OPTION] -- SRC DEST [ITEM]... 
+Usage: $_name [CMD_OPTION]... -- SRC DEST [ITEM]... 
 
 Options:
   -h, --help   Show this help message
 
 Environment variables:
-  * 'RSYNC' is the rsync binary to be used. ($_RSYNC)
+  * 'CMD' is the syncronization command to be used. ($_CMD)
 
 Examples:
 
@@ -92,9 +92,13 @@ Examples:
 
     $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine edge/{main,community,testing}/{aarch64,x86_64}/
 
-  * Clone Alpine Linux stable branches 3.14, 3.15 and 3.16 without releases:
+  * Clone Alpine Linux stable branches 3.16, 3.17 and 3.18 without releases:
 
-    $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine v3.1{4,5,6}/{main,community}/
+    $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine v3.1{6,7,8}/{main,community}/
+
+  * Clone full Alpine Linux package repository with rsync flags:
+
+    $_name -azAHXh --delay-updates --delete-delay --progress -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine
 
 For logging options see 'log.sh --help'.
 
