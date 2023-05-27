@@ -17,7 +17,7 @@ _main() {
 		shift
 	fi
 
-	printf "> $*\n"
+	printf "> $*\n" > "/dev/stderr"
 
 	if is-falsy.sh "$_DRY_RUN"; then
 		"$@"
@@ -30,7 +30,7 @@ _show_help() {
 	cat << EOF
 $_name - execute a command and print what would be executed.
 
-Usage: $_name COMMAND [ARGS]
+Usage: $_name [OPTIONS] COMMAND [ARGS]
 
 Options:
   -n, --dry-run   Do not execute, just print
