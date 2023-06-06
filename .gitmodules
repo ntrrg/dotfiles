@@ -1,0 +1,3 @@
+[submodule "vim/.vim/pack/plugins/start/vim-lsp"]
+	path = vim/.vim/pack/plugins/start/vim-lsp
+	url = https://github.com/prabirshrestha/vim-lsp.git

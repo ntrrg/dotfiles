@@ -9,16 +9,23 @@ set sessionoptions-=options
 set sessionoptions-=folds
 
 " -----------------------------------------------------------------------------
-" Interface
+" UI
 
+set colorcolumn=80
 set nonumber
 set relativenumber
+set signcolumn=number
 set ruler
 set laststatus=2
 set mouse=a
+set ttymouse=sgr
 set nomodeline
 set wildmenu
 set showcmd
+set updatetime=500
+set balloondelay=250
+set completeopt+=popup
+set completepopup=align:menu,highlight:Pmenu
 set splitbelow
 set splitright
 
@@ -81,6 +88,7 @@ syntax on
 set listchars=precedes:…,tab:-›,space:·,trail:·,extends:…,eol:¶
 set wrap
 set autoindent
+filetype indent on
 set smarttab
 set expandtab tabstop=2 shiftwidth=2
 set noendofline nofixendofline
@@ -119,6 +127,8 @@ set magic
 " -----------------------------------------------------------------------------
 " Keys
 
+nmap <Space> <Leader>
+
 set backspace=indent,eol,start
 
 " vimgrep
@@ -133,4 +143,58 @@ nnoremap ]Q :clast<CR>
 " -----------------------------------------------------------------------------
 " Plugins
 
-" filetype plugin indent on
+filetype plugin on
+
+"""""""""""
+" vim-lsp "
+"""""""""""
+
+"let g:lsp_diagnostics_enabled = 0
+"let g:lsp_document_highlight_enabled = 0
+"highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
+
+if executable('gopls')
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'gopls',
+    \ 'cmd': {server_info->['gopls']},
+    \ 'allowlist': ['go'],
+    \ })
+endif
+
+augroup lsp_install
+  au!
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+function! s:on_lsp_buffer_enabled() abort
+  setlocal omnifunc=lsp#complete
+  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
+  nmap <buffer> <Leader>s <plug>(lsp-document-symbol-search)
+  nmap <buffer> <Leader>S <plug>(lsp-workspace-symbol-search)
+  nmap <buffer> <Leader>d <plug>(lsp-peek-definition)
+  nmap <buffer> <Leader>D <plug>(lsp-definition)
+  nmap <buffer> <Leader>i <plug>(lsp-peek-implementation)
+  nmap <buffer> <Leader>I <plug>(lsp-implementation)
+  nmap <buffer> <Leader>t <plug>(lsp-peek-type-definition)
+  nmap <buffer> <Leader>T <plug>(lsp-type-definition)
+  nmap <buffer> <Leader>R <plug>(lsp-references)
+  nmap <buffer> <Leader>, <plug>(lsp-previous-reference)
+  nmap <buffer> <Leader>. <plug>(lsp-next-reference)
+  nmap <buffer> <Leader>! <plug>(lsp-next-diagnostic)
+
+  nmap <buffer> <Leader>r <plug>(lsp-rename)
+
+  nmap <buffer> <Leader><Space> <plug>(lsp-hover)
+  nmap <buffer> <expr><c-j> lsp#scroll(+4)
+  nmap <buffer> <expr><c-k> lsp#scroll(-4)
+
+  let g:lsp_format_sync_timeout = 1000
+  autocmd! BufWritePre * call execute('LspDocumentFormatSync')
+
+  " File type.
+  "autocmd FileType go nmap <buffer> gd <plug>(lsp-definition)
+
+  " File extension.
+  "autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+endfunction
