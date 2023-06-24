@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eux
+set -xeuo pipefail
 
 BASEPATH="${BASEPATH:-"/tmp"}"
 
@@ -23,7 +23,7 @@ ALLOW_MOSH="${ALLOW_MOSH:-1}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 
-NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/_/Software/Linux/Mirrors/ntalpine/edge/main"}"
+NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/ntrrg/Software/Linux/Mirrors/ntalpine/edge/main"}"
 
 ntapk() {
 	apk -X "$NTALPINE" --allow-untrusted --no-cache "$@"
@@ -92,7 +92,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 	fi
 fi
 
-# Apps.
+# Applications.
 
 apk add \
 	bc \
@@ -105,33 +105,21 @@ apk add \
 #apk add time
 
 if [ "$IS_GUI" -eq 0 ]; then
-	# Apps.
+	# Applications.
 
 	apk del vim
 	ntapk add vim-tiny || apk add vim
 else
-	setup-xorg-base
-
 	apk add \
 		dbus \
-		lightdm-gtk-greeter \
-		xkill \
+		eudev \
 		xdg-user-dirs \
-		xdg-utils \
-		xhost
+		xdg-utils
 
-	if [ "$NEW_USER" != "ntrrg" ]; then
-		rc-update add lightdm default
-	fi
+	setup-devd udev
 
 	if [ "$IS_HARDWARE" -ne 0 ]; then
-		apk add \
-			alsa-utils \
-			pavucontrol \
-			pulseaudio \
-			pulseaudio-utils \
-			xcalib \
-			xrandr
+		apk add alsa-utils
 
 		chmod u+s "/usr/sbin/dmidecode"
 		chmod u+s "/usr/sbin/smartctl"
@@ -142,11 +130,46 @@ else
 		fi
 	fi
 
-	# Remove accessibility errors from X session error log.
+	# XORG
 
+	apk add \
+		libxft \
+		xcalib \
+		xev \
+		xf86-input-libinput \
+		xhost \
+		xkill \
+		xorg-server \
+		xrandr
+
+	# Remove accessibility errors from X session error log.
 	if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 		echo "NO_AT_BRIDGE=1" >> "/etc/environment"
 	fi
+
+	apk add lightdm-gtk-greeter
+
+	if [ "$NEW_USER" != "ntrrg" ]; then
+		rc-update add lightdm default
+	fi
+
+	if [ "$IS_HARDWARE" -ne 0 ]; then
+		apk add \
+			pavucontrol \
+			pulseaudio \
+			pulseaudio-utils
+	fi
+
+	# Wayland
+
+	apk add \
+		seatd \
+		wdisplays \
+		wev \
+		wl-clipboard \
+		wlr-randr \
+		wlrctl \
+		xwayland
 
 	# Fonts
 
@@ -155,7 +178,6 @@ else
 		font-noto-all \
 		font-noto-cjk \
 		font-noto-emoji \
-		libxft \
 		terminus-font
 
 	cat << EOF > "/etc/fonts/conf.avail/69-google-noto.conf"
@@ -329,26 +351,30 @@ EOF
 	ln -sf "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf" "/etc/fonts/conf.d/69-hurmit-nerd-font.conf"
 	fc-cache -f
 
-	# Apps
+	# Applications.
 
 	apk add \
 		ffmpeg \
 		ffmpeg-libs \
 		firefox \
+		imagemagick \
+		libsixel-tools \
 		telegram-desktop \
 		transmission \
 		vlc-qt \
-		xarchiver
+		xarchiver \
+		zbar
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
-			alacritty
+			alacritty \
+			foot \
+			imv
 
 		ntapk add \
 			conky \
 			mupdf \
-			st \
-			sxiv
+			st
 
 		apk del vim
 		ntapk add vim-huge
@@ -396,12 +422,10 @@ EOF
 		fi
 	fi
 
-	# Desktop Environtment
+	# Desktop Environtment.
 
 	case $DE in
-	none) ;;
-
-	# DWM
+	# DWM.
 	dwm)
 		# https://github.com/bakkeby/dwm-flexipatch
 
@@ -422,14 +446,50 @@ EOF
 Encoding=UTF-8
 Version=1.0
 Name=dwm
+Name[en]=dwm
 Comment=Dynamic Window Manager
-Exec=dbus-launch dwm
+Comment[en]=Dynamic Window Manager
+Exec=dbus-run-session dwm
 Icon=dwm
 Type=XSession
+X-DesktopNames=dwm
+Keywords=launch;dwm;desktop;session;
 EOF
 		;;
 
-	# XFCE 4
+	# River.
+	river)
+		apk add \
+			dunst \
+			grim \
+			river \
+			slurp \
+			swaybg \
+			swaylock \
+			wf-recorder \
+			wofi
+
+		ntapk add \
+			qt5ct \
+			swappy
+
+		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=River
+Name[en]=River
+Comment=This session logs you into River
+Comment[en]=This session logs in you into River
+Exec=dbus-run-session river
+Icon=riverwm
+Type=Application
+X-DesktopNames=River
+Keywords=launch;River;desktop;session;
+EOF
+		;;
+
+	# XFCE 4.
 	xfce)
 		apk add \
 			thunar \
@@ -456,7 +516,7 @@ EOF
 				apk add \
 					gnome-disk-utility
 
-				# NetworkManager
+				# NetworkManager.
 
 				apk add \
 					network-manager-applet \
@@ -494,7 +554,7 @@ EOF
 					apk add networkmanager-bluetooth
 				fi
 
-				# Thunar - Device detection
+				# Thunar - Device detection.
 
 				apk add \
 					gvfs \
@@ -515,7 +575,7 @@ EOF
 			fi
 		fi
 
-		# Plugins
+		# Plugins.
 
 		apk add \
 			xfce4-clipman-plugin \
@@ -534,7 +594,7 @@ EOF
 		;;
 	esac
 
-	# Themes
+	# Themes.
 
 	apk add \
 		papirus-icon-theme
@@ -591,7 +651,7 @@ if [ -n "$NEW_USER" ]; then
 
 	_GROUPS="
 		audio cdrom cdrw dialout disk floppy games input lp lpadmin netdev optical
-		plugdev power rfkill scanner storage usb users video wheel
+		plugdev power rfkill scanner seat storage usb users video wheel
 	"
 
 	for _GROUP in $_GROUPS; do
@@ -617,6 +677,14 @@ export LC_PAPER="$LANGUAGE.$CHARSET"
 export LC_TELEPHONE="$LANGUAGE.$CHARSET"
 export LC_TIME="$LANGUAGE.$CHARSET"
 export LANG="$LANGUAGE.$CHARSET"
+
+export XDG_LOCAL_HOME="\$HOME/.local"
+export XDG_BIN_HOME="\$XDG_LOCAL_HOME/bin"
+export XDG_CONFIG_HOME="\$XDG_LOCAL_HOME/etc"
+export XDG_DATA_HOME="\$XDG_LOCAL_HOME/share"
+export XDG_STATE_HOME="\$XDG_LOCAL_HOME/var"
+export XDG_CACHE_HOME="\$XDG_STATE_HOME/cache"
+export PATH="\$HOME/go/bin:\$HOME/bin:\$XDG_BIN_HOME:\$PATH"
 EOF
 
 		chown "$NEW_USER:$NEW_USER" "/home/$NEW_USER/.profile"

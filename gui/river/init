@@ -1,0 +1,377 @@
+#!/bin/sh
+
+set -xeo pipefail
+
+_RIVER="${XDG_CONFIG_HOME:-"$HOME/.local/etc"}/river"
+
+##############
+# Appareance #
+##############
+
+riverctl default-layout rivertile
+riverctl attach-mode bottom
+rivertile -view-padding 5 -outer-padding 5 &
+
+riverctl background-color 0x000000
+riverctl border-width 3
+riverctl border-color-urgent 0xb7472a
+riverctl border-color-focused 0x427819
+riverctl border-color-unfocused 0x586e75
+
+riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme Materia-dark-compact"
+riverctl spawn "gsettings set org.gnome.desktop.interface icon-theme Papirus-Dark"
+riverctl spawn "gsettings set org.gnome.desktop.interface cursor-theme Adwaita"
+riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
+riverctl xcursor-theme Adwaita
+
+riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
+
+#################
+# Input methods #
+#################
+
+riverctl set-repeat 50 300
+riverctl keyboard-layout -options "grp:rctrl_rshift_toggle" "us,es,latam"
+
+for _device in $(riverctl list-inputs | grep -i touchpad); do
+	riverctl input $_device events enabled
+	riverctl input $_device tap disabled
+	riverctl input $_device natural-scroll enabled
+	#riverctl input $_device disable-while-typing enabled
+done
+
+################
+# Applications #
+################
+
+riverctl spawn "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+riverctl spawn "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal exec org.codeberg.dnkl.foot.desktop"
+riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
+riverctl spawn "dunst"
+
+riverctl float-filter-add app-id popup
+riverctl float-filter-add app-id pavucontrol
+#riverctl float-filter-add title "App title"
+
+#riverctl csd-filter-add app-id "gedit"
+
+#########
+# Modes #
+#########
+
+_modes="normal"
+
+# Layout
+
+riverctl declare-mode layout
+_modes="$_modes layout"
+
+riverctl send-layout-cmd rivertile "main-location left"
+riverctl map layout Super Up send-layout-cmd rivertile "main-count +1"
+riverctl map layout Super Right send-layout-cmd rivertile "main-ratio +0.005"
+riverctl map layout Super+Shift Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map layout Super Down send-layout-cmd rivertile "main-count -1"
+riverctl map layout Super Left send-layout-cmd rivertile "main-ratio -0.005"
+riverctl map layout Super+Shift Left send-layout-cmd rivertile "main-ratio -0.05"
+
+riverctl map layout Super+Control Up spawn "
+	riverctl send-layout-cmd rivertile 'main-location top' &&
+	riverctl map layout Super Up send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map layout Super+Shift Up send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map layout Super Right send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super Down send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map layout Super+Shift Down send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-count +1'
+"
+
+riverctl map layout Super+Control Right spawn "
+	riverctl send-layout-cmd rivertile 'main-location right' &&
+	riverctl map layout Super Up send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super Right send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map layout Super+Shift Right send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map layout Super Down send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map layout Super+Shift Left send-layout-cmd rivertile 'main-ratio +0.05'
+"
+
+riverctl map layout Super+Control Down spawn "
+	riverctl send-layout-cmd rivertile 'main-location bottom' &&
+	riverctl map layout Super Up send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map layout Super+Shift Up send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map layout Super Right send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super Down send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map layout Super+Shift Down send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-count -1'
+"
+
+riverctl map layout Super+Control Left spawn "
+	riverctl send-layout-cmd rivertile 'main-location left' &&
+	riverctl map layout Super Up send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super Right send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map layout Super+Shift Right send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map layout Super Down send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-ratio -0.005'&&
+	riverctl map layout Super+Shift Left send-layout-cmd rivertile 'main-ratio -0.05'
+"
+
+# Floating
+
+riverctl declare-mode floating
+_modes="$_modes floating"
+
+riverctl map floating Super Up move up 5
+riverctl map floating Super Right move right 5
+riverctl map floating Super Down move down 5
+riverctl map floating Super Left move left 5
+
+riverctl map floating Super+Shift Up move up 25
+riverctl map floating Super+Shift Right move right 25
+riverctl map floating Super+Shift Down move down 25
+riverctl map floating Super+Shift Left move left 25
+
+riverctl map floating Super+Control Up resize vertical 5
+riverctl map floating Super+Control Right resize horizontal 5
+riverctl map floating Super+Control Down resize vertical -5
+riverctl map floating Super+Control Left resize horizontal -5
+
+riverctl map floating Super+Control+Shift Up resize vertical 25
+riverctl map floating Super+Control+Shift Right resize horizontal 25
+riverctl map floating Super+Control+Shift Down resize vertical -25
+riverctl map floating Super+Control+Shift Left resize horizontal -25
+
+# Screens
+
+riverctl declare-mode screens
+_modes="$_modes screens"
+
+riverctl map screens Super Up focus-output up
+riverctl map screens Super Right focus-output right
+riverctl map screens Super Down focus-output down
+riverctl map screens Super Left focus-output left
+riverctl map screens Super+Control Up send-to-output up
+riverctl map screens Super+Control Right send-to-output right
+riverctl map screens Super+Control Down send-to-output down
+riverctl map screens Super+Control Left send-to-output left
+
+riverctl map screens Super+Control+Shift Up spawn "
+	riverctl send-to-output up &&
+	riverctl focus-output up
+"
+
+riverctl map screens Super+Control+Shift Right spawn "
+	riverctl send-to-output right &&
+	riverctl focus-output right
+"
+
+riverctl map screens Super+Control+Shift Down spawn "
+	riverctl send-to-output down &&
+	riverctl focus-output down
+"
+
+riverctl map screens Super+Control+Shift Left spawn "
+	riverctl send-to-output left &&
+	riverctl focus-output left
+"
+
+# Passthrough
+
+riverctl declare-mode passthrough
+riverctl map normal Super+Shift F10 enter-mode passthrough
+riverctl map passthrough Super+Shift F10 enter-mode normal
+
+# Key bindings
+
+for _mode in $_modes; do
+	riverctl map $_mode Super Space spawn "wofi"
+	riverctl map $_mode Super+Shift Space spawn "wofi -S run"
+	riverctl map $_mode Super B spawn "waybar"
+	riverctl map $_mode Super+Control B spawn "pkill waybar"
+	riverctl map $_mode Super D spawn "dunstctl close"
+	riverctl map $_mode Super+Shift D spawn "dunstctl close-all"
+	riverctl map $_mode Super F spawn "thunar"
+	riverctl map $_mode Super I spawn "wl-gammactl -c -1.000 -b 2.000 -g 1.000"
+	riverctl map $_mode Super K spawn ""
+	riverctl map $_mode Super L spawn "$_RIVER/lock.sh"
+	riverctl map $_mode Super M spawn "telegram-desktop"
+	riverctl map $_mode Super P spawn "wdisplays"
+	riverctl map $_mode Super S spawn "dunstctl set-paused toggle"
+	riverctl map $_mode Super T spawn "foot"
+	riverctl map $_mode Super W spawn "${BROWSER:-"firefox"}"
+	riverctl map $_mode None Print spawn "$_RIVER/screenshot.sh"
+	riverctl map $_mode Control+Alt Delete spawn ""
+	riverctl map $_mode Super Delete spawn "foot -a popup -W 40x2 -- su - -c 'pm-suspend'"
+
+	#########
+	# Modes #
+	#########
+
+	riverctl map $_mode Super Escape enter-mode normal
+	riverctl map $_mode Super+Shift F enter-mode floating
+	riverctl map $_mode Super+Shift L enter-mode layout
+	riverctl map $_mode Super+Shift S enter-mode screens
+
+	#########
+	# Mouse #
+	#########
+
+	riverctl map-pointer $_mode Super BTN_LEFT move-view
+	riverctl map-pointer $_mode Super BTN_RIGHT resize-view
+	riverctl map-pointer $_mode Super BTN_MIDDLE toggle-float
+
+	###########
+	# Windows #
+	###########
+
+	riverctl map $_mode Super+Control Escape exit
+	riverctl map $_mode Super+Shift Escape close
+	riverctl map $_mode Super Return toggle-fullscreen
+	riverctl map $_mode Super+Shift Return zoom
+	riverctl map $_mode Super+Control Return toggle-float
+	riverctl map $_mode Alt Tab focus-view next
+	riverctl map $_mode Alt+Shift Tab focus-view previous
+	riverctl map $_mode Super Tab focus-output next
+	riverctl map $_mode Super+Shift Tab focus-output previous
+
+	riverctl map $_mode Super+Control Tab spawn "
+		riverctl send-to-output next &&
+		riverctl focus-output next
+	"
+
+	riverctl map $_mode Super+Control+Shift Tab spawn "
+		riverctl send-to-output previous &&
+		riverctl focus-output previous
+	"
+
+	########
+	# Tags #
+	########
+
+	_tag=1
+
+	for _river_tag in 1 2 4 8 16 32 64 128 256; do
+		riverctl map $_mode Super $_tag set-focused-tags $_river_tag
+		riverctl map $_mode Super+Shift $_tag toggle-focused-tags $_river_tag
+		riverctl map $_mode Super+Control $_tag set-view-tags $_river_tag
+		riverctl map $_mode Super+Control+Shift $_tag toggle-view-tags $_river_tag
+		_tag="$((_tag + 1))"
+	done
+
+	_all_tags=2147483647
+	riverctl map $_mode Super 0 set-focused-tags $_all_tags
+	riverctl map $_mode Super+Shift 0 set-view-tags $_all_tags
+
+	# Scratchpad
+
+	_scratchpad=2147483648
+	riverctl map $_mode Super+Shift H set-focused-tags $_scratchpad
+	riverctl map $_mode Super+Control H set-view-tags $_scratchpad
+
+	######################
+	# Keyboard functions #
+	######################
+
+	riverctl map $_mode None XF86Search spawn "wofi"
+
+	riverctl map $_mode None XF86AudioRecord spawn ""
+	riverctl map $_mode None XF86ContrastAdjust spawn ""
+	riverctl map $_mode None XF86Display spawn "wdisplays"
+	riverctl map $_mode None XF86Eject spawn "eject -T"
+	riverctl map $_mode None XF86LightBulb spawn ""
+	riverctl map $_mode None XF86MonBrightnessUp spawn "brightness.sh +10"
+	riverctl map $_mode None XF86MonBrightnessDown spawn "brightness.sh -10"
+	riverctl map $_mode None XF86Next_VMode spawn ""
+	riverctl map $_mode None XF86Prev_VMode spawn ""
+	riverctl map $_mode None XF86ScreenSaver spawn ""
+	riverctl map $_mode None XF86SplitScreen spawn ""
+	riverctl map $_mode None XF86WebCam spawn ""
+	riverctl map $_mode None XF86iTouch spawn ""
+
+	riverctl map $_mode None XF86AudioMedia spawn "vlc"
+	riverctl map $_mode None XF86AudioRaiseVolume spawn "pactl -- set-sink-volume @DEFAULT_SINK@ +5%"
+	riverctl map $_mode None XF86AudioLowerVolume spawn "pactl -- set-sink-volume @DEFAULT_SINK@ -5%"
+	riverctl map $_mode None XF86AudioMute spawn "pactl -- set-sink-mute @DEFAULT_SINK@ toggle"
+	riverctl map $_mode None XF86AudioPlay spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+	riverctl map $_mode None XF86AudioPause spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause"
+	riverctl map $_mode None XF86AudioStop spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
+	riverctl map $_mode None XF86AudioPrev spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+	riverctl map $_mode None XF86AudioNext spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+	riverctl map $_mode None XF86AudioRewind spawn ""
+
+	riverctl map $_mode None XF86Back spawn ""
+	riverctl map $_mode None XF86Clear spawn ""
+	riverctl map $_mode None XF86Close spawn ""
+	riverctl map $_mode None XF86Copy spawn ""
+	riverctl map $_mode None XF86Cut spawn ""
+	riverctl map $_mode None XF86Forward spawn ""
+	riverctl map $_mode None XF86History spawn ""
+	riverctl map $_mode None XF86HomePage spawn ""
+	riverctl map $_mode None XF86LogOff spawn ""
+	riverctl map $_mode None XF86MenuKB spawn ""
+	riverctl map $_mode None XF86MenuPB spawn ""
+	riverctl map $_mode None XF86Open spawn ""
+	riverctl map $_mode None XF86Option spawn ""
+	riverctl map $_mode None XF86Paste spawn ""
+	riverctl map $_mode None XF86PowerDown spawn ""
+	riverctl map $_mode None XF86PowerOff spawn ""
+	riverctl map $_mode None XF86Refresh spawn ""
+	riverctl map $_mode None XF86Reload spawn ""
+	riverctl map $_mode None XF86Reply spawn ""
+	riverctl map $_mode None XF86RotationKB spawn ""
+	riverctl map $_mode None XF86RotationPB spawn ""
+	riverctl map $_mode None XF86Save spawn ""
+	riverctl map $_mode None XF86ScrollClick spawn ""
+	riverctl map $_mode None XF86ScrollDown spawn ""
+	riverctl map $_mode None XF86ScrollUp spawn ""
+	riverctl map $_mode None XF86Send spawn ""
+	riverctl map $_mode None XF86Sleep spawn ""
+	riverctl map $_mode None XF86Start spawn ""
+	riverctl map $_mode None XF86Standby spawn ""
+	riverctl map $_mode None XF86Stop spawn ""
+	riverctl map $_mode None XF86WakeUp spawn ""
+	riverctl map $_mode None XF86WheelButton spawn ""
+	riverctl map $_mode None XF86ZoomIn spawn ""
+	riverctl map $_mode None XF86ZoomOut spawn ""
+
+	riverctl map $_mode None XF86Explorer spawn ""
+	riverctl map $_mode None XF86Favorites spawn ""
+	riverctl map $_mode None XF86AddFavorite spawn ""
+	riverctl map $_mode None XF86Documents spawn ""
+	riverctl map $_mode None XF86Game spawn ""
+	riverctl map $_mode None XF86MyComputer spawn ""
+	riverctl map $_mode None XF86New spawn ""
+	riverctl map $_mode None XF86Word spawn ""
+
+	riverctl map $_mode None XF86Calculator spawn ""
+	riverctl map $_mode None XF86Calendar spawn ""
+	riverctl map $_mode None XF86Excel spawn ""
+	riverctl map $_mode None XF86Mail spawn ""
+	riverctl map $_mode None XF86Market spawn ""
+	riverctl map $_mode None XF86Messenger spawn ""
+	riverctl map $_mode None XF86Music spawn ""
+	riverctl map $_mode None XF86OpenURL spawn ""
+	riverctl map $_mode None XF86Phone spawn ""
+	riverctl map $_mode None XF86Pictures spawn ""
+	riverctl map $_mode None XF86Shop spawn ""
+	riverctl map $_mode None XF86TaskPane spawn ""
+	riverctl map $_mode None XF86Terminal spawn ""
+	riverctl map $_mode None XF86Video spawn ""
+	riverctl map $_mode None XF86WWW spawn "firefox"
+
+	riverctl map $_mode None XF86Launch0 spawn ""
+	riverctl map $_mode None XF86Launch1 spawn ""
+	riverctl map $_mode None XF86Launch2 spawn ""
+	riverctl map $_mode None XF86Launch3 spawn ""
+	riverctl map $_mode None XF86Launch4 spawn ""
+	riverctl map $_mode None XF86Launch5 spawn ""
+	riverctl map $_mode None XF86Launch6 spawn ""
+	riverctl map $_mode None XF86Launch7 spawn ""
+	riverctl map $_mode None XF86Launch8 spawn ""
+	riverctl map $_mode None XF86Launch9 spawn ""
+	riverctl map $_mode None XF86LaunchA spawn ""
+	riverctl map $_mode None XF86LaunchB spawn ""
+	riverctl map $_mode None XF86LaunchC spawn ""
+	riverctl map $_mode None XF86LaunchD spawn ""
+	riverctl map $_mode None XF86LaunchE spawn ""
+	riverctl map $_mode None XF86LaunchF spawn ""
+done

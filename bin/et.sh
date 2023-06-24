@@ -2,7 +2,7 @@
 # Copyright (c) 2017 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -eu
+set -euo pipefail
 
 export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 

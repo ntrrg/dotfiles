@@ -2,7 +2,7 @@
 # Copyright (c) 2022 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _DRY_RUN="${DRY_RUN:-0}"
 

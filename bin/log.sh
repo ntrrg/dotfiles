@@ -2,7 +2,7 @@
 # Copyright (c) 2022 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -eu
+set -euo pipefail
 
 _COLORIZE="${LOG_COLORIZE:-1}"
 _DATE="${LOG_DATE:-""}"

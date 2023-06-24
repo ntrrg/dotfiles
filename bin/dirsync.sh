@@ -2,7 +2,7 @@
 # Copyright (c) 2023 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _CMD="${CMD:-"rsync"}"
 

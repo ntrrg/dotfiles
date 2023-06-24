@@ -2,7 +2,7 @@
 # Copyright (c) 2019 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _main() {
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then

@@ -1,0 +1,223 @@
+{
+  "layer": "bottom",
+  "position": "top",
+  "height": 40,
+  //"width": 800,
+  "fixed-center": false,
+  //"include": [],
+
+  "modules-left": [
+    "river/tags",
+    "river/mode",
+    "river/window",
+  ],
+
+  "modules-center": [
+    "clock",
+  ],
+
+  "modules-right": [
+    "tray",
+    "bluetooth",
+    "network#wireless",
+    "pulseaudio",
+    "backlight",
+    "custom/cpu-icon",
+    "cpu",
+    "temperature#cpu",
+    "custom/gpu-icon",
+    "custom/gpu",
+    "temperature#gpu",
+    "custom/mem-icon",
+    "memory",
+    "temperature#mem",
+    "battery",
+    "temperature#battery",
+    "custom/dunst",
+  ],
+
+  "river/tags": {
+    "num-tags": 9,
+    //"tag-labels":["󰬺", "", " 󰪶", "󰈹", "󰕼", "󰬿", "󰭀", "󰭁", "󰭂"],
+    "disable-click": false
+  },
+  "river/mode": {
+    "format": "[<small>{}</small>]"
+  },
+  "river/window": {
+    "max-length": 30,
+    "tooltip": true
+  },
+
+  "clock": {
+    "interval": 1,
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "left",
+      "mode-mon-col": 3,
+      "on-scroll": 1,
+      "format": {
+        "months":     "<span><b>{}</b></span>",
+        "weeks":      "<span><b>W{}</b></span>",
+        "weekdays":   "<span><b>{}</b></span>",
+        "days":       "<span>{}</span>",
+        "today":      "<span color='#427819'><b><u>{}</u></b></span>"
+      }
+    },
+    "format": "{:%H:%M}",
+    //"format-alt": "{:%Y/%m/%d %H:%M}",
+    "tooltip-format": "<span font=\"Hurmit Nerd Font\" size=\"9pt\">{calendar}</span>",
+    "actions":  {
+      "on-click": "shift_down",
+      "on-click-right": "shift_up",
+      "on-click-middle": "mode",
+      "on-click-forward": "tz_up",
+      "on-click-backward": "tz_down"
+    }
+  },
+
+  "tray": {
+    //"icon-size": 18,
+    //"reverse-direction": true,
+    "show-passive-items": true,
+    "spacing": 10
+  },
+
+  "bluetooth": {
+    // "controller": "controller1",
+    // "format-device-preference": [ "device1", "device2" ],
+    "format": "<span size=\"12pt\">󰂯</span>",
+    "format-connected": "<span size=\"12pt\">󰂱</span>",
+    "format-disabled": "<span size=\"12pt\">󰂲</span>",
+    "tooltip-format": "{status} - {controller_alias} ({controller_address})",
+    "tooltip-format-connected": "{status} - {controller_alias} ({controller_address})\n\n{num_connections} devices connected:\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "- {device_alias} ({device_address})",
+    "tooltip-format-enumerate-connected-battery": "- {device_alias} 󰁹 {device_battery_percentage}% ({device_address})",
+    "on-click": "foot -a popup -- bluetoothctl"
+  },
+
+  "network#wireless": {
+    "interface": "wlan0",
+    "format-icons": {
+      "disconnected": "󱚼",
+      "disabled": "󰖪",
+      "default": "󰖩",
+    },
+    "format": "<span size=\"12pt\">{icon}</span>",
+    "tooltip-format": "{essid} {frequency}GHz ({signalStrength}%)\n{ipaddr}\n󰁆{bandwidthDownBits} 󰁞{bandwidthUpBits}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "foot -a popup -- su - -c 'iftop -i wlan0 -P'"
+  },
+
+  "pulseaudio": {
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "<span size=\"12pt\">󰕾</span> {icon}",
+    "format-bluetooth": "<span size=\"12pt\">󰕾 󰂯</span> {icon}",
+    "format-muted": "<span size=\"12pt\">󰝟</span>",
+    "tooltip-format": "{desc} {volume}%",
+    "scroll-step": 1,
+    "on-click": "pavucontrol",
+    "ignored-sinks": ["Easy Effects Sink"]
+  },
+
+  "backlight": {
+    //"device": "amdgpu_bl1",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "<span size=\"14pt\">󱍖</span>  {icon}",
+    "tootip-format": "{}%",
+    "on-click": "",
+    "on-scroll-up": "brightness.sh +5",
+    "on-scroll-down": "brightness.sh -5"
+  },
+
+  "custom/cpu-icon": {
+    "format": "<span size=\"14pt\">󰻠</span>",
+    "tooltip": false,
+    "on-click": "foot -a popup -- htop"
+  },
+  "cpu": {
+    "interval": 10,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "on-click": "foot -a popup -- htop"
+  },
+  "temperature#cpu": {
+    "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
+    "critical-threshold": 60,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "on-click": "foot -a popup -- htop"
+  },
+
+  "custom/gpu-icon": {
+    "format": "<span size=\"14pt\">󰢮</span>",
+    "tooltip": false,
+    "on-click": "foot -a popup -- htop"
+  },
+  "custom/gpu": {
+    "exec": "~/.local/etc/waybar/custom/gpu.sh",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "return-type": "json",
+    "interval": 1
+  },
+  "temperature#gpu": {
+    "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
+    "critical-threshold": 60,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "on-click": "foot -a popup -- htop"
+  },
+
+  "custom/mem-icon": {
+    "format": "<span size=\"14pt\">󰍛</span>",
+    "tooltip": false,
+    "on-click": "foot -a popup -- htop"
+  },
+  "memory": {
+    "interval": 10,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "tooltip-format": "{used}GiB/{total}GiB ({percentage}%)",
+    "on-click": "foot -a popup -- htop"
+  },
+  "temperature#mem": {
+    "hwmon-path": "/sys/class/hwmon/hwmon3/temp4_input",
+    "critical-threshold": 60,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "on-click": "foot -a popup -- htop"
+  },
+
+  "battery": {
+    "states": {
+      "good": 100,
+      "warning": 20,
+      "critical": 10
+    },
+    "format-icons": {
+      "default": ["󱃍", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂁", "󰂂", "󰁹"],
+      "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋"],
+      "full": "󰂅",
+    },
+    "format": "<span size=\"12pt\">{icon}</span> {capacity}%",
+    "on-click": "foot -a popup -- su - -c 'powertop'"
+  },
+  "temperature#battery": {
+    "hwmon-path": "/sys/class/thermal/thermal_zone0/temp",
+    "critical-threshold": 60,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "on-click": "foot -a popup -- su - -c 'powertop'"
+  },
+
+  "custom/dunst": {
+    "exec": "~/.local/etc/waybar/custom/dunst.sh",
+    "on-click": "dunstctl set-paused toggle",
+    "on-click-right": "dunstctl close",
+    "on-click-middle": "dunstctl close-all",
+    "restart-interval": 1,
+    "return-type": "json",
+    "format": "<span size=\"12pt\">{}</span>"
+  },
+}

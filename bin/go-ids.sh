@@ -2,7 +2,7 @@
 # Copyright (c) 2020 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -eu
+set -euo pipefail
 
 _GO="${GO:-"go"}"
 _PRINT_TYPES=0

@@ -2,7 +2,7 @@
 # Copyright (c) 2020 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _DRIVERS="$(find "/sys/class/backlight/" -mindepth 1 -maxdepth 1)"
 _DRIVER="${DRIVER:-"$(echo "$_DRIVERS" | head -n 1)"}"
@@ -31,7 +31,34 @@ _main() {
 		local _max=0
 		_max="$(cat "$_driver/max_brightness")"
 
-		local _val="$1"
+		local _val=0
+
+		case $1 in
+		[+]100 | [+][1-9][0-9] | [+][0-9])
+			_val=$(($($0) + $(echo "${1##*+}")))
+			;;
+
+		[-]100 | [-][1-9][0-9] | [-][0-9])
+			_val=$(($($0) - $(echo "${1##*-}")))
+			;;
+
+		[*]100 | [*][1-9][0-9] | [*][0-9])
+			_val=$(($($0) * $(echo "${1##*\*}")))
+			;;
+
+		[/]100 | [/][1-9][0-9] | [/][0-9])
+			_val=$(($($0) / $(echo "${1##*/}")))
+			;;
+
+		100 | [1-9][0-9] | [0-9])
+			_val=$1
+			;;
+
+		*)
+			_show_help
+			exit 1
+			;;
+		esac
 
 		if [ "$_val" -lt 0 ]; then
 			_val=0
@@ -39,7 +66,9 @@ _main() {
 			_val=100
 		fi
 
-		su - -c "echo '$((_val * _max / 100))' > '$_driver/brightness'"
+		_val="$((_val * _max / 100))"
+		echo "$_val" 2> "/dev/null" > "$_driver/brightness" ||
+			su - -c "echo '$_val' > '$_driver/brightness'"
 	done
 }
 
@@ -49,7 +78,7 @@ _show_help() {
 	cat << EOF
 $_name - manage screen brightness.
 
-Usage: $_name [VALUE]
+Usage: $_name [[+-*/]VALUE]
 
 Print current brightness value or set it to VALUE% if some value is given.
 Root permissions are required for setting a new screen brightness.

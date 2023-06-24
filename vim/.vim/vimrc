@@ -161,6 +161,22 @@ if executable('gopls')
     \ })
 endif
 
+if executable('vls')
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'vls',
+    \ 'cmd': {server_info->['vls']},
+    \ 'allowlist': ['v'],
+    \ })
+endif
+
+if executable('zls')
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'zls',
+    \ 'cmd': {server_info->['zls']},
+    \ 'allowlist': ['zig'],
+    \ })
+endif
+
 augroup lsp_install
   au!
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
@@ -185,9 +201,9 @@ function! s:on_lsp_buffer_enabled() abort
 
   nmap <buffer> <Leader>r <plug>(lsp-rename)
 
-  nmap <buffer> <Leader><Space> <plug>(lsp-hover)
-  nmap <buffer> <expr><c-j> lsp#scroll(+4)
-  nmap <buffer> <expr><c-k> lsp#scroll(-4)
+  nmap <buffer> K <plug>(lsp-hover)
+  nmap <buffer> <expr><c-n> lsp#scroll(+4)
+  nmap <buffer> <expr><c-p> lsp#scroll(-4)
 
   let g:lsp_format_sync_timeout = 1000
   autocmd! BufWritePre * call execute('LspDocumentFormatSync')

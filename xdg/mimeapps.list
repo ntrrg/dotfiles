@@ -1,0 +1,25 @@
+[Default Applications]
+x-scheme-handler/terminal=org.codeberg.dnkl.foot.desktop
+
+inode/directory=xfce4-file-manager.desktop
+x-scheme-handler/trash=xfce4-file-manager.desktop
+
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+application/x-extension-htm=firefox.desktop
+application/x-extension-html=firefox.desktop
+application/x-extension-shtml=firefox.desktop
+application/x-extension-xhtml=firefox.desktop
+application/x-extension-xht=firefox.desktop
+
+x-scheme-handler/tg=org.telegram.desktop.desktop
+
+text/plain=vim.desktop;
+text/html=vim.desktop
+application/xhtml+xml=vim.desktop
+application/json=vim.desktop;
+
+image/png=sxiv.desktop;
+image/jpeg=sxiv.desktop;
+
+image/svg+xml=org.inkscape.Inkscape.desktop;

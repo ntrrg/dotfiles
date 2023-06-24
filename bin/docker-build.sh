@@ -2,7 +2,7 @@
 # Copyright (c) 2018 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -eu
+set -euo pipefail
 
 CONFIGFILE=".docker-build"
 DOCKERFILE="Dockerfile"

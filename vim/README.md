@@ -58,6 +58,6 @@
 
   * <kbd>Leader</kbd> + <kbd>r</kbd> -> Rename symbol.
 
-  * <kbd>Leader</kbd> + <kbd>Space</kbd> -> Show symbol information.
+  * <kbd>K</kbd> -> Show symbol information.
   * <kbd>Ctrl</kbd> + <kbd>j</kbd> -> Scroll down symbol information.
   * <kbd>Ctrl</kbd> + <kbd>k</kbd> -> Scroll up symbol information.

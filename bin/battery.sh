@@ -2,7 +2,7 @@
 # Copyright (c) 2022 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _BATTERIES="$(find "/sys/class/power_supply/" -mindepth 1 -maxdepth 1)"
 _BATTERY="${BATTERY:-"$(echo "$_BATTERIES" | grep "BAT" | head -n 1)"}"

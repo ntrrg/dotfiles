@@ -1,0 +1,200 @@
+window#waybar {
+  background: none;
+  color: @theme_text_color;
+  font-family: "Hurmit Nerd Font";
+  font-size: 10pt;
+}
+
+window#waybar > box {
+  margin: 0.5em;
+  margin-bottom: 0px;
+}
+
+widget > * {
+  background: alpha(@theme_base_color, 0.8);
+  border-radius: 0.25em;
+  padding: 0px 0.75em;
+  margin-right: 0.5em;
+}
+
+#temperature.critical {
+  color: #b7472a;
+}
+
+#tags {
+  margin-left: 0.5em;
+  padding: 0px;
+}
+
+#tags button {
+  min-width: 1em;
+  border-radius: 0px;
+  border-bottom: 0.2em solid;
+  color: shade(@theme_text_color, 0.50);
+}
+
+#tags button:first-child {
+  border-radius: 0.25em 0px 0px 0.25em;
+}
+
+#tags button:last-child {
+  border-radius: 0px 0.25em 0.25em 0px;
+}
+
+#tags button.occupied {
+  color: @theme_text_color;
+}
+
+#tags button.focused {
+  color: @theme_text_color;
+  background: #427819;
+}
+
+#tags button.urgent {
+  color: @theme_text_color;
+  background: #b7472a;
+}
+
+#tags button:hover {
+}
+
+#mode {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
+#window {
+  border-radius: 0px 0.25em 0.25em 0px;
+  padding-left: 0px;
+}
+
+#clock {
+  padding: 0px 1.25em
+}
+
+#tray {
+}
+
+#tray widget > * {
+  background: none;
+  border-radius: 0px;
+  padding: 0px;
+  margin-right: 0px;
+}
+
+#bluetooth.connected {
+  background: #427819;
+}
+
+#bluetooth.disabled {
+  background: #b7472a;
+}
+
+#network.wifi {
+  background: #427819;
+}
+
+#network.wireless {
+  padding-right: 1em;
+}
+
+#network.disabled {
+  background: #b7472a;
+}
+
+#pulseaudio.muted {
+  background: #b7472a;
+}
+
+#custom-cpu-icon {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
+#cpu {
+  border-radius: 0px;
+  padding-left: 0px;
+  margin: 0px;
+}
+
+#temperature.cpu {
+  border-radius: 0px 0.25em 0.25em 0px;
+  padding-left: 0px;
+}
+
+#custom-gpu-icon {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
+#custom-gpu {
+  border-radius: 0px;
+  padding-left: 0px;
+  margin: 0px;
+}
+
+#temperature.gpu {
+  border-radius: 0px 0.25em 0.25em 0px;
+  padding-left: 0px;
+}
+
+#custom-mem-icon {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
+#memory {
+  border-radius: 0px;
+  padding-left: 0px;
+  margin: 0px;
+}
+
+#temperature.mem {
+  border-radius: 0px 0.25em 0.25em 0px;
+  padding-left: 0px;
+}
+
+#battery {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
+#battery.charging {
+  background: #427819;
+}
+
+#battery.warning:not(.charging) {
+  background: #ffcf00;
+}
+
+@keyframes blink {
+  to {
+    background: #b7472a;
+    color: #fff;
+  }
+}
+
+#battery.critical:not(.charging) {
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#temperature.battery {
+  border-radius: 0px 0.25em 0.25em 0px;
+  padding-left: 0px;
+}
+
+#custom-dunst {
+  padding: 0px 1.25em 0px 1em;
+}
+
+#custom-dunst.has-notifications {
+  background: #b7472a;
+}
+
+#custom-dunst.is-paused {
+  color: shade(@theme_text_color, 0.50);
+}

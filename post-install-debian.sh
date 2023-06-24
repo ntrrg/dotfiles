@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eux
+set -xeu
 
 BASEPATH="${BASEPATH:-"/tmp"}"
 

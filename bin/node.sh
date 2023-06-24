@@ -2,7 +2,7 @@
 # Copyright (c) 2019 Miguel Angel Rivera Notararigo
 # Released under the MIT License
 
-set -e
+set -eo pipefail
 
 _get_arch() {
 	case "$(uname -m)" in

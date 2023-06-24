@@ -1,0 +1,99 @@
+[global]
+    monitor = 0
+    follow = keyboard
+    sort = yes
+    idle_threshold = 15
+    notification_limit = 0
+    indicate_hidden = yes
+    ignore_dbusclose = false
+
+    title = Dunst
+    class = Dunst
+    width = (300, 400)
+    height = 500
+    origin = top-right
+    offset = 40x40
+    scale = 0
+
+    transparency = 90
+    separator_height = 2
+    background = "#000000"
+    #background = "#191311"
+    #background = "#2b313c"
+    foreground = "#dbdbdb"
+    frame_width = 3
+    frame_color = "#427819"
+    corner_radius = 5
+    separator_color = frame
+    timeout = 0
+
+    font = Sans serif 11
+    line_height = 2
+    markup = full
+    format = "<small>%a</small>\n<b>%s %p</b>\n%b"
+    alignment = center
+    vertical_alignment = center
+    show_age_threshold = -1
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = no
+    word_wrap = yes
+    padding = 10
+    horizontal_padding = 10
+    text_icon_padding = 10
+
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+
+    default_icon = ""
+    icon_position = left
+    min_icon_size = 50
+    max_icon_size = 80
+    icon_path = /usr/share/icons/Papirus-Dark/64x64/apps:/usr/share/icons/Papirus-Dark/64x64/mimetypes:/usr/share/icons/Papirus-Dark/64x64/places:/usr/share/icons/Papirus-Dark/48x48/apps:/usr/share/icons/Papirus-Dark/48x48/mimetypes:/usr/share/icons/Papirus-Dark/48x48/places:/usr/share/icons/Papirus-Dark/24x24/actions:/usr/share/icons/Papirus-Dark/24x24/animations:/usr/share/icons/Papirus-Dark/24x24/apps:/usr/share/icons/Papirus-Dark/24x24/mimetypes:/usr/share/icons/Papirus-Dark/24x24/places:/usr/share/icons/Papirus-Dark/22x22/actions/usr/share/icons/Papirus-Dark/22x22/animations:/usr/share/icons/Papirus-Dark/22x22/apps:/usr/share/icons/Papirus-Dark/22x22/devices:/usr/share/icons/Papirus-Dark/22x22/emblems:/usr/share/icons/Papirus-Dark/22x22/emotes:/usr/share/icons/Papirus-Dark/22x22/mimetypes:/usr/share/icons/Papirus-Dark/22x22/places:/usr/share/icons/Papirus-Dark/22x22/panel:/usr/share/icons/Papirus-Dark/22x22/status:/usr/share/icons/Papirus-Dark/18x18/actions:/usr/share/icons/Papirus-Dark/16x16/actions:/usr/share/icons/Papirus-Dark/16x16/apps:/usr/share/icons/Papirus-Dark/16x16/devices:/usr/share/icons/Papirus-Dark/16x16/emblems:/usr/share/icons/Papirus-Dark/16x16/emotes:/usr/share/icons/Papirus-Dark/16x16/mimetypes:/usr/share/icons/Papirus-Dark/16x16/places:/usr/share/icons/Papirus-Dark/16x16/panel:/usr/share/icons/Papirus-Dark/16x16/status:/usr/share/icons/Adwaita/scalable/devices:/usr/share/icons/Adwaita/scalable/mimetypes:/usr/share/icons/Adwaita/scalable/places:/usr/share/icons/Adwaita/scalable/status:/usr/share/icons/Adwaita/symbolic/actions:/usr/share/icons/Adwaita/symbolic/apps:/usr/share/icons/Adwaita/symbolic/categories:/usr/share/icons/Adwaita/symbolic/devices:/usr/share/icons/Adwaita/symbolic/emblems:/usr/share/icons/Adwaita/symbolic/emotes:/usr/share/icons/Adwaita/symbolic/legacy:/usr/share/icons/Adwaita/symbolic/mimetypes:/usr/share/icons/Adwaita/symbolic/places:/usr/share/icons/Adwaita/symbolic/status:/usr/share/icons/Adwaita/symbolic/ui
+
+    sticky_history = yes
+    history_length = 100
+
+    dmenu = /usr/bin/wofi --dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+    always_run_script = true
+
+    mouse_left_click = do_action, open_url
+    mouse_middle_click = do_action, open_url, close_current
+    mouse_right_click = close_current
+
+    ########
+    # XORG #
+    ########
+
+    force_xinerama = false
+
+    ###########
+    # Wayland #
+    ###########
+
+    #layer = top
+    force_xwayland = false
+
+[experimental]
+    per_monitor_dpi = true
+
+[urgency_low]
+    frame_color = "#586e75"
+    #timeout = 10
+    #default_icon = /path/to/icon
+
+[urgency_normal]
+    frame_color = "#5B8234"
+    #timeout = 15
+    #default_icon = /path/to/icon
+
+[urgency_critical]
+    frame_color = "#B7472A"
+    #timeout = 20
+    #default_icon = /path/to/icon
