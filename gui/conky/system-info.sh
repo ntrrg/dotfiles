@@ -1,3 +1,7 @@
+#!/bin/sh
+
+set -eo pipefail
+
 ##########
 # System #
 ##########

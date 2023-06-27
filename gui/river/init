@@ -51,6 +51,7 @@ riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
 riverctl spawn "dunst"
 
 riverctl float-filter-add app-id popup
+riverctl float-filter-add app-id conky
 riverctl float-filter-add app-id pavucontrol
 #riverctl float-filter-add title "App title"
 
