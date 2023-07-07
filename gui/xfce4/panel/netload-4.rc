@@ -4,11 +4,11 @@ Show_Bars=false
 Colorize_Values=true
 Color_In=rgb(78,154,6)
 Color_Out=rgb(32,74,135)
-Text=Net
+Text=Network
 Network_Device=wlan0
 Max_In=4096
 Max_Out=4096
 Auto_Max=true
-Update_Interval=250
+Update_Interval=1000
 Values_As_Bits=false
 

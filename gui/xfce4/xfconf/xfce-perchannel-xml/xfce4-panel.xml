@@ -92,12 +92,30 @@
       <property name="system-monitor-command" type="string" value="alacritty -e htop"/>
       <property name="cpu" type="empty">
         <property name="label" type="string" value=""/>
-      </property>
-      <property name="swap" type="empty">
-        <property name="label" type="string" value=""/>
+        <property name="color" type="array">
+          <value type="double" value="0.30588235294117649"/>
+          <value type="double" value="0.60392156862745094"/>
+          <value type="double" value="0.023529411764705882"/>
+          <value type="double" value="1"/>
+        </property>
       </property>
       <property name="memory" type="empty">
         <property name="label" type="string" value=""/>
+        <property name="color" type="array">
+          <value type="double" value="0.30588235294117649"/>
+          <value type="double" value="0.60392156862745094"/>
+          <value type="double" value="0.023529411764705882"/>
+          <value type="double" value="1"/>
+        </property>
+      </property>
+      <property name="swap" type="empty">
+        <property name="label" type="string" value=""/>
+        <property name="color" type="array">
+          <value type="double" value="0.30588235294117649"/>
+          <value type="double" value="0.60392156862745094"/>
+          <value type="double" value="0.023529411764705882"/>
+          <value type="double" value="1"/>
+        </property>
       </property>
       <property name="network" type="empty">
         <property name="enabled" type="bool" value="false"/>
@@ -105,6 +123,7 @@
       <property name="uptime" type="empty">
         <property name="enabled" type="bool" value="false"/>
       </property>
+      <property name="timeout" type="uint" value="1000"/>
     </property>
     <property name="plugin-12" type="string" value="diskperf"/>
     <property name="plugin-13" type="string" value="xfce4-sensors-plugin"/>

@@ -44,16 +44,20 @@ done
 # Applications #
 ################
 
-riverctl spawn "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
-riverctl spawn "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+riverctl spawn "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP"
+riverctl spawn "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP"
+riverctl spawn "/usr/libexec/pipewire-launcher"
+
 riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal exec org.codeberg.dnkl.foot.desktop"
 riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
+
 riverctl spawn "dunst"
 
-riverctl float-filter-add app-id popup
-riverctl float-filter-add app-id conky
-riverctl float-filter-add app-id pavucontrol
-#riverctl float-filter-add title "App title"
+riverctl float-filter-add app-id "popup"
+riverctl float-filter-add app-id "conky"
+riverctl float-filter-add app-id "pavucontrol"
+
+riverctl float-filter-add title "Picture-in-Picture"
 
 #riverctl csd-filter-add app-id "gedit"
 
@@ -224,11 +228,11 @@ for _mode in $_modes; do
 	# Windows #
 	###########
 
-	riverctl map $_mode Super+Control Escape exit
-	riverctl map $_mode Super+Shift Escape close
-	riverctl map $_mode Super Return toggle-fullscreen
-	riverctl map $_mode Super+Shift Return zoom
-	riverctl map $_mode Super+Control Return toggle-float
+	riverctl map $_mode Alt+Shift F4 exit
+	riverctl map $_mode Alt F4 close
+	riverctl map $_mode Alt F10 zoom
+	riverctl map $_mode Alt F11 toggle-fullscreen
+	riverctl map $_mode Alt F12 toggle-float
 	riverctl map $_mode Alt Tab focus-view next
 	riverctl map $_mode Alt+Shift Tab focus-view previous
 	riverctl map $_mode Super Tab focus-output next

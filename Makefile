@@ -9,7 +9,7 @@ XDG_CACHE_HOME ?= $(XDG_STATE_HOME)/cache
 all: gui
 
 .PHONY: gui
-gui: tui fonts alacritty conky dunst foot river xfce
+gui: tui fonts gtk alacritty conky dunst foot river xfce
 	mkdir -p "$$HOME/Desktop"
 	mkdir -p "$$HOME/Downloads"
 	mkdir -p "$$HOME/Templates"
@@ -98,6 +98,11 @@ fonts:
 foot:
 	cp -rpf "gui/foot" "$(XDG_CONFIG_HOME)/"
 
+.PHONY: gtk
+gtk:
+	cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
+	cp -rpf "gui/gtk-3.0" "$(XDG_CONFIG_HOME)/"
+
 river_scripts := $(shell find gui/river -type f -executable)
 
 .PHONY: river
@@ -116,10 +121,6 @@ wofi:
 
 .PHONY: xfce
 xfce:
-	# XFWM theme
-	cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
-	# XFCE
-	cp -rpf "gui/gtk-3.0" "$(XDG_CONFIG_HOME)/"
 	cp -rpf "gui/xfce4" "$(XDG_CONFIG_HOME)/"
 
 ###############

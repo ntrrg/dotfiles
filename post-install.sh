@@ -75,6 +75,11 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		usbutils \
 		util-linux
 
+	if [ "$IS_LAPTOP" -ne 0 ]; then
+		apk add acpi cpufreqd hdparm
+		rc-update add cpufreqd default
+	fi
+
 	if [ "$HAS_WIRELESS" -ne 0 ]; then
 		apk add wireless-tools wpa_supplicant
 
@@ -110,67 +115,6 @@ if [ "$IS_GUI" -eq 0 ]; then
 	apk del vim
 	ntapk add vim-tiny || apk add vim
 else
-	apk add \
-		dbus \
-		eudev \
-		xdg-user-dirs \
-		xdg-utils
-
-	setup-devd udev
-
-	if [ "$IS_HARDWARE" -ne 0 ]; then
-		apk add alsa-utils
-
-		chmod u+s "/usr/sbin/dmidecode"
-		chmod u+s "/usr/sbin/smartctl"
-
-		if [ "$IS_LAPTOP" -ne 0 ]; then
-			apk add acpi cpufreqd hdparm
-			rc-update add cpufreqd default
-		fi
-	fi
-
-	# XORG
-
-	apk add \
-		libxft \
-		xcalib \
-		xev \
-		xf86-input-libinput \
-		xhost \
-		xkill \
-		xorg-server \
-		xrandr
-
-	# Remove accessibility errors from X session error log.
-	if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
-		echo "NO_AT_BRIDGE=1" >> "/etc/environment"
-	fi
-
-	apk add lightdm-gtk-greeter
-
-	if [ "$NEW_USER" != "ntrrg" ]; then
-		rc-update add lightdm default
-	fi
-
-	if [ "$IS_HARDWARE" -ne 0 ]; then
-		apk add \
-			pavucontrol \
-			pulseaudio \
-			pulseaudio-utils
-	fi
-
-	# Wayland
-
-	apk add \
-		seatd \
-		wdisplays \
-		wev \
-		wl-clipboard \
-		wlr-randr \
-		wlrctl \
-		xwayland
-
 	# Fonts
 
 	apk add \
@@ -351,6 +295,249 @@ EOF
 	ln -sf "/etc/fonts/conf.avail/69-hurmit-nerd-font.conf" "/etc/fonts/conf.d/69-hurmit-nerd-font.conf"
 	fc-cache -f
 
+	# Desktop Environtment.
+
+	_setup_xorg() {
+		apk add xorg-server
+
+		apk add \
+			libxft \
+			xcalib \
+			xev \
+			xf86-input-libinput \
+			xhost \
+			xkill \
+			xrandr
+
+		# Remove accessibility errors from X session error log.
+		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
+			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
+		fi
+
+		# Audio.
+
+		apk add \
+			alse-utils \
+			pavucontrol \
+			pulseaudio \
+			pulseaudio-utils
+	}
+
+	_setup_wayland() {
+		apk add \
+			seatd \
+			wdisplays \
+			wev \
+			wl-clipboard \
+			wlr-randr \
+			wlrctl \
+			xdg-desktop-portal \
+			xwayland
+
+		# Audio.
+
+		apk add \
+			pipewire \
+			pipewire-alsa \
+			pipewire-pulse \
+			wireplumber
+	}
+
+	apk add \
+		dbus \
+		eudev \
+		xdg-user-dirs \
+		xdg-utils
+
+	setup-devd udev
+
+	if [ "$IS_HARDWARE" -ne 0 ]; then
+		chmod u+s "/usr/sbin/dmidecode"
+		chmod u+s "/usr/sbin/smartctl"
+	fi
+
+	case $DE in
+	# DWM.
+	dwm)
+		# https://github.com/bakkeby/dwm-flexipatch
+
+		_setup_xorg
+
+		apk add \
+			dunst \
+			dmenu \
+			dwm \
+			picom \
+			slock \
+			spacefm
+
+		ntapk add \
+			qt5ct \
+			xsettingsd
+
+		cat << EOF > "/usr/share/xsessions/dwm.desktop"
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=dwm
+Name[en]=dwm
+Comment=Dynamic Window Manager
+Comment[en]=Dynamic Window Manager
+Exec=dbus-run-session dwm
+Icon=dwm
+Type=XSession
+X-DesktopNames=dwm
+Keywords=launch;dwm;desktop;session;
+EOF
+		;;
+
+	# River.
+	river)
+		_setup_wayland
+
+		apk add \
+			dunst \
+			grim \
+			river \
+			slurp \
+			swaybg \
+			swaylock \
+			wf-recorder \
+			wofi \
+			xdg-desktop-portal-wlr
+
+		ntapk add \
+			qt5ct \
+			swappy
+
+		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=River
+Name[en]=River
+Comment=This session logs you into River
+Comment[en]=This session logs in you into River
+Exec=dbus-run-session river
+Icon=riverwm
+Type=Application
+X-DesktopNames=River
+Keywords=launch;River;desktop;session;
+EOF
+		;;
+
+	# XFCE 4.
+	xfce)
+		_setup_xorg
+
+		apk add lightdm-gtk-greeter
+
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			rc-update add lightdm default
+		fi
+
+		apk add \
+			thunar \
+			thunar-archive-plugin \
+			xfce4 \
+			xfce4-notifyd \
+			xfce4-screensaver \
+			xfce4-screenshooter
+
+		if [ "$NEW_USER" != "ntrrg" ]; then
+			apk add \
+				mousepad \
+				ristretto \
+				xfce4-taskmanager \
+				xfce4-terminal
+		fi
+
+		apk add consolekit2 xfce-polkit || apk fix
+
+		if [ "$IS_HARDWARE" -ne 0 ]; then
+			apk add xfburn
+
+			if [ "$NEW_USER" != "ntrrg" ]; then
+				apk add \
+					gnome-disk-utility
+
+				# NetworkManager.
+
+				apk add \
+					network-manager-applet \
+					networkmanager-adsl \
+					networkmanager-l2tp \
+					networkmanager-openvpn \
+					networkmanager-ovs \
+					networkmanager-ppp \
+					networkmanager-wwan
+
+				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
+[main]
+dhcp=internal
+
+[ifupdown]
+managed=true
+EOF
+
+				rc-update add networkmanager default
+
+				if [ "$HAS_WIRELESS" -ne 0 ]; then
+					apk add iwd networkmanager-wifi
+
+					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
+
+[device]
+wifi.backend=iwd
+EOF
+
+					rc-update add iwd default
+				fi
+
+				if [ "$HAS_BLUETOOTH" -ne 0 ]; then
+					apk add networkmanager-bluetooth
+				fi
+
+				# Thunar - Device detection.
+
+				apk add \
+					gvfs \
+					gvfs-afc \
+					gvfs-afp \
+					gvfs-archive \
+					gvfs-avahi \
+					gvfs-cdda \
+					gvfs-dav \
+					gvfs-fuse \
+					gvfs-gphoto2 \
+					gvfs-mtp \
+					gvfs-nfs \
+					gvfs-smb \
+					thunar-volman
+
+				rc-update add fuse default
+			fi
+		fi
+
+		# Plugins.
+
+		apk add \
+			xfce4-clipman-plugin \
+			xfce4-whiskermenu-plugin \
+			xfce4-xkb-plugin
+
+		ntapk add \
+			xfce4-diskperf-plugin \
+			xfce4-docklike-plugin \
+			xfce4-genmon-plugin \
+			xfce4-netload-plugin \
+			xfce4-pulseaudio-plugin \
+			xfce4-sensors-plugin \
+			xfce4-systemload-plugin \
+			xfce4-timer-plugin
+		;;
+	esac
+
 	# Applications.
 
 	apk add \
@@ -421,178 +608,6 @@ EOF
 			rc-update add cupsd default
 		fi
 	fi
-
-	# Desktop Environtment.
-
-	case $DE in
-	# DWM.
-	dwm)
-		# https://github.com/bakkeby/dwm-flexipatch
-
-		apk add \
-			dunst \
-			dmenu \
-			dwm \
-			picom \
-			slock \
-			spacefm
-
-		ntapk add \
-			qt5ct \
-			xsettingsd
-
-		cat << EOF > "/usr/share/xsessions/dwm.desktop"
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Name=dwm
-Name[en]=dwm
-Comment=Dynamic Window Manager
-Comment[en]=Dynamic Window Manager
-Exec=dbus-run-session dwm
-Icon=dwm
-Type=XSession
-X-DesktopNames=dwm
-Keywords=launch;dwm;desktop;session;
-EOF
-		;;
-
-	# River.
-	river)
-		apk add \
-			dunst \
-			grim \
-			river \
-			slurp \
-			swaybg \
-			swaylock \
-			wf-recorder \
-			wofi
-
-		ntapk add \
-			qt5ct \
-			swappy
-
-		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
-[Desktop Entry]
-Encoding=UTF-8
-Version=1.0
-Name=River
-Name[en]=River
-Comment=This session logs you into River
-Comment[en]=This session logs in you into River
-Exec=dbus-run-session river
-Icon=riverwm
-Type=Application
-X-DesktopNames=River
-Keywords=launch;River;desktop;session;
-EOF
-		;;
-
-	# XFCE 4.
-	xfce)
-		apk add \
-			thunar \
-			thunar-archive-plugin \
-			xfce4 \
-			xfce4-notifyd \
-			xfce4-screensaver \
-			xfce4-screenshooter
-
-		if [ "$NEW_USER" != "ntrrg" ]; then
-			apk add \
-				mousepad \
-				ristretto \
-				xfce4-taskmanager \
-				xfce4-terminal
-		fi
-
-		apk add consolekit2 xfce-polkit || apk fix
-
-		if [ "$IS_HARDWARE" -ne 0 ]; then
-			apk add xfburn
-
-			if [ "$NEW_USER" != "ntrrg" ]; then
-				apk add \
-					gnome-disk-utility
-
-				# NetworkManager.
-
-				apk add \
-					network-manager-applet \
-					networkmanager-adsl \
-					networkmanager-l2tp \
-					networkmanager-openvpn \
-					networkmanager-ovs \
-					networkmanager-ppp \
-					networkmanager-wwan
-
-				cat << EOF > "/etc/NetworkManager/NetworkManager.conf"
-[main]
-dhcp=internal
-
-[ifupdown]
-managed=true
-EOF
-
-				rc-update add networkmanager default
-
-				if [ "$HAS_WIRELESS" -ne 0 ]; then
-					apk add iwd \
-						networkmanager-wifi
-
-					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
-
-[device]
-wifi.backend=iwd
-EOF
-
-					rc-update add iwd default
-				fi
-
-				if [ "$HAS_BLUETOOTH" -ne 0 ]; then
-					apk add networkmanager-bluetooth
-				fi
-
-				# Thunar - Device detection.
-
-				apk add \
-					gvfs \
-					gvfs-afc \
-					gvfs-afp \
-					gvfs-archive \
-					gvfs-avahi \
-					gvfs-cdda \
-					gvfs-dav \
-					gvfs-fuse \
-					gvfs-gphoto2 \
-					gvfs-mtp \
-					gvfs-nfs \
-					gvfs-smb \
-					thunar-volman
-
-				rc-update add fuse default
-			fi
-		fi
-
-		# Plugins.
-
-		apk add \
-			xfce4-clipman-plugin \
-			xfce4-whiskermenu-plugin \
-			xfce4-xkb-plugin
-
-		ntapk add \
-			xfce4-diskperf-plugin \
-			xfce4-docklike-plugin \
-			xfce4-genmon-plugin \
-			xfce4-netload-plugin \
-			xfce4-pulseaudio-plugin \
-			xfce4-sensors-plugin \
-			xfce4-systemload-plugin \
-			xfce4-timer-plugin
-		;;
-	esac
 
 	# Themes.
 
