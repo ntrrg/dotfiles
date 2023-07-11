@@ -13,7 +13,13 @@ fi
 export XDG_CURRENT_DESKTOP="river"
 export XDG_SESSION_DESKTOP="river"
 
-export QT_QPA_PLATFORM="wayland-egl"
+export GDK_BACKEND="wayland"
+export QT_QPA_PLATFORM="wayland"
+export CLUTTER_BACKEND="wayland"
+export SDL_VIDEODRIVER="wayland"
+export ELM_DISPLAY="wl"
+export ELM_ACCEL="opengl"
+export ECORE_EVAS_ENGINE="wayland_egl"
 export MOZ_ENABLE_WAYLAND="1"
 
 exec dbus-run-session river
