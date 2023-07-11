@@ -52,6 +52,7 @@ riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal ex
 riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
 
 riverctl spawn "dunst"
+riverctl spawn "waybar"
 
 riverctl float-filter-add app-id "popup"
 riverctl float-filter-add app-id "conky"
