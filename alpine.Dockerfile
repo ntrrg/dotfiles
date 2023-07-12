@@ -1,12 +1,11 @@
-FROM alpine:edge
+FROM alpine:3.18
 ARG NEW_USER="ntrrg"
-ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/edge"
+ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.18"
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
   echo "$MIRROR/main" > /etc/apk/repositories && \
   echo "$MIRROR/community" >> /etc/apk/repositories && \
-  echo "@testing $MIRROR/testing" >> /etc/apk/repositories && \
   apk update && apk upgrade alpine-keys && apk upgrade --available && \
   apk add doas sudo && \
   echo "$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
