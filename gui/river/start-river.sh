@@ -3,7 +3,7 @@
 set -eo pipefail
 
 export TMPDIR="${TMPDIR:-"/tmp"}"
-export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-"$TMPDIR/runtime-dir-$UID"}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-"$TMPDIR/runtime-dir-$(id -u)"}"
 
 if [ ! -d "${XDG_RUNTIME_DIR}" ]; then
 	mkdir "${XDG_RUNTIME_DIR}"
