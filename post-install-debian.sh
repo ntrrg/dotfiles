@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -xeu
+set -xeuo pipefail
 
 BASEPATH="${BASEPATH:-"/tmp"}"
 
@@ -28,7 +28,6 @@ localedef -ci "$LANGUAGE" -f "$CHARSET" -A "/usr/share/locale/locale.alias" \
 
 apt-get install -y \
 	apt-transport-https \
-	busybox \
 	bzip2 \
 	file \
 	fuse3 \
@@ -37,7 +36,6 @@ apt-get install -y \
 	gnupg \
 	gzip \
 	make \
-	man \
 	mosh \
 	p7zip-full \
 	rclone \
