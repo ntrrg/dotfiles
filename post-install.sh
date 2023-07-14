@@ -699,7 +699,7 @@ export XDG_CONFIG_HOME="\$XDG_LOCAL_HOME/etc"
 export XDG_DATA_HOME="\$XDG_LOCAL_HOME/share"
 export XDG_STATE_HOME="\$XDG_LOCAL_HOME/var"
 export XDG_CACHE_HOME="\$XDG_STATE_HOME/cache"
-export PATH="\$HOME/go/bin:\$HOME/bin:\$XDG_BIN_HOME:\$PATH"
+export PATH="\$HOME/bin:\$XDG_BIN_HOME:\$PATH"
 EOF
 
 		chown "$NEW_USER:$NEW_USER" "/home/$NEW_USER/.profile"
