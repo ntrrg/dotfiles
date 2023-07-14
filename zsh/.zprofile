@@ -7,7 +7,7 @@ if [ -z "$_ZSH_PROFILE" ]; then
   export XDG_DATA_HOME="$XDG_LOCAL_HOME/share"
   export XDG_STATE_HOME="$XDG_LOCAL_HOME/var"
   export XDG_CACHE_HOME="$XDG_STATE_HOME/cache"
-  export PATH="$HOME/go/bin:$HOME/bin:$XDG_BIN_HOME:$PATH"
+  export PATH="$HOME/bin:$XDG_BIN_HOME:$PATH"
 
   fpath=($XDG_DATA_HOME/zsh/vendor-functions $XDG_DATA_HOME/zsh/vendor-completions $fpath)
 
