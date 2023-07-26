@@ -337,6 +337,7 @@ EOF
 		# Audio.
 
 		apk add \
+			pavucontrol \
 			pipewire \
 			pipewire-alsa \
 			pipewire-pulse \
@@ -371,9 +372,9 @@ EOF
 			slock \
 			spacefm
 
-		ntapk add \
-			qt5ct \
-			xsettingsd
+		#ntapk add \
+		#	qt5ct \
+		#	xsettingsd
 
 		cat << EOF > "/usr/share/xsessions/dwm.desktop"
 [Desktop Entry]
@@ -395,11 +396,13 @@ EOF
 	river)
 		_setup_wayland
 
+		ntapk add river
+
 		apk add \
 			dunst \
 			grim \
-			river \
 			slurp \
+			spacefm \
 			swaybg \
 			swaylock \
 			wf-recorder \
@@ -407,7 +410,7 @@ EOF
 			xdg-desktop-portal-wlr
 
 		ntapk add \
-			qt5ct \
+			\ #qt5ct \
 			swappy
 
 		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
@@ -555,13 +558,13 @@ EOF
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
 			alacritty \
-			foot \
-			imv
+			foot
 
 		ntapk add \
-			conky \
+			\ #conky \
 			mupdf \
-			st
+			st \
+			sxiv
 
 		apk del vim
 		ntapk add vim-huge
