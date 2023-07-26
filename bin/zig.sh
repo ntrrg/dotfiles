@@ -6,11 +6,10 @@ set -euo pipefail
 
 export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 
-_TMPDIR="${TMPDIR:-"/tmp"}"
 _ZIGSH_DATA="${ZIGSH_DATA:-"${XDG_DATA_HOME:-"$HOME/.local/share"}/zig.sh"}"
 _ZIGSH_STATE="${ZIGSH_STATE:-"${XDG_STATE_HOME:-"$HOME/.local/var"}/zig.sh"}"
 _ZIGSH_CACHE="${ZIGSH_CACHE:-"${XDG_CACHE_HOME:-"$HOME/.cache"}/zig.sh"}"
-_ZIGSH_ENVS="${ZIGSH_ENVS:-"$_ZIGSH_CACHE"}"
+_ZIGSH_ENVS="${ZIGSH_ENVS:-"$_ZIGSH_STATE"}"
 
 _ZIG="${ZIG:-"zig"}"
 _ZIG_BUILDS_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/builds"}"
@@ -21,8 +20,8 @@ _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 _main() {
 	local _action="build"
 
-	local _opts="bcdhils"
-	local _lopts="bin,build,clear,delete,help,init,list"
+	local _opts="bcdhiLls"
+	local _lopts="bin,build,clear,deinit,delete,help,init,list,releases"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -35,10 +34,7 @@ _main() {
 			;;
 
 		-c | --clear)
-			rm -rf \
-				${XDG_CACHE_HOME:-"$HOME/.cache"}/zig \
-				"$_ZIGSH_CACHE"/* \
-				"$_ZIGSH_ENVS"/*
+			rm -rf "${XDG_CACHE_HOME:-"$HOME/.cache"}/zig" "$_ZIGSH_CACHE"/*
 
 			return
 			;;
@@ -55,7 +51,20 @@ _main() {
 		-i | --init)
 			mkdir -p "$_ZIGSH_DATA" "$_ZIGSH_STATE" "$_ZIGSH_CACHE" "$_ZIGSH_ENVS"
 
-			echo "export PATH=$_ZIGSH_STATE/zig:$PATH"
+			echo "export PATH=$_ZIGSH_DATA/zig:$PATH"
+			return
+			;;
+
+		-L | --releases)
+			local _output=""
+			local _rel=""
+
+			for _rel in $(_releases); do
+				_output="$_rel
+$_output"
+			done
+
+			echo "$_output" | sed '/^$/d'
 			return
 			;;
 
@@ -66,6 +75,19 @@ _main() {
 
 		-s | --build)
 			_action="build"
+			;;
+
+		--deinit)
+			rm -f "$_ZIGSH_DATA/zig"
+
+			local _env_path="$(echo "$_ZIGSH_DATA/zig:" |
+				sed 's/\//\\\//g' |
+				sed 's/\./\\./g'
+			)"
+
+			echo "export PATH=$(echo "$PATH" | sed "s/$_env_path//g")"
+
+			return
 			;;
 
 		--)
@@ -80,7 +102,7 @@ _main() {
 	local _rel=""
 
 	if [ $# -eq 0 ]; then
-		_rel="$(_get_latest_release)"
+		_rel="$(_latest_release)"
 	else
 		_rel="$1"
 	fi
@@ -90,10 +112,10 @@ _main() {
 	case $_action in
 	binary)
 		if [ ! -d "$_env" ]; then
-			local _os="$(_get_os)"
-			local _arch="$(_get_arch)"
+			local _os="$(_host_os)"
+			local _arch="$(_host_arch)"
 			local _pkg="zig-$_os-$_arch-$_rel.tar.xz"
-			local _dl_pkg="$_TMPDIR/$_pkg"
+			local _dl_pkg="$_ZIGSH_CACHE/$_pkg"
 			local _mirror="$_ZIG_MIRROR/$_rel"
 
 			if echo "$_rel" | grep -q "[-]dev[.]"; then
@@ -130,7 +152,6 @@ _main() {
 			else
 				log.sh "updating git repository.."
 				git -C "$_repo" fetch -fpPt origin || true
-				git -C "$_repo" gc
 			fi
 
 			local _ref="$_rel"
@@ -142,7 +163,7 @@ _main() {
 			fi
 
 			log.sh "generating archive for $_rel from git repository.."
-			mkdir "$_env.tmp"
+			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
 			git -C "$_repo" archive --format tar "$_ref" | tar -C "$_env.tmp" -x
 			mv "$_env.tmp" "$_env"
 		fi
@@ -151,15 +172,15 @@ _main() {
 			log.sh "compiling $_rel.."
 
 			local _old_pwd="$PWD"
-			cd "$_env.tmp/src"
+			cd "$_env/src"
 
-			mkdir -p build
-			cd build
+			mkdir -p "build"
+			cd "build"
 
 			cmake \
 				-DCMAKE_BUILD_TYPE="Release" \
 				-DZIG_TARGET_TRIPLE="native" \
-				-DZIG_STATIC=ON \
+				-DZIG_STATIC="ON" \
 				..
 
 			make
@@ -181,11 +202,11 @@ _main() {
 	esac
 
 	log.sh "activating release $_rel.."
-	rm -f "$_ZIGSH_STATE/zig"
-	ln -s "$_env" "$_ZIGSH_STATE/zig"
+	rm -f "$_ZIGSH_DATA/zig"
+	ln -s "$_env" "$_ZIGSH_DATA/zig"
 }
 
-_get_arch() {
+_host_arch() {
 	case "$(uname -m)" in
 	x86_64 | amd64)
 		echo "x86_64"
@@ -205,13 +226,23 @@ _get_arch() {
 	esac
 }
 
-_get_latest_release() {
-	local _resp="$(wget -qO - "$_ZIG_MIRROR/index.json")"
-	echo "$_resp" | grep -m 1 "version" | cut -d '"' -f 4
+_host_os() {
+	echo "linux"
 }
 
-_get_os() {
-	echo "linux"
+_latest_release() {
+	local _releases="$(_releases)"
+	echo "$_releases" | head -n 1
+}
+
+_releases() {
+	local _resp="$(wget -qO - "$_ZIG_MIRROR/index.json")"
+
+	echo "$_resp" |
+		grep '^\s\{2\}"\|version' |
+		grep -v 'master' |
+		sed 's/"version"://' |
+		cut -d '"' -f 2
 }
 
 _show_help() {
@@ -221,6 +252,7 @@ _show_help() {
 $_name - manage Zig environments.
 
 Usage: $_name [-b | -s] [RELEASE]
+   or: $_name -L
    or: $_name -l
    or: $_name -d RELEASE
    or: \$($_name --init)
@@ -228,13 +260,14 @@ Usage: $_name [-b | -s] [RELEASE]
 If no release is given, the latest release will be used.
 
 Options:
-  -b, --bin      Download pre-built binaries for the given release
-	-c, --clear    Clear data (source code, local releases, etc...)
-  -d, --delete   Remove the given release
-  -h, --help     Show this help message
-  -i, --init     Setup the environment for using $_name
-  -l, --list     List all the local releases
-  -s, --build    Build given release from source (default)
+  -b, --bin        Download pre-built binaries for the given release
+	-c, --clear      Clear cache data (build cache, binary downloads, etc...)
+  -d, --delete     Remove the given release
+  -h, --help       Show this help message
+  -i, --init       Setup the environment for using $_name
+  -L, --releases   List available releases
+  -l, --list       List local releases
+  -s, --build      Build given release from source (default)
 
 Environment variables:
   * 'ZIG_BUILDS_MIRROR' is the mirror used to download the Zig dev assets.

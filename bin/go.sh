@@ -6,11 +6,10 @@ set -euo pipefail
 
 export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 
-_TMPDIR="${TMPDIR:-"/tmp"}"
 _GOSH_DATA="${GOSH_DATA:-"${XDG_DATA_HOME:-"$HOME/.local/share"}/go.sh"}"
 _GOSH_STATE="${GOSH_STATE:-"${XDG_STATE_HOME:-"$HOME/.local/var"}/go.sh"}"
 _GOSH_CACHE="${GOSH_CACHE:-"${XDG_CACHE_HOME:-"$HOME/.cache"}/go.sh"}"
-_GOSH_ENVS="${GOSH_ENVS:-"$_GOSH_CACHE"}"
+_GOSH_ENVS="${GOSH_ENVS:-"$_GOSH_STATE"}"
 
 _GO="${GO:-"go"}"
 _GO_GIT_MIRROR="${GO_GIT_MIRROR:-"https://go.googlesource.com/go"}"
@@ -20,8 +19,8 @@ _GO_SRC="${GO_SRC:-"$_GOSH_CACHE/src"}"
 _main() {
 	local _action="build"
 
-	local _opts="bcdhils"
-	local _lopts="bin,build,clear,delete,help,init,list"
+	local _opts="bcdhiLls"
+	local _lopts="bin,build,clear,deinit,delete,help,init,list,releases"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -35,7 +34,8 @@ _main() {
 
 		-c | --clear)
 			rm -rf \
-				${XDG_CACHE_HOME:-"$HOME/.cache"}/go \
+				"${GOPATH:-"$HOME/go/pkg"}" \
+				"${XDG_CACHE_HOME:-"$HOME/.cache"}/go" \
 				"$_GOSH_CACHE"/* \
 				"$_GOSH_ENVS"/*
 
@@ -54,18 +54,22 @@ _main() {
 		-i | --init)
 			mkdir -p "$_GOSH_DATA" "$_GOSH_STATE" "$_GOSH_CACHE" "$_GOSH_ENVS"
 
-			local _GOPATH=""
-
-			if command -v "$_GO" > "/dev/null"; then
-				_GOPATH="$("$_GO" env "GOPATH")"
-			fi
-
-			if [ -z "$_GOPATH" ]; then
-				_GOPATH="${GOPATH:-"$HOME/go"}"
-			fi
-
+			local _GOPATH="$(_go_path)"
 			echo "export GOPATH=$_GOPATH"
-			echo "export PATH=$_GOPATH/bin:$_GOSH_STATE/go/bin:$PATH"
+			echo "export PATH=$_GOPATH/bin:$_GOSH_DATA/go/bin:$PATH"
+			return
+			;;
+
+		-L | --releases)
+			local _output=""
+			local _rel=""
+
+			for _rel in $(_releases); do
+				_output="$_rel
+$_output"
+			done
+
+			echo "$_output" | sed '/^$/d'
 			return
 			;;
 
@@ -76,6 +80,19 @@ _main() {
 
 		-s | --build)
 			_action="build"
+			;;
+
+		--deinit)
+			rm -f "$_GOSH_DATA/go"
+
+			local _env_path="$(echo "$(_go_path)/bin:$_GOSH_DATA/go/bin:" |
+				sed 's/\//\\\//g' |
+				sed 's/\./\\./g'
+			)"
+
+			echo "unset GOPATH"
+			echo "export PATH=$(echo "$PATH" | sed "s/$_env_path//g")"
+			return
 			;;
 
 		--)
@@ -90,7 +107,7 @@ _main() {
 	local _rel=""
 
 	if [ $# -eq 0 ]; then
-		_rel="$(_get_latest_release)"
+		_rel="$(_latest_release)"
 	else
 		_rel="$1"
 	fi
@@ -100,10 +117,10 @@ _main() {
 	case $_action in
 	binary)
 		if [ ! -d "$_env" ]; then
-			local _os="$(_get_os)"
-			local _arch="$(_get_arch)"
+			local _os="$(_host_os)"
+			local _arch="$(_host_arch)"
 			local _pkg="go$_rel.$_os-$_arch.tar.gz"
-			local _dl_pkg="$_TMPDIR/$_pkg"
+			local _dl_pkg="$_GOSH_CACHE/$_pkg"
 
 			if [ ! -f "$_dl_pkg" ]; then
 				log.sh "downloading binary release $_rel.."
@@ -128,7 +145,6 @@ _main() {
 			else
 				log.sh "updating git repository.."
 				git -C "$_repo" fetch -fpPt origin || true
-				git -C "$_repo" gc
 			fi
 
 			local _ref="$_rel"
@@ -137,10 +153,12 @@ _main() {
 				_ref="master"
 			elif echo "$_ref" | grep -q "^[1-9]\+\."; then
 				_ref="go$_ref"
+			else
+				_ref="origin/$_ref"
 			fi
 
 			log.sh "generating archive for $_rel from git repository.."
-			mkdir "$_env.tmp"
+			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
 			git -C "$_repo" archive --format tar "$_ref" | tar -C "$_env.tmp" -x
 			mv "$_env.tmp" "$_env"
 		fi
@@ -148,16 +166,20 @@ _main() {
 		if [ ! -x "$_env/bin/go" ]; then
 			log.sh "compiling $_rel.."
 
-			export GOROOT_BOOTSTRAP=""
+			if [ -f "$_env/src/cmd/dist/main.go" ]; then
+				if command -v "$_GO" > "/dev/null"; then
+					export GOROOT_BOOTSTRAP="$("$_GO" env "GOROOT")"
+				else
+					local _ref="release-branch.go1.4"
+					CGO_ENABLED=0 _main "$_ref"
+					export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_ref"
 
-			if command -v "$_GO" > "/dev/null"; then
-				GOROOT_BOOTSTRAP="$("$_GO" env "GOROOT")"
-			elif [ -z "${GOBOOSTRAP:-""}" ]; then
-				local _ref="release-branch.go1.4"
-
-				GOBOOSTRAP=1 CGO_ENABLED=0 _main "$_ref"
-
-				GOROOT_BOOTSTRAP="$_GOSH_ENVS/go$_ref"
+					if [ -f "$_env/src/cmd/dist/notgo117.go" ]; then
+						local _ref="release-branch.go1.17"
+						_main "$_ref"
+						export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_ref"
+					fi
+				fi
 			fi
 
 			(unset GOROOT && cd "$_env/src" && ./make.bash)
@@ -177,11 +199,21 @@ _main() {
 	esac
 
 	log.sh "activating release $_rel.."
-	rm -f "$_GOSH_STATE/go"
-	ln -s "$_env" "$_GOSH_STATE/go"
+	rm -f "$_GOSH_DATA/go"
+	ln -s "$_env" "$_GOSH_DATA/go"
 }
 
-_get_arch() {
+_go_path() {
+	if [ -n "${GOPATH:-""}" ]; then
+		echo "$GOPATH"
+	elif command -v "$_GO" > "/dev/null"; then
+		"$_GO" env "GOPATH"
+	else
+		echo "$HOME/go"
+	fi
+}
+
+_host_arch() {
 	case "$(uname -m)" in
 	x86_64 | amd64)
 		echo "amd64"
@@ -205,13 +237,18 @@ _get_arch() {
 	esac
 }
 
-_get_latest_release() {
-	local _resp="$(wget -qO - "$_GO_MIRROR/?mode=json")"
-	echo "$_resp" | grep -m 1 "version" | cut -d '"' -f 4 | sed "s/go//"
+_host_os() {
+	echo "linux"
 }
 
-_get_os() {
-	echo "linux"
+_latest_release() {
+	local _releases="$(_releases)"
+	echo "$_releases" | head -n 1
+}
+
+_releases() {
+	local _resp="$(wget -qO - "$_GO_MIRROR/?mode=json&include=all")"
+	echo "$_resp" | grep "version" | uniq -u | cut -d '"' -f 4 | sed "s/go//"
 }
 
 _show_help() {
@@ -221,6 +258,7 @@ _show_help() {
 $_name - manage Go environments.
 
 Usage: $_name [-b | -s] [RELEASE]
+   or: $_name -L
    or: $_name -l
    or: $_name -d RELEASE
    or: \$($_name --init)
@@ -228,13 +266,14 @@ Usage: $_name [-b | -s] [RELEASE]
 If no release is given, the latest release will be used.
 
 Options:
-  -b, --bin      Download pre-built binaries for the given release
-	-c, --clear    Clear data (source code, local releases, etc...)
-  -d, --delete   Remove the given release
-  -h, --help     Show this help message
-  -i, --init     Setup the environment for using $_name
-  -l, --list     List all the local releases
-  -s, --build    Build given release from source (default)
+  -b, --bin        Download pre-built binaries for the given release
+	-c, --clear      Clear cache data (build cache, binary downloads, etc...)
+  -d, --delete     Remove the given release
+  -h, --help       Show this help message
+  -i, --init       Setup the environment for using $_name
+  -L, --releases   List available releases
+  -l, --list       List local releases
+  -s, --build      Build given release from source (default)
 
 Environment variables:
   * 'GO_GIT_MIRROR' is the mirror used to clone the Go source code.
