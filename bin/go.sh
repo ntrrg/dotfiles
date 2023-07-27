@@ -153,13 +153,11 @@ $_output"
 				_ref="master"
 			elif echo "$_ref" | grep -q "^[1-9]\+\."; then
 				_ref="go$_ref"
-			else
-				_ref="origin/$_ref"
 			fi
 
 			log.sh "generating archive for $_rel from git repository.."
 			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
-			git -C "$_repo" archive --format tar "$_ref" | tar -C "$_env.tmp" -x
+			_git_archive "$_repo" "$_ref" | tar -C "$_env.tmp" -x
 			mv "$_env.tmp" "$_env"
 		fi
 
@@ -201,6 +199,18 @@ $_output"
 	log.sh "activating release $_rel.."
 	rm -f "$_GOSH_DATA/go"
 	ln -s "$_env" "$_GOSH_DATA/go"
+}
+
+_git_archive() {
+	local _repo="${1:-"."}"
+	local _ref="${2:-"HEAD"}"
+
+	for _ref in "$_ref" "origin/$_ref"; do
+		git -C "$_repo" archive --format tar "$_ref" || continue
+		break
+	done
+
+	log.sh -f "%s is not a valid git object name" "$_ref"
 }
 
 _go_path() {
