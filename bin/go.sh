@@ -207,7 +207,7 @@ _git_archive() {
 
 	for _ref in "$_ref" "origin/$_ref"; do
 		git -C "$_repo" archive --format tar "$_ref" || continue
-		break
+		return
 	done
 
 	log.sh -f "%s is not a valid git object name" "$_ref"
