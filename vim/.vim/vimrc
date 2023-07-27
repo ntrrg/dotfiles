@@ -40,7 +40,7 @@ hi def link stNormal     Normal
 hi def link stBuffNumber Number
 hi def link stBuffName   Title
 hi def link stBuffPos    Number
-hi def link stBuffProps  Identifier
+hi def link stBuffProps  Function
 
 set statusline=
 set statusline+=%#stNormal#
@@ -101,9 +101,8 @@ autocmd BufRead,BufNewFile *.gotmpl,*.gotxt,*.tmpl setlocal filetype=gotmpl
 autocmd BufRead,BufNewFile *.slide setlocal filetype=markdown
 autocmd BufRead,BufNewFile *.svelte setlocal filetype=html
 autocmd BufRead,BufNewFile *.trigger setlocal filetype=sh
-autocmd BufRead,BufNewFile *.v setlocal filetype=v
 autocmd BufRead,BufNewFile *.vue setlocal filetype=html
-autocmd BufRead,BufNewFile *.zig setlocal filetype=zig
+autocmd BufRead,BufNewFile *.zig,*.zon setlocal filetype=zig
 autocmd BufRead,BufNewFile *.zir setlocal filetype=zir
 
 autocmd Filetype c setlocal noexpandtab
@@ -114,8 +113,7 @@ autocmd Filetype markdown setlocal tabstop=4 shiftwidth=4
 autocmd Filetype python setlocal tabstop=4 shiftwidth=4
 autocmd Filetype rst setlocal tabstop=4 shiftwidth=4
 autocmd Filetype sh setlocal noexpandtab
-autocmd Filetype v setlocal noexpandtab
-autocmd Filetype zig,zir setlocal tabstop=4 shiftwidth=4
+autocmd Filetype zig,zir,zon setlocal tabstop=4 shiftwidth=4
 
 " -----------------------------------------------------------------------------
 " Searching
@@ -151,21 +149,13 @@ filetype plugin on
 
 "let g:lsp_diagnostics_enabled = 0
 "let g:lsp_document_highlight_enabled = 0
-"highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
+"hi lspReference ctermfg=red guifg=red ctermbg=green guibg=green
 
 if executable('gopls')
   autocmd User lsp_setup call lsp#register_server({
     \ 'name': 'gopls',
     \ 'cmd': {server_info->['gopls']},
     \ 'allowlist': ['go'],
-    \ })
-endif
-
-if executable('vls')
-  autocmd User lsp_setup call lsp#register_server({
-    \ 'name': 'vls',
-    \ 'cmd': {server_info->['vls']},
-    \ 'allowlist': ['v'],
     \ })
 endif
 

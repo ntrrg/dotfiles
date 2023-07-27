@@ -2,7 +2,7 @@
 " Language:     Go
 " Maintainer:   Miguel Angel Rivera Notararigo (https://ntrrg.dev)
 " Filenames:    *.go
-" Last Change:  2022 May 25
+" Last Change:  2023 Jul 17
 " NOTE:         Based on go.vim from https://github.com/fatih/vim-go and the
 "               official go.vim file.
 
@@ -16,9 +16,9 @@ syn case match
 " -----------------------------------------------------------------------------
 " Comments
 
-syn match goNote display "//\s[A-Z]\{3,\}:\s"hs=s+3,he=e-2
+syn match goNote display "//\s[A-Z]\{3,\}:\s"hs=s+3,he=e-1
 
-syn match goSpecialComment display contained "//go:\w\+"hs=s+2
+syn match goSpecialComment display contained "//go:\w\+"hs=s+1
 
 syn region goComment start="//" end="$" display
   \ contains=goNote,goSpecialComment,@Spell
@@ -57,32 +57,33 @@ hi def link goBuildDirectives Identifier
 " Operators
 
 " = := ++ -- <-
-syn match goOperator display /:\?=\|++\|--\|<-/
+"syn match goOperator display /:\?=\|++\|--\|<-/
 
-" +  -  *  % 
+" +  -  *  %
 " += -= *= %=
-syn match goOperator display /[+\-*%]=\?/
+"syn match goOperator display /[+\-*%]=\?/
 
 " / /=
-syn match goOperator display "/\(=\|\ze[^/*]\)"
+"syn match goOperator display "/\(=\|\ze[^/*]\)"
 
 " &  |  ^
 " &= |= ^=
-syn match goOperator display /[&|^]=\?/
+"syn match goOperator display /[&|^]=\?/
 
 " <<  >>  &^
 " <<= >>= &^=
-syn match goOperator display /\%(<<\|>>\|&\^\)=\?/
+
+"syn match goOperator display /\%(<<\|>>\|&\^\)=\?/
 
 " <  >  !  =
 " <= >= != ==
-syn match goOperator display "[<>!&|^=]=\?"
+"syn match goOperator display "[<>!&|^=]=\?"
 
 " && ||
-syn match goOperator display /&&\|||/
+"syn match goOperator display /&&\|||/
 
 " ( ) [ ] { } . : , ; ~
-syn match goOperator display /[()\[\]{}.:,;~]/
+"syn match goOperator display /[()\[\]{}.:,;~]/
 
 "hi def link goOperator Operator
 
@@ -90,13 +91,13 @@ syn match goOperator display /[()\[\]{}.:,;~]/
 " Keywords
 
 syn keyword goDefine      const import type var
-syn keyword goStatement   break continue defer fallthrough go goto return
+syn keyword goKeyword   break continue defer fallthrough go goto return
 syn keyword goConditional else if select switch
 syn keyword goLabel       case default
 syn keyword goRepeat      for range
 
 hi def link goDefine      Define
-hi def link goStatement   Statement
+hi def link goKeyword     Keyword
 hi def link goConditional Conditional
 hi def link goLabel       Label
 hi def link goRepeat      Repeat
@@ -118,16 +119,12 @@ hi def link goPredefinedIdentifiers Identifier
 hi def link goBoolConst             Boolean
 
 syn keyword goBuiltins 
-  \ append cap close complex copy delete imag len make new panic print println
-  \ real recover
+  \ append cap clear close complex copy delete imag len make max min new panic
+  \ print println real recover
 
 hi def link goBuiltins Function
 
-runtime! syntax/go-stdlib.vim
-
 " Types
-
-hi def link goType Type
 
 syn keyword goTypeBool      bool
 syn keyword goTypeInt       int int8 int16 int32 int64 rune
@@ -159,6 +156,9 @@ syn match goDefine      display /\(^\|;\s*\)func\>/
 
 hi def link goTypeChannel goType
 hi def link goTypeFunc    goType
+hi def link goType        Type
+
+"runtime! syntax/go-stdlib.vim
 
 " -----------------------------------------------------------------------------
 " Literals

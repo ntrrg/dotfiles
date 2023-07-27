@@ -1,19 +1,25 @@
-" indent/zig.vim
+" Vim indent file
+" Language:     Zig
+" Maintainer:   Miguel Angel Rivera Notararigo (https://ntrrg.dev)
+" Filenames:    *.zig
+" Last Change:  2023 Jul 17
+" NOTE:         Based on the official zig.vim indent file.
 
-" Only load this indent file when no other was loaded.
-if exists("b:did_indent")
-    finish
+" Quit when a (custom) indent file was already loaded
+if exists('b:did_indent')
+  finish
 endif
+
 let b:did_indent = 1
 
-if (!has("cindent") || !has("eval"))
-    finish
+if (!has('cindent') || !has('eval'))
+  finish
 endif
 
 setlocal cindent
 
 " L0 -> 0 indent for jump labels (i.e. case statement in c).
-" j1 -> indenting for "javascript object declarations"
+" j1 -> indenting for 'javascript object declarations'
 " J1 -> see j1
 " w1 -> starting a new line with `(` at the same indent as `(`
 " m1 -> if `)` starts a line, match its indent with the first char of its
@@ -33,46 +39,46 @@ setlocal cinkeys=0{,0},0),0],!^F,o,O
 
 setlocal indentexpr=GetZigIndent(v:lnum)
 
-let b:undo_indent = "setlocal cindent< cinkeys< cinoptions< indentexpr<"
+let b:undo_indent = 'setlocal cindent< cinkeys< cinoptions< indentexpr<'
 
 function! GetZigIndent(lnum)
-    let curretLineNum = a:lnum
-    let currentLine = getline(a:lnum)
+  let curretLineNum = a:lnum
+  let currentLine = getline(a:lnum)
 
-    " cindent doesn't handle multi-line strings properly, so force no indent
-    if currentLine =~ '^\s*\\\\.*'
-        return -1
+  " cindent doesn't handle multi-line strings properly, so force no indent
+  if currentLine =~ '^\s*\\\\.*'
+    return -1
+  endif
+
+  let prevLineNum = prevnonblank(a:lnum-1)
+  let prevLine = getline(prevLineNum)
+
+  " for lines that look like
+  "   },
+  "   };
+  " try treating them the same as a }
+  if prevLine =~ '\v^\s*},$'
+    if currentLine =~ '\v^\s*};$' || currentLine =~ '\v^\s*}$'
+      return indent(prevLineNum) - 4
     endif
-
-    let prevLineNum = prevnonblank(a:lnum-1)
-    let prevLine = getline(prevLineNum)
-
-    " for lines that look like
-    "   },
-    "   };
-    " try treating them the same as a }
-    if prevLine =~ '\v^\s*},$'
-        if currentLine =~ '\v^\s*};$' || currentLine =~ '\v^\s*}$'
-            return indent(prevLineNum) - 4
-        endif
-        return indent(prevLineNum-1) - 4
-    endif
-    if currentLine =~ '\v^\s*},$'
-        return indent(prevLineNum) - 4
-    endif
-    if currentLine =~ '\v^\s*};$'
-        return indent(prevLineNum) - 4
-    endif
+    return indent(prevLineNum-1) - 4
+  endif
+  if currentLine =~ '\v^\s*},$'
+    return indent(prevLineNum) - 4
+  endif
+  if currentLine =~ '\v^\s*};$'
+    return indent(prevLineNum) - 4
+  endif
 
 
-    " cindent doesn't handle this case correctly:
-    " switch (1): {
-    "   1 => true,
-    "       ~
-    "       ^---- indents to here
-    if prevLine =~ '.*=>.*,$' && currentLine !~ '.*}$'
-       return indent(prevLineNum)
-    endif
+  " cindent doesn't handle this case correctly:
+  " switch (1): {
+  "   1 => true,
+  "       ~
+  "       ^---- indents to here
+  if prevLine =~ '.*=>.*,$' && currentLine !~ '.*}$'
+    return indent(prevLineNum)
+  endif
 
-    return cindent(a:lnum)
+  return cindent(a:lnum)
 endfunction
