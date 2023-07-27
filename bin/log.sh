@@ -4,9 +4,17 @@
 
 set -euo pipefail
 
+_stderr() {
+	if [ -e "/dev/stderr" ]; then
+		echo "/dev/stderr"
+	else
+		echo "/proc/self/fd/2"
+	fi
+}
+
 _COLORIZE="${LOG_COLORIZE:-1}"
 _DATE="${LOG_DATE:-""}"
-_FILE="${LOG_FILE:-"/dev/stderr"}"
+_FILE="${LOG_FILE:-"$(_stderr)"}"
 _LEVEL="${LOG_LEVEL:-"WARN"}"
 _LEVELIZE="${LOG_LEVELIZE:-1}"
 _PREFIX="${LOG_PREFIX:-""}"
