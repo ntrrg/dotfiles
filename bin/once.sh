@@ -67,8 +67,7 @@ _main() {
 	_FILE="$_BASEDIR/$(_get_name "$*")"
 
 	if [ -f "$_FILE" ]; then
-		echo "command already running" > /dev/stderr
-		return 1
+		log.sh -f "command already running"
 	fi
 
 	echo "$_args" > "$_FILE"

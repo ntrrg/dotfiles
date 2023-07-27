@@ -10,11 +10,7 @@ _PRINT_IFACES=0
 _PRINT_FUNCS=0
 _SHORT=0
 
-command -v "$_GO" > "/dev/null" ||
-	(
-		echo "can't find go toolchain" > "/dev/stderr"
-		exit 1
-	)
+command -v "$_GO" > "/dev/null" || log.sh -f "can't find go toolchain"
 
 _main() {
 	local _opts="fhist"

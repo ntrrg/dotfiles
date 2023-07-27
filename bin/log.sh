@@ -4,17 +4,9 @@
 
 set -euo pipefail
 
-_stderr() {
-	if [ -e "/dev/stderr" ]; then
-		echo "/dev/stderr"
-	else
-		echo "/proc/self/fd/2"
-	fi
-}
-
 _COLORIZE="${LOG_COLORIZE:-1}"
 _DATE="${LOG_DATE:-""}"
-_FILE="${LOG_FILE:-"$(_stderr)"}"
+_FILE="${LOG_FILE:-"$(stdfd.sh error)"}"
 _LEVEL="${LOG_LEVEL:-"WARN"}"
 _LEVELIZE="${LOG_LEVELIZE:-1}"
 _PREFIX="${LOG_PREFIX:-""}"
@@ -76,7 +68,14 @@ _main() {
 		_date="$(date "+$_DATE") "
 	fi
 
-	printf "$_level_text$_date$_PREFIX%s\n" "$(printf "$@")" >> "$_FILE"
+	local _fmt="$_level_text$_date$_PREFIX%s\n"
+	local _args="$(printf "$@")"
+
+	if [ -f "$(realpath "$_FILE")" ]; then
+		printf "$_fmt" "$_args" >> "$_FILE"
+	else
+		printf "$_fmt" "$_args" > "$_FILE"
+	fi
 
 	if [ "$_level" = "FATAL" ]; then
 		exit 1

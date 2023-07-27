@@ -17,7 +17,7 @@ _main() {
 		shift
 	fi
 
-	printf "> $*\n" > "/dev/stderr"
+	LOG_LEVEL="info" LOG_LEVELIZE=0 log.sh -i "> $*\n"
 
 	if is-falsy.sh "$_DRY_RUN"; then
 		"$@"

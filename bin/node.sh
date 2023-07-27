@@ -19,8 +19,7 @@ _get_arch() {
 		;;
 
 	*)
-		echo "can't define Node.js architecture for '$(uname -m)'" > /dev/stderr
-		return 1
+		log.sh -f "can't define Node.js architecture for '$(uname -m)'"
 		;;
 	esac
 }
@@ -89,14 +88,14 @@ get_latest_release() {
 }
 
 _show_help() {
-	BIN_NAME="$(basename "$0")"
+	local _name="${0##*/}"
 
 	cat << EOF
-$BIN_NAME - manage Node.js environments.
+$_name - manage Node.js environments.
 
-Usage: \$($BIN_NAME [RELEASE])
-   or: $BIN_NAME -l
-   or: $BIN_NAME -d RELEASE
+Usage: \$($_name [RELEASE])
+	 or: $_name -l
+	 or: $_name -d RELEASE
 
 If no release is given, the latest release will be used.
 

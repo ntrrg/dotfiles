@@ -11,8 +11,7 @@ _main() {
 	fi
 
 	if [ $# -eq 0 ]; then
-		echo "no value provided" > /dev/stderr
-		return 1
+		log.sh -f "no value provided"
 	fi
 
 	local _val="$1"

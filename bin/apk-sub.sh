@@ -11,8 +11,7 @@ _main() {
 	fi
 
 	if [ $# -eq 0 ]; then
-		echo "no suffix provided" > /dev/stderr
-		return 1
+		log.sh -f "no suffix provided"
 	fi
 
 	local _suffix="$1"
@@ -49,6 +48,8 @@ specified, installed packages will be used.
 
 Options:
   -h, --help   Show this help message
+
+For logging options see 'log.sh --help'.
 
 Copyright (c) 2021 Miguel Angel Rivera Notararigo
 Released under the MIT License

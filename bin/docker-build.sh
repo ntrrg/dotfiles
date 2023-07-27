@@ -121,49 +121,31 @@ _build() {
 	BI_REPO="$REPO_PREFIX${BI_REPO:-"$(basename "$BI_CTX")"}$REPO_SUFFIX"
 
 	BI_IMAGE="$BI_REPO:$BI_TAG"
-	_log "Building '$BI_IMAGE'.. ($BI_ORIG)"
+	log.sh -i "Building '$BI_IMAGE'.. ($BI_ORIG)"
 
 	if [ -n "$BI_GIT_REF" ]; then
 		if [ -n "$(git -C "$BI_CTX" status --porcelain)" ]; then
-			_log_err "the git working directory '$BI_CTX' is not clean\n"
-			git -C "$BI_CTX" status > /dev/stderr
-			return 1
+			local _gs="$(git -C "$BI_CTX" status)"
+			log.sh -f "the git working directory '$BI_CTX' is not clean\n%s" "$_gs"
 		fi
 
-		_run git -C "$BI_CTX" checkout "$BI_GIT_REF"
+		cmd.sh git -C "$BI_CTX" checkout "$BI_GIT_REF"
 	fi
 
-	_run docker build -t "$BI_IMAGE" -f "$BI_PATH" "$BI_CTX"
+	cmd.sh docker build -t "$BI_IMAGE" -f "$BI_PATH" "$BI_CTX"
 
 	if [ $PUSH -ne 0 ]; then
-		_run docker push "$BI_IMAGE"
+		cmd.sh docker push "$BI_IMAGE"
 	fi
-}
-
-_log() {
-	printf "$@\n"
-}
-
-_log_err() {
-	_log "$@" > /dev/stderr
-}
-
-_run() {
-	if [ "$DRY_RUN" -ne 0 ]; then
-		echo "\$ $@"
-		return
-	fi
-
-	"$@"
 }
 
 _show_help() {
-	BIN_NAME="$(basename "$0")"
+	local _name="${0##*/}"
 
 	cat << EOF
-$BIN_NAME - Dockerfile build helper.
+$_name - Dockerfile build helper.
 
-Usage: $BIN_NAME [OPTIONS] [DOCKERFILE | BUILD_INSTRUCTION]...
+Usage: $_name [OPTIONS] [DOCKERFILE | BUILD_INSTRUCTION]...
 
 A build instruction is a sentence that contains the needed information to run
 this program with arbitrary behavior. It's syntax is:
