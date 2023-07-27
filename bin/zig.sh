@@ -164,7 +164,7 @@ $_output"
 
 			log.sh "generating archive for $_rel from git repository.."
 			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
-			git -C "$_repo" archive --format tar "$_ref" | tar -C "$_env.tmp" -x
+			_git_archive "$_repo" "$_ref" | tar -C "$_env.tmp" -x
 			mv "$_env.tmp" "$_env"
 		fi
 
@@ -204,6 +204,18 @@ $_output"
 	log.sh "activating release $_rel.."
 	rm -f "$_ZIGSH_DATA/zig"
 	ln -s "$_env" "$_ZIGSH_DATA/zig"
+}
+
+_git_archive() {
+	local _repo="${1:-"."}"
+	local _ref="${2:-"HEAD"}"
+
+	for _ref in "$_ref" "origin/$_ref"; do
+		git -C "$_repo" archive --format tar "$_ref" || continue
+		break
+	done
+
+	log.sh -f "%s is not a valid git object name" "$_ref"
 }
 
 _host_arch() {
