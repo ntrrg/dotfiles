@@ -190,6 +190,7 @@
   },
 
   "battery": {
+    "design-capacity": true,
     "states": {
       "good": 100,
       "warning": 20,
