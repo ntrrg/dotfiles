@@ -49,6 +49,10 @@ gpg:
 	cp -rf "gpg/.gnupg" "$$HOME/"
 	chmod -R a=,u=rwX "$$HOME/.gnupg"
 
+.PHONY: htop
+htop:
+	cp -rpf "htop" "$(XDG_CONFIG_HOME)/"
+
 .PHONY: ssh
 ssh:
 	mkdir -p "$$HOME/.ssh"
