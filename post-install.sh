@@ -23,7 +23,7 @@ ALLOW_MOSH="${ALLOW_MOSH:-1}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 
-NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/ntrrg/Software/Linux/Mirrors/ntalpine/edge/main"}"
+NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/Software/Linux/Mirrors/ntalpine/edge/main"}"
 
 ntapk() {
 	apk -X "$NTALPINE" --allow-untrusted --no-cache "$@"
@@ -317,7 +317,7 @@ EOF
 		# Audio.
 
 		apk add \
-			alse-utils \
+			alsa-utils \
 			pavucontrol \
 			pulseaudio \
 			pulseaudio-utils
@@ -409,8 +409,9 @@ EOF
 			wofi \
 			xdg-desktop-portal-wlr
 
+		#ntapk add qt5ct
+
 		ntapk add \
-			\ #qt5ct \
 			swappy
 
 		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
@@ -560,8 +561,9 @@ EOF
 			alacritty \
 			foot
 
+		#ntapk add conky
+
 		ntapk add \
-			\ #conky \
 			mupdf \
 			st \
 			sxiv
