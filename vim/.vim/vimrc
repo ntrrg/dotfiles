@@ -91,7 +91,7 @@ set autoindent
 filetype indent on
 set smarttab
 set expandtab tabstop=2 shiftwidth=2
-set noendofline nofixendofline
+set nofixendofline
 
 autocmd BufRead,BufNewFile go.mod setlocal filetype=gomod
 autocmd BufRead,BufNewFile go.sum setlocal filetype=gosum
@@ -129,11 +129,11 @@ nmap <Space> <Leader>
 
 set backspace=indent,eol,start
 
-" vimgrep
-nnoremap [q :cprev<CR>
-nnoremap ]q :cnext<CR>
-nnoremap [Q :cfirst<CR>
-nnoremap ]Q :clast<CR>
+" ctags
+nnoremap <Leader>p :cprev<CR>
+nnoremap <Leader>n :cnext<CR>
+nnoremap <Leader>N :cfirst<CR>
+nnoremap <Leader>P :clast<CR>
 
 " -----------------------------------------------------------------------------
 " Commands
