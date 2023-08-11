@@ -8,9 +8,10 @@ _main() {
 	local _mode="encrypt"
 	local _out="-"
 	local _pass=""
+	local _confirm=0
 
-	local _opts="dho:p:"
-	local _lopts="decrypt,help,output:,passphrase:"
+	local _opts="cdho:p:"
+	local _lopts="confirm,decrypt,help,output:,passphrase:"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -18,6 +19,10 @@ _main() {
 
 	while [ $# -gt 0 ]; do
 		case $1 in
+		-c | --confirm)
+			_confirm=1
+			;;
+
 		-d | --decrypt)
 			_mode="decrypt"
 			;;
@@ -46,23 +51,39 @@ _main() {
 		shift
 	done
 
-	local _args="-c --cipher-algo AES256"
+	case "$_mode" in
+	encrypt)
+		local _args="-c --cipher-algo AES256"
 
-	if [ "$_mode" = "decrypt" ]; then
-		_args="-dq --no-symkey-cache"
-	fi
-
-	if [ -n "$_pass" ]; then
-		_args="$_args --yes --passphrase '$_pass'"
-
-		if [ "$_mode" = "decrypt" ]; then
-			_args="$_args --batch"
+		if [ -n "$_pass" ]; then
+			_args="$_args --batch --yes --passphrase '$_pass'"
 		fi
-	fi
 
-	local _file="${1:-"-"}"
+		local _file="${1:-"-"}"
 
-	cmd.sh gpg $_args -o "$_out" "$_file"
+		gpg $_args -o "$_out" "$_file"
+
+		if [ "$_out" != "-" ] && [ -z "$_pass" ] && [ $_confirm -ne 0 ]; then
+			_main -d "$_out" > "/dev/null" || log.sh -f "passphrases don't match"
+		fi
+		;;
+
+	decrypt)
+		local _args="-dq --no-symkey-cache"
+
+		if [ -n "$_pass" ]; then
+			_args="$_args --batch --yes --passphrase '$_pass'"
+		fi
+
+		local _file="${1:-"-"}"
+
+		gpg $_args -o "$_out" "$_file"
+		;;
+
+	*)
+		log.sh -f "invalid mode '$_mode'"
+		;;
+	esac
 }
 
 _show_help() {
@@ -78,6 +99,7 @@ If no passphrase is given, it will be prompted.
 If no file is given, it will be read from STDIN.
 
 Options:
+  -c, --confirm           Confirm passphrase, ignored during decryption
   -d, --decrypt           Decrypt input
   -h, --help              Show this help message
   -o, --output=FILE       Write output to FILE
