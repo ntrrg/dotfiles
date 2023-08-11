@@ -80,9 +80,10 @@ $_output"
 		--deinit)
 			rm -f "$_ZIGSH_DATA/zig"
 
-			local _env_path="$(echo "$_ZIGSH_DATA/zig:" |
-				sed 's/\//\\\//g' |
-				sed 's/\./\\./g'
+			local _env_path="$(
+				echo "$_ZIGSH_DATA/zig:" |
+					sed 's/\//\\\//g' |
+					sed 's/\./\\./g'
 			)"
 
 			echo "export PATH=$(echo "$PATH" | sed "s/$_env_path//g")"

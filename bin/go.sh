@@ -85,9 +85,10 @@ $_output"
 		--deinit)
 			rm -f "$_GOSH_DATA/go"
 
-			local _env_path="$(echo "$(_go_path)/bin:$_GOSH_DATA/go/bin:" |
-				sed 's/\//\\\//g' |
-				sed 's/\./\\./g'
+			local _env_path="$(
+				echo "$(_go_path)/bin:$_GOSH_DATA/go/bin:" |
+					sed 's/\//\\\//g' |
+					sed 's/\./\\./g'
 			)"
 
 			echo "unset GOPATH"
