@@ -113,7 +113,7 @@ if [ "$IS_GUI" -eq 0 ]; then
 	# Applications.
 
 	apk del vim
-	ntapk add vim-tiny || apk add vim
+	ntapk add vim || apk add vim
 else
 	# Fonts
 
@@ -616,10 +616,18 @@ EOF
 
 	# Themes.
 
+	apk add appstream-compose gtk-murrine-engine ostree
+
 	apk add \
+		everforest-icon-theme \
+		everforest-icon-theme-dark \
 		papirus-icon-theme
 
 	ntapk add \
+		everforest-gtk-theme \
+		everforest-gtk-theme-borderless \
+		everforest-gtk-theme-dark \
+		everforest-gtk-theme-dark-borderless \
 		materia-gtk-theme \
 		materia-gtk-theme-compact \
 		materia-gtk-theme-dark \
