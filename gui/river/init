@@ -18,7 +18,7 @@ riverctl border-color-urgent 0xb7472a
 riverctl border-color-focused 0x427819
 riverctl border-color-unfocused 0x586e75
 
-riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme Everforest-Dark-BL"
+riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme Everforest-Dark-B"
 riverctl spawn "gsettings set org.gnome.desktop.interface icon-theme Everforest-Dark"
 riverctl spawn "gsettings set org.gnome.desktop.interface cursor-theme Adwaita"
 riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
