@@ -313,14 +313,6 @@ EOF
 		if ! grep -q "NO_AT_BRIDGE=1" "/etc/environment"; then
 			echo "NO_AT_BRIDGE=1" >> "/etc/environment"
 		fi
-
-		# Audio.
-
-		apk add \
-			alsa-utils \
-			pavucontrol \
-			pulseaudio \
-			pulseaudio-utils
 	}
 
 	_setup_wayland() {
@@ -333,15 +325,6 @@ EOF
 			wlrctl \
 			xdg-desktop-portal \
 			xwayland
-
-		# Audio.
-
-		apk add \
-			pavucontrol \
-			pipewire \
-			pipewire-alsa \
-			pipewire-pulse \
-			wireplumber
 	}
 
 	apk add \
@@ -363,6 +346,12 @@ EOF
 		# https://github.com/bakkeby/dwm-flexipatch
 
 		_setup_xorg
+
+		apk add \
+			alsa-utils \
+			pavucontrol \
+			pulseaudio \
+			pulseaudio-utils
 
 		apk add \
 			dunst \
@@ -394,7 +383,15 @@ EOF
 
 	# River.
 	river)
+		_setup_xorg
 		_setup_wayland
+
+		apk add \
+			pavucontrol \
+			pipewire \
+			pipewire-alsa \
+			pipewire-pulse \
+			wireplumber
 
 		ntapk add river
 
@@ -439,6 +436,12 @@ EOF
 		if [ "$NEW_USER" != "ntrrg" ]; then
 			rc-update add lightdm default
 		fi
+
+		apk add \
+			alsa-utils \
+			pavucontrol \
+			pulseaudio \
+			pulseaudio-utils
 
 		apk add \
 			thunar \
