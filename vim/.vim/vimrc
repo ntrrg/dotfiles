@@ -123,20 +123,32 @@ set hlsearch
 set magic
 
 " -----------------------------------------------------------------------------
+" Commands
+
+function! RemoveQFItem()
+  let curqfidx = line('.') - 1
+  let qfall = getqflist()
+  call remove(qfall, curqfidx)
+  call setqflist(qfall, 'r')
+  execute curqfidx + 1 . "cfirst"
+  :copen
+endfunction
+
+:command! RemoveQFItem :call RemoveQFItem()
+
+" -----------------------------------------------------------------------------
 " Keys
 
 nmap <Space> <Leader>
 
 set backspace=indent,eol,start
 
-" ctags
+" Quick Fix
 nnoremap <Leader>p :cprev<CR>
 nnoremap <Leader>n :cnext<CR>
-nnoremap <Leader>N :cfirst<CR>
-nnoremap <Leader>P :clast<CR>
-
-" -----------------------------------------------------------------------------
-" Commands
+nnoremap <Leader>P :cfirst<CR>
+nnoremap <Leader>N :clast<CR>
+autocmd FileType qf map <buffer> dd :RemoveQFItem<cr>
 
 " -----------------------------------------------------------------------------
 " Plugins
