@@ -20,8 +20,8 @@ _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 _main() {
 	local _action="build"
 
-	local _opts="bcdhiLls"
-	local _lopts="bin,build,clear,deinit,delete,help,init,list,releases"
+	local _opts="bcdhiLlps"
+	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -73,7 +73,11 @@ $_output"
 			return
 			;;
 
-		-s | --build)
+		-p | --prefix)
+			_action="prefix"
+			;;
+
+		-s | --source)
 			_action="build"
 			;;
 
@@ -144,6 +148,10 @@ $_output"
 		;;
 
 	build)
+		if [ -d "$_env.src" ]; then
+			mv "$_env.src" "$_env"
+		fi
+
 		if [ ! -d "$_env" ]; then
 			local _repo="$_ZIG_SRC"
 
@@ -173,20 +181,54 @@ $_output"
 			log.sh "compiling $_rel.."
 
 			local _old_pwd="$PWD"
-			cd "$_env/src"
+			cd "$_env"
 
 			mkdir -p "build"
 			cd "build"
 
-			cmake \
-				-DCMAKE_BUILD_TYPE="Release" \
-				-DZIG_TARGET_TRIPLE="native" \
-				-DZIG_STATIC="ON" \
-				..
+			if ! command -v "$_ZIG" > "/dev/null"; then
+				log.sh "bootstraping zig.."
 
-			make
-			#make install
+				cmake \
+					-DCMAKE_BUILD_TYPE="Release" \
+					-DZIG_USE_LLVM_CONFIG="ON" \
+					-DZIG_STATIC="ON" \
+					-DZIG_NO_LIB="ON" \
+					-DZIG_LIB_DIR="$PWD/../lib" \
+					-DZIG_HOST_TARGET_TRIPLE="$(_host_arch)-$(_host_os)-musl" \
+					-DZIG_TARGET_TRIPLE="native" \
+					-DZIG_TARGET_MCPU="native" \
+					".."
+
+				make -j "$(nproc)" install
+				_ZIG="stage3/bin/zig"
+			fi
+
+			log.sh "compiling with zig v$("$_ZIG" version).."
+
+			"$_ZIG" build \
+				--prefix "stage4" -Dflat \
+				-Doptimize="ReleaseFast" -Dstrip \
+				-Denable-llvm -Dstatic-llvm \
+				-Dtarget="native" \
+				-Dcpu="native" \
+				-Duse-zig-libcxx \
+				-Dno-autodocs \
+				-Dversion-string="$_rel"
+
+			log.sh "building documentation.."
+
+			"$_ZIG" build docs \
+				--prefix "stage4" -Dflat \
+				-Doptimize="ReleaseFast" -Dstrip \
+				-Dtarget="native-native-musl" \
+				-Dcpu="native" \
+				-Dversion-string="$_rel"
+
 			cd "$_old_pwd"
+			mv "$_env" "$_env.src"
+			mv "$_env.src/build/stage4" "$_env"
+			rm -rf "$_env.src"
 		fi
 		;;
 
@@ -198,6 +240,11 @@ $_output"
 		fi
 
 		rm -r "$_env"
+		return
+		;;
+
+	prefix)
+		echo "$_env"
 		return
 		;;
 	esac
@@ -280,7 +327,8 @@ Options:
   -i, --init       Setup the environment for using $_name
   -L, --releases   List available releases
   -l, --list       List local releases
-  -s, --build      Build given release from source (default)
+  -p, --prefix     Print release prefix
+  -s, --source     Build given release from source (default)
 
 Environment variables:
   * 'ZIG_BUILDS_MIRROR' is the mirror used to download the Zig dev assets.
