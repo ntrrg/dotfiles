@@ -19,8 +19,8 @@ _GO_SRC="${GO_SRC:-"$_GOSH_CACHE/src"}"
 _main() {
 	local _action="build"
 
-	local _opts="bcdhiLls"
-	local _lopts="bin,build,clear,deinit,delete,help,init,list,releases"
+	local _opts="bcdhiLlps"
+	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -78,7 +78,11 @@ $_output"
 			return
 			;;
 
-		-s | --build)
+		-p | --prefix)
+			_action="prefix"
+			;;
+
+		-s | --source)
 			_action="build"
 			;;
 
@@ -195,6 +199,11 @@ $_output"
 		rm -r "$_env"
 		return
 		;;
+
+	prefix)
+		echo "$_env"
+		return
+		;;
 	esac
 
 	log.sh "activating release $_rel.."
@@ -284,7 +293,8 @@ Options:
   -i, --init       Setup the environment for using $_name
   -L, --releases   List available releases
   -l, --list       List local releases
-  -s, --build      Build given release from source (default)
+  -p, --prefix     Print release prefix
+  -s, --source     Build given release from source (default)
 
 Environment variables:
   * 'GO_GIT_MIRROR' is the mirror used to clone the Go source code.
