@@ -30,7 +30,8 @@ widget > * {
   min-width: 1em;
   border-radius: 0px;
   border-bottom: 0.2em solid;
-  color: shade(@theme_text_color, 0.50);
+  color: #555;
+  /*color: shade(@theme_text_color, 0.50);*/
 }
 
 #tags button:first-child {
@@ -156,6 +157,7 @@ widget > * {
 
 #battery {
   border-radius: 0.25em 0px 0px 0.25em;
+  padding-right: 0.375em;
   margin-right: 0px;
 }
 
@@ -184,7 +186,7 @@ widget > * {
 
 #temperature.battery {
   border-radius: 0px 0.25em 0.25em 0px;
-  padding-left: 0px;
+  padding-left: 0.375em;
 }
 
 #custom-dunst {
@@ -196,5 +198,6 @@ widget > * {
 }
 
 #custom-dunst.is-paused {
-  color: shade(@theme_text_color, 0.50);
+  color: #555;
+  /*color: shade(@theme_text_color, 0.50);*/
 }
