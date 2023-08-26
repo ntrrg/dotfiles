@@ -4,143 +4,93 @@ if exists("syntax_on")
   syntax reset
 endif
 
-set t_Co=256
+set t_Co=16
 let g:colors_name = "monokai"
 
-if &t_Co==8 || &t_Co==16
-else
-  "hi SpecialKey      ctermfg=59   ctermbg=237  cterm=NONE
-  "hi NonText         ctermfg=59   ctermbg=NONE cterm=NONE
-  "hi Directory       ctermfg=148  ctermbg=NONE cterm=NONE
-  "hi ErrorMsg        ctermfg=231  ctermbg=9    cterm=NONE
-  "hi IncSearch       ctermfg=235  ctermbg=186  cterm=NONE
-  "hi Search          ctermfg=NONE ctermbg=NONE cterm=underline,bold,italic
-  "" hi MoreMsg         ctermfg=NONE ctermbg=NONE cterm=NONE
-  "" hi ModeMsg         ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi LineNr          ctermfg=102  ctermbg=NONE cterm=NONE
-  "" hi CursorLineNr    ctermfg=NONE ctermbg=NONE cterm=NONE
-  "" hi Question        ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi VertSplit       ctermfg=241  ctermbg=NONE cterm=NONE
-  "hi Title           ctermfg=231  ctermbg=NONE cterm=bold
-  "hi Visual          ctermfg=NONE ctermbg=NONE cterm=inverse
-  "" hi VisualNOS       ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi WarningMsg      ctermfg=0    ctermbg=11   cterm=NONE
-  "" hi WildMenu        ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi Folded          ctermfg=242  ctermbg=235  cterm=NONE
-  "" hi FoldedColumn    ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi DiffAdd         ctermfg=231  ctermbg=2    cterm=bold
-  "hi DiffChange      ctermfg=0    ctermbg=11   cterm=NONE
-  "hi DiffDelete      ctermfg=231  ctermbg=9    cterm=NONE
-  "hi DiffText        ctermfg=231  ctermbg=24   cterm=bold
-  "hi SignColumn      ctermfg=NONE ctermbg=237  cterm=NONE
-  "" hi Conceal         ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi SpellBad        ctermfg=209  ctermbg=NONE cterm=undercurl
-  "hi SpellCap        ctermfg=69   ctermbg=NONE cterm=undercurl
-  "hi SpellRare       ctermfg=225  ctermbg=NONE cterm=undercurl
-  "hi SpellLocal      ctermfg=153  ctermbg=NONE cterm=undercurl
-  "hi Pmenu           ctermfg=NONE ctermbg=237  cterm=NONE
-  "hi PmenuSel        ctermfg=NONE ctermbg=59   cterm=NONE
-  "" hi PmenuSbar       ctermfg=NONE ctermbg=59   cterm=NONE
-  "hi PmenuThumb      ctermfg=NONE ctermbg=236  cterm=NONE
-  "hi TabLine         ctermfg=NONE ctermbg=237  cterm=NONE
-  "hi TabLineSel      ctermfg=NONE ctermbg=235  cterm=bold
-  "hi TabLineFill     ctermfg=NONE ctermbg=237  cterm=NONE
-  "hi CursorColumn    ctermfg=NONE ctermbg=237  cterm=NONE
-  "hi CursorLine      ctermfg=NONE ctermbg=238  cterm=NONE
-  "hi ColorColumn     ctermfg=NONE ctermbg=237  cterm=NONE
-  "hi StatusLine      ctermfg=NONE ctermbg=237  cterm=bold
-  "hi StatusLineNC    ctermfg=NONE ctermbg=237  cterm=NONE
-  "" hi Normal          ctermfg=231  ctermbg=235  cterm=NONE
-  "hi Normal          ctermfg=231  ctermbg=NONE cterm=NONE
+hi Normal ctermfg=7    ctermbg=NONE cterm=NONE
 
-  "hi MatchParen      ctermfg=197  ctermbg=NONE cterm=underline
-  "" hi ToolbarLine     ctermfg=NONE ctermbg=NONE cterm=NONE
-  "" hi ToolbarButton   ctermfg=NONE ctermbg=NONE cterm=NONE
-  "hi Cursor          ctermfg=235  ctermbg=231  cterm=NONE
-  "hi Boolean         ctermfg=141  ctermbg=NONE cterm=NONE
-  "hi Character       ctermfg=141  ctermbg=NONE cterm=NONE
-  "hi Comment         ctermfg=242  ctermbg=NONE cterm=NONE
-  "hi Conditional     ctermfg=81   ctermbg=NONE cterm=NONE
-  "hi Constant        ctermfg=141  ctermbg=NONE cterm=NONE
-  "hi Define          ctermfg=197  ctermbg=NONE cterm=NONE
-  "hi Float           ctermfg=141  ctermbg=NONE cterm=NONE
-  "hi Function        ctermfg=148  ctermbg=NONE cterm=NONE
-  "hi Identifier      ctermfg=148  ctermbg=NONE cterm=NONE
-  "hi Keyword         ctermfg=197  ctermbg=NONE cterm=NONE
-  "hi Label           ctermfg=186  ctermbg=NONE cterm=NONE
-  "hi Number          ctermfg=141  ctermbg=NONE cterm=NONE
-  "hi Operator        ctermfg=197  ctermbg=NONE cterm=NONE
-  "hi PreProc         ctermfg=197  ctermbg=NONE cterm=NONE
-  "hi Special         ctermfg=11   ctermbg=NONE cterm=NONE
-  "hi SpecialComment  ctermfg=242  ctermbg=NONE cterm=NONE
-  "hi Statement       ctermfg=81   ctermbg=NONE cterm=NONE
-  "hi StorageClass    ctermfg=81   ctermbg=NONE cterm=NONE
-  "hi String          ctermfg=186  ctermbg=NONE cterm=NONE
-  "hi Tag             ctermfg=197  ctermbg=NONE cterm=NONE
-  "hi Todo            ctermfg=95   ctermbg=NONE cterm=inverse,bold
-  "hi Type            ctermfg=81   ctermbg=NONE cterm=NONE
-  "hi Underlined      ctermfg=NONE ctermbg=NONE cterm=underline
-  "hi Ignore          ctermfg=242  ctermbg=NONE cterm=NONE
-  "hi Error           ctermfg=231  ctermbg=9    cterm=NONE
-
-
-
-  hi Cursor ctermfg=235 ctermbg=231 cterm=NONE
-  hi Visual ctermfg=231 ctermbg=59 cterm=NONE
-  hi CursorLine ctermfg=NONE ctermbg=237 cterm=NONE
-  hi CursorColumn ctermfg=NONE ctermbg=237 cterm=NONE
-  hi ColorColumn ctermfg=NONE ctermbg=237 cterm=NONE
-  hi LineNr ctermfg=102 ctermbg=NONE cterm=NONE
-  hi VertSplit ctermfg=241 ctermbg=241 cterm=NONE
-  hi MatchParen ctermfg=197 ctermbg=NONE cterm=underline
-  hi StatusLine ctermfg=231 ctermbg=241 cterm=bold
-  hi StatusLineNC ctermfg=231 ctermbg=241 cterm=NONE
-  hi Pmenu ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE
-  hi IncSearch term=reverse cterm=reverse ctermfg=193 ctermbg=16
-  hi Search term=reverse cterm=NONE ctermfg=231 ctermbg=24
-  hi Directory ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Folded ctermfg=242 ctermbg=235 cterm=NONE
-  hi Conceal ctermfg=231 ctermbg=235 cterm=NONE
-  hi SignColumn ctermfg=NONE ctermbg=237 cterm=NONE
-  hi Normal ctermfg=231 ctermbg=NONE cterm=NONE
-  hi Boolean ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Character ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Comment ctermfg=242 ctermbg=NONE cterm=NONE
-  hi Conditional ctermfg=197 ctermbg=NONE cterm=NONE
-  hi Constant ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Define ctermfg=197 ctermbg=NONE cterm=NONE
-  hi DiffAdd ctermfg=231 ctermbg=64 cterm=bold
-  hi DiffDelete ctermfg=88 ctermbg=NONE cterm=NONE
-  hi DiffChange ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi DiffText ctermfg=231 ctermbg=24 cterm=bold
-  hi diffAdded ctermfg=148 ctermbg=NONE cterm=NONE
-  hi diffFile ctermfg=81 ctermbg=NONE cterm=NONE
-  hi diffIndexLine ctermfg=242 ctermbg=NONE cterm=NONE
-  hi diffLine ctermfg=81 ctermbg=NONE cterm=NONE
-  hi diffRemoved ctermfg=197 ctermbg=NONE cterm=NONE
-  hi diffSubname ctermfg=242 ctermbg=NONE cterm=NONE
-  hi ErrorMsg ctermfg=231 ctermbg=197 cterm=NONE
-  hi WarningMsg ctermfg=231 ctermbg=197 cterm=NONE
-  hi Float ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Function ctermfg=148 ctermbg=NONE cterm=NONE
-  hi Identifier ctermfg=81 ctermbg=NONE cterm=NONE
-  hi Keyword ctermfg=197 ctermbg=NONE cterm=NONE
-  hi Label ctermfg=186 ctermbg=NONE cterm=NONE
-  hi NonText ctermfg=242 ctermbg=NONE cterm=NONE
-  hi Number ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Operator ctermfg=197 ctermbg=NONE cterm=NONE
-  hi PreProc ctermfg=197 ctermbg=NONE cterm=NONE
-  hi Special ctermfg=11 ctermbg=NONE cterm=NONE
-  hi SpecialComment ctermfg=242 ctermbg=NONE cterm=NONE
-  hi SpecialKey ctermfg=242 ctermbg=NONE cterm=NONE
-  hi SpecialChar ctermfg=141 ctermbg=NONE cterm=NONE
-  hi Statement ctermfg=197 ctermbg=NONE cterm=NONE
-  hi StorageClass ctermfg=81 ctermbg=NONE cterm=NONE
-  hi String ctermfg=186 ctermbg=NONE cterm=NONE
-  hi Tag ctermfg=197 ctermbg=NONE cterm=NONE
-  hi Title ctermfg=231 ctermbg=NONE cterm=bold
-  hi Todo ctermfg=95 ctermbg=NONE cterm=inverse,bold
-  hi Type ctermfg=197 ctermbg=NONE cterm=NONE
-  hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline
+if &background ==# 'light'
+  hi Normal ctermfg=0    ctermbg=15 cterm=NONE
 endif
+
+hi Comment        ctermfg=8    ctermbg=NONE cterm=NONE
+hi Todo           ctermfg=9    ctermbg=NONE cterm=bold
+hi Directory      ctermfg=4    ctermbg=NONE cterm=NONE
+hi Keyword        ctermfg=1    ctermbg=NONE cterm=NONE
+hi Statement      ctermfg=1    ctermbg=NONE cterm=NONE
+hi Define         ctermfg=1    ctermbg=NONE cterm=NONE
+hi StorageClass   ctermfg=6    ctermbg=NONE cterm=NONE
+hi Conditional    ctermfg=1    ctermbg=NONE cterm=NONE
+hi Label          ctermfg=3    ctermbg=NONE cterm=NONE
+hi PreProc        ctermfg=1    ctermbg=NONE cterm=NONE
+hi Special        ctermfg=11   ctermbg=NONE cterm=bold
+hi SpecialComment ctermfg=3    ctermbg=NONE cterm=NONE
+hi SpecialKey     ctermfg=1    ctermbg=NONE cterm=NONE
+hi SpecialChar    ctermfg=5    ctermbg=NONE cterm=NONE
+hi Operator       ctermfg=1    ctermbg=NONE cterm=NONE
+hi MatchParen     ctermfg=NONE ctermbg=NONE cterm=inverse
+hi Identifier     ctermfg=2    ctermbg=NONE cterm=NONE
+hi Function       ctermfg=2    ctermbg=NONE cterm=NONE
+hi Type           ctermfg=6    ctermbg=NONE cterm=NONE
+hi Constant       ctermfg=5    ctermbg=NONE cterm=NONE
+hi Boolean        ctermfg=5    ctermbg=NONE cterm=NONE
+hi Character      ctermfg=5    ctermbg=NONE cterm=NONE
+hi Number         ctermfg=5    ctermbg=NONE cterm=NONE
+hi Float          ctermfg=5    ctermbg=NONE cterm=NONE
+hi String         ctermfg=3    ctermbg=NONE cterm=NONE
+hi Tag            ctermfg=1    ctermbg=NONE cterm=NONE
+hi NonText        ctermfg=8    ctermbg=NONE cterm=NONE
+hi Underlined     ctermfg=NONE ctermbg=NONE cterm=underline
+
+" UI
+hi Cursor       ctermfg=NONE ctermbg=NONE cterm=inverse
+hi CursorLine   ctermfg=NONE ctermbg=NONE cterm=inverse
+hi CursorLineNr ctermfg=NONE ctermbg=NONE cterm=inverse
+hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=inverse
+hi ColorColumn  ctermfg=NONE ctermbg=NONE cterm=inverse
+hi SignColumn   ctermfg=8    ctermbg=NONE cterm=NONE
+hi LineNr       ctermfg=8    ctermbg=NONE cterm=NONE
+hi Visual       ctermfg=0    ctermbg=7    cterm=NONE
+hi IncSearch    ctermfg=0    ctermbg=2    cterm=bold
+hi Search       ctermfg=0    ctermbg=2    cterm=bold
+hi Folded       ctermfg=4    ctermbg=NONE cterm=NONE
+hi Conceal      ctermfg=7    ctermbg=8    cterm=NONE
+hi Pmenu        ctermfg=NONE ctermbg=NONE cterm=NONE
+hi PmenuSel     ctermfg=NONE ctermbg=NONE cterm=inverse
+hi PmenuSbar    ctermfg=NONE ctermbg=NONE cterm=NONE
+hi PmenuThumb   ctermfg=NONE ctermbg=NONE cterm=inverse
+hi TabLine      ctermfg=8    ctermbg=NONE cterm=NONE
+hi TabLineSel   ctermfg=NONE ctermbg=NONE cterm=bold
+hi TabLineFill  ctermfg=NONE ctermbg=NONE cterm=NONE
+hi VertSplit    ctermfg=NONE ctermbg=NONE cterm=NONE
+hi StatusLine   ctermfg=7    ctermbg=NONE cterm=bold
+hi StatusLineNC ctermfg=7    ctermbg=NONE cterm=NONE
+hi Title        ctermfg=NONE ctermbg=NONE cterm=bold
+hi ModeMsg      ctermfg=NONE ctermbg=NONE cterm=bold
+hi MoreMsg      ctermfg=10   ctermbg=NONE cterm=NONE
+hi ErrorMsg     ctermfg=9    ctermbg=NONE cterm=NONE
+hi WarningMsg   ctermfg=11   ctermbg=NONE cterm=NONE
+hi Question     ctermfg=10   ctermbg=NONE cterm=NONE
+hi SpellBad     ctermfg=9    ctermbg=NONE cterm=bold
+hi SpellCap     ctermfg=12   ctermbg=NONE cterm=bold
+hi SpellLocal   ctermfg=14   ctermbg=NONE cterm=bold
+hi SpellRare    ctermfg=13   ctermbg=NONE cterm=bold
+
+" Diff
+hi DiffChange    ctermfg=NONE ctermbg=NONE cterm=NONE
+hi DiffText      ctermfg=12   ctermbg=NONE cterm=bold
+hi DiffAdd       ctermfg=10   ctermbg=NONE cterm=bold
+hi DiffDelete    ctermfg=9    ctermbg=NONE cterm=bold
+hi diffAdded     ctermfg=10   ctermbg=NONE cterm=NONE
+hi diffFile      ctermfg=14   ctermbg=NONE cterm=NONE
+hi diffIndexLine ctermfg=8    ctermbg=NONE cterm=NONE
+hi diffLine      ctermfg=14   ctermbg=NONE cterm=NONE
+hi diffRemoved   ctermfg=9    ctermbg=NONE cterm=NONE
+hi diffSubname   ctermfg=8    ctermbg=NONE cterm=NONE
+
+" Netrw
+hi netrwPlain   ctermfg=NONE ctermbg=NONE cterm=NONE
+hi netrwDir     ctermfg=4    ctermbg=NONE cterm=NONE
+hi netrwSpecial ctermfg=5    ctermbg=NONE cterm=NONE
+hi netrwSymLink ctermfg=6    ctermbg=NONE cterm=NONE
+hi netrwExe     ctermfg=2    ctermbg=NONE cterm=NONE

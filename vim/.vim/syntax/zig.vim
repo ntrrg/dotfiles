@@ -23,7 +23,7 @@ syn region zigCommentDoc start='//[/!]/\@!' end='$' contains=zigNote,@Spell
 
 hi default link zigNote       Todo
 hi default link zigComment    Comment
-hi default link zigCommentDoc Comment
+hi default link zigCommentDoc SpecialComment
 
 " -----------------------------------------------------------------------------
 " Operators
@@ -104,11 +104,11 @@ hi def link zigComparation Operator
 hi def link zigAsync       Macro
 hi def link zigMacro       Macro
 
-syn keyword zigModifier
+syn keyword zigStorageClass
   \ addrspace align allowzero callconv export extern inline noinline packed
   \ pub threadlocal volatile
 
-hi def link zigModifier Define
+hi def link zigStorageClass StorageClass
 
 " Constants
 

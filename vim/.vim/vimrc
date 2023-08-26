@@ -85,6 +85,7 @@ endfunction
 
 syntax on
 
+let g:netrw_sort_sequence = '[\/]$,*,\.[ao]$,\.obj$,\.info$,\.swp$,\.bak$,\~$'
 set listchars=precedes:…,tab:-›,space:·,trail:·,extends:…,eol:¶
 set wrap
 set autoindent
