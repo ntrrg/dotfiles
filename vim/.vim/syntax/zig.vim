@@ -97,7 +97,7 @@ syn keyword zigMacro       comptime defer errdefer catch orelse try unreachable
 
 hi def link zigKeyword     Keyword
 hi def link zigDefine      Define
-hi def link zigExecution   Special
+hi def link zigExecution   Statement
 hi def link zigConditional Conditional
 hi def link zigRepeat      Repeat
 hi def link zigComparation Operator
@@ -170,6 +170,10 @@ syn keyword zigTypeC
   \ c_uint c_ushort c_ulong c_ulonglong
 
 hi def link zigTypeC zigType
+
+syn match zigTypeCustom '\<[A-Z][_A-Za-z0-9]*\>'
+
+hi def link zigTypeCustom zigType
 
 hi def link zigType Type
 
