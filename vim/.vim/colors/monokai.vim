@@ -28,7 +28,7 @@ hi SpecialComment ctermfg=3    ctermbg=NONE cterm=NONE
 hi SpecialKey     ctermfg=1    ctermbg=NONE cterm=NONE
 hi SpecialChar    ctermfg=5    ctermbg=NONE cterm=NONE
 hi Operator       ctermfg=1    ctermbg=NONE cterm=NONE
-hi MatchParen     ctermfg=NONE ctermbg=NONE cterm=inverse
+hi MatchParen     ctermfg=1    ctermbg=NONE cterm=NONE
 hi Identifier     ctermfg=2    ctermbg=NONE cterm=NONE
 hi Function       ctermfg=2    ctermbg=NONE cterm=NONE
 hi Type           ctermfg=6    ctermbg=NONE cterm=NONE
