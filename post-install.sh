@@ -402,6 +402,7 @@ EOF
 			spacefm \
 			swaybg \
 			swaylock \
+			waybar \
 			wf-recorder \
 			wofi \
 			xdg-desktop-portal-wlr
@@ -410,6 +411,8 @@ EOF
 
 		ntapk add \
 			swappy
+
+		mkdir -p "/usr/share/wayland-sessions"
 
 		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
 [Desktop Entry]
@@ -621,22 +624,14 @@ EOF
 
 	apk add appstream-compose gtk-murrine-engine ostree
 
-	apk add \
-		everforest-icon-theme \
-		everforest-icon-theme-dark \
-		papirus-icon-theme
-
 	ntapk add \
+		adwaita-icon-theme \
 		everforest-gtk-theme \
 		everforest-gtk-theme-borderless \
 		everforest-gtk-theme-dark \
 		everforest-gtk-theme-dark-borderless \
-		materia-gtk-theme \
-		materia-gtk-theme-compact \
-		materia-gtk-theme-dark \
-		materia-gtk-theme-dark-compact \
-		materia-gtk-theme-light \
-		materia-gtk-theme-light-compact
+		everforest-icon-theme \
+		everforest-icon-theme-dark
 fi
 
 ############
