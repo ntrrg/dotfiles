@@ -10,7 +10,7 @@ RUN \
   apk update && apk upgrade alpine-keys && apk upgrade --available && \
   apk add doas sudo && \
   echo "$NEW_USER ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-  echo "permit nopass $NEW_USER as root" >> /etc/doas.conf && \
+  echo "permit nopass $NEW_USER as root" >> /etc/doas.d/doas.conf && \
   sudo true && \
   BASEPATH="/tmp/post-install" NEW_USER="$NEW_USER" IS_HARDWARE=0 \
   /tmp/post-install/post-install.sh && \
