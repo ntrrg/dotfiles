@@ -18,7 +18,7 @@ _ZIG_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/download"}"
 _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 
 _main() {
-	local _action="build"
+	local _action="source"
 
 	local _opts="bcdhiLlps"
 	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
@@ -34,9 +34,7 @@ _main() {
 			;;
 
 		-c | --clear)
-			rm -rf "${XDG_CACHE_HOME:-"$HOME/.cache"}/zig" "$_ZIGSH_CACHE"/*
-
-			return
+			_action="clear"
 			;;
 
 		-d | --delete)
@@ -49,28 +47,15 @@ _main() {
 			;;
 
 		-i | --init)
-			mkdir -p "$_ZIGSH_DATA" "$_ZIGSH_STATE" "$_ZIGSH_CACHE" "$_ZIGSH_ENVS"
-
-			echo "export PATH=$_ZIGSH_DATA/zig:$PATH"
-			return
+			_action="init"
 			;;
 
 		-L | --releases)
-			local _output=""
-			local _rel=""
-
-			for _rel in $(_releases); do
-				_output="$_rel
-$_output"
-			done
-
-			echo "$_output" | sed '/^$/d'
-			return
+			_action="releases"
 			;;
 
 		-l | --list)
-			ls "$_ZIGSH_ENVS"
-			return
+			_action="list"
 			;;
 
 		-p | --prefix)
@@ -78,21 +63,11 @@ $_output"
 			;;
 
 		-s | --source)
-			_action="build"
+			_action="source"
 			;;
 
 		--deinit)
-			rm -f "$_ZIGSH_DATA/zig"
-
-			local _env_path="$(
-				echo "$_ZIGSH_DATA/zig:" |
-					sed 's/\//\\\//g' |
-					sed 's/\./\\./g'
-			)"
-
-			echo "export PATH=$(echo "$PATH" | sed "s/$_env_path//g")"
-
-			return
+			_action="deinit"
 			;;
 
 		--)
@@ -104,18 +79,82 @@ $_output"
 		shift
 	done
 
-	local _rel=""
-
-	if [ $# -eq 0 ]; then
-		_rel="$(_latest_release)"
-	else
-		_rel="$1"
-	fi
-
-	local _env="$_ZIGSH_ENVS/$_rel"
-
 	case $_action in
+	clear)
+		rm -rf "${XDG_CACHE_HOME:-"$HOME/.cache"}/zig" "$_ZIGSH_CACHE"/*
+		;;
+
+	deinit)
+		local _bin_path="$(
+			echo "$_ZIGSH_DATA/zig:" |
+				sed 's/\//\\\//g' |
+				sed 's/\./\\./g'
+		)"
+
+		echo "export PATH=$(echo "$PATH" | sed "s/$_bin_path//g")"
+		;;
+
+	delete)
+		if [ $# -eq 0 ]; then
+			log.sh -f "no release given"
+		fi
+
+		local _rel="$1"
+		local _env="$_ZIGSH_ENVS/$_rel"
+
+		log.sh "deleting release $_rel.. ($_env)"
+
+		rm -r "$_env"
+		;;
+
+	init)
+		mkdir -p "$_ZIGSH_DATA" "$_ZIGSH_STATE" "$_ZIGSH_CACHE" "$_ZIGSH_ENVS"
+		echo "export PATH=$_ZIGSH_DATA/zig:$PATH"
+		;;
+
+	list)
+		ls "$_ZIGSH_ENVS"
+		;;
+
+	prefix)
+		local _env=""
+
+		if [ $# -eq 0 ]; then
+			_env="$_ZIGSH_DATA/zig"
+		else
+			_env="$_ZIGSH_ENVS/$1"
+		fi
+
+		if [ ! -d "$_env" ]; then
+			log.sh -f "cannot find given release"
+		fi
+
+		echo "$_env"
+		;;
+
+	releases)
+		local _output=""
+		local _rel=""
+
+		for _rel in $(_releases); do
+			_output="$_rel
+$_output"
+		done
+
+		echo "$_output" | sed '/^$/d'
+		;;
+
 	binary)
+		local _rel=""
+
+		if [ $# -eq 0 ]; then
+			_rel="$(_latest_release)"
+		else
+			_rel="$1"
+		fi
+
+		local _env="$_ZIGSH_ENVS/$_rel"
+
 		if [ ! -d "$_env" ]; then
 			local _os="$(_host_os)"
 			local _arch="$(_host_arch)"
@@ -145,9 +184,21 @@ $_output"
 			tar -C "$_env.tmp" --strip-components 1 -xpf "$_dl_pkg"
 			mv "$_env.tmp" "$_env"
 		fi
+
+		_activate "$_rel"
 		;;
 
-	build)
+	source)
+		local _rel=""
+
+		if [ $# -eq 0 ]; then
+			_rel="$(_latest_release)"
+		else
+			_rel="$1"
+		fi
+
+		local _env="$_ZIGSH_ENVS/$_rel"
+
 		if [ -d "$_env.src" ]; then
 			mv "$_env.src" "$_env"
 		fi
@@ -230,24 +281,26 @@ $_output"
 			mv "$_env.src/build/stage4" "$_env"
 			rm -rf "$_env.src"
 		fi
-		;;
 
-	delete)
-		log.sh "deleting release $_rel.. ($_env)"
-
-		if [ ! -d "$_env" ]; then
-			log.sh -f "no env for release $_rel"
-		fi
-
-		rm -r "$_env"
-		return
-		;;
-
-	prefix)
-		echo "$_env"
-		return
+		_activate "$_rel"
 		;;
 	esac
+}
+
+_activate() {
+	local _rel=""
+
+	if [ $# -eq 0 ]; then
+		log.sh -f "no release given"
+	else
+		_rel="$1"
+	fi
+
+	local _env="$_ZIGSH_ENVS/$_rel"
+
+	if [ ! -d "$_env" ]; then
+		log.sh -f "cannot find given release"
+	fi
 
 	log.sh "activating release $_rel.."
 	rm -f "$_ZIGSH_DATA/zig"
@@ -314,8 +367,10 @@ $_name - manage Zig environments.
 Usage: $_name [-b | -s] [RELEASE]
    or: $_name -L
    or: $_name -l
+   or: $_name -p [RELEASE]
    or: $_name -d RELEASE
    or: \$($_name --init)
+   or: \$($_name --deinit)
 
 If no release is given, the latest release will be used.
 
