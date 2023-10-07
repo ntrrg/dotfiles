@@ -17,7 +17,8 @@ _GO_MIRROR="${GO_MIRROR:-"https://go.dev/dl"}"
 _GO_SRC="${GO_SRC:-"$_GOSH_CACHE/src"}"
 
 _main() {
-	local _action="source"
+	local _action="activate"
+	local _mode="src"
 
 	local _opts="bcdhiLlps"
 	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
@@ -29,7 +30,8 @@ _main() {
 	while [ $# -gt 0 ]; do
 		case $1 in
 		-b | --bin)
-			_action="binary"
+			_action="activate"
+			_mode="bin"
 			;;
 
 		-c | --clear)
@@ -62,7 +64,8 @@ _main() {
 			;;
 
 		-s | --source)
-			_action="source"
+			_action="activate"
+			_mode="src"
 			;;
 
 		--deinit)
@@ -79,6 +82,28 @@ _main() {
 	done
 
 	case $_action in
+	activate)
+		local _rel=""
+
+		if [ $# -eq 0 ]; then
+			_rel="$(_latest_release)"
+		else
+			_rel="$1"
+		fi
+
+		local _env="$_GOSH_ENVS/$_rel"
+
+		if [ ! -d "$_env" ]; then
+			_fetch "$_mode" "$_rel"
+		fi
+
+		if [ ! -x "$_env/bin/go" ]; then
+			_build "$_rel"
+		fi
+
+		_activate "$_rel"
+		;;
+
 	clear)
 		rm -rf \
 			"${GOPATH:-"$HOME/go"}/pkg" "${XDG_CACHE_HOME:-"$HOME/.cache"}/go" \
@@ -148,111 +173,11 @@ $_output"
 
 		echo "$_output" | sed '/^$/d'
 		;;
-
-	binary)
-		local _rel=""
-
-		if [ $# -eq 0 ]; then
-			_rel="$(_latest_release)"
-		else
-			_rel="$1"
-		fi
-
-		local _env="$_GOSH_ENVS/$_rel"
-
-		if [ ! -d "$_env" ]; then
-			local _os="$(_host_os)"
-			local _arch="$(_host_arch)"
-			local _pkg="go$_rel.$_os-$_arch.tar.gz"
-			local _dl_pkg="$_GOSH_CACHE/$_pkg"
-
-			if [ ! -f "$_dl_pkg" ]; then
-				log.sh "downloading binary release $_rel.."
-				wget -cO "$_dl_pkg.part" "$_GO_MIRROR/$_pkg"
-				mv "$_dl_pkg.part" "$_dl_pkg"
-			fi
-
-			log.sh "decompressing binary release $_rel.. ($_dl_pkg)"
-			mkdir "$_env.tmp"
-			tar -C "$_env.tmp" --strip-components 1 -xpf "$_dl_pkg"
-			mv "$_env.tmp" "$_env"
-		fi
-
-		_activate "$_rel"
-		;;
-
-	source)
-		local _rel=""
-
-		if [ $# -eq 0 ]; then
-			_rel="$(_latest_release)"
-		else
-			_rel="$1"
-		fi
-
-		local _env="$_GOSH_ENVS/$_rel"
-
-		if [ ! -d "$_env" ]; then
-			local _repo="$_GO_SRC"
-
-			if [ ! -d "$_repo" ]; then
-				log.sh "cloning git repository.."
-				git clone --bare "$_GO_GIT_MIRROR" "$_repo"
-			else
-				log.sh "updating git repository.."
-				git -C "$_repo" fetch -fpPt origin || true
-			fi
-
-			local _ref="$_rel"
-
-			if [ "$_ref" = "tip" ]; then
-				_ref="master"
-			elif echo "$_ref" | grep -q "^[1-9]\+\."; then
-				_ref="go$_ref"
-			fi
-
-			log.sh "generating archive for $_rel from git repository.."
-			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
-			_git_archive "$_repo" "$_ref" | tar -C "$_env.tmp" -x
-			mv "$_env.tmp" "$_env"
-		fi
-
-		if [ ! -x "$_env/bin/go" ]; then
-			log.sh "compiling $_rel.."
-
-			if [ -f "$_env/src/cmd/dist/main.go" ]; then
-				if command -v "$_GO" > "/dev/null"; then
-					export GOROOT_BOOTSTRAP="$("$_GO" env "GOROOT")"
-				else
-					local _ref="release-branch.go1.4"
-					CGO_ENABLED=0 _main "$_ref"
-					export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_ref"
-
-					if [ -f "$_env/src/cmd/dist/notgo117.go" ]; then
-						local _ref="release-branch.go1.17"
-						_main "$_ref"
-						export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_ref"
-					fi
-				fi
-			fi
-
-			(unset GOROOT && cd "$_env/src" && ./make.bash)
-		fi
-
-		_activate "$_rel"
-		;;
 	esac
 }
 
 _activate() {
-	local _rel=""
-
-	if [ $# -eq 0 ]; then
-		log.sh -f "no release given"
-	else
-		_rel="$1"
-	fi
-
+	local _rel="${1:-"tip"}"
 	local _env="$_GOSH_ENVS/$_rel"
 
 	if [ ! -d "$_env" ]; then
@@ -264,12 +189,86 @@ _activate() {
 	ln -s "$_env" "$_GOSH_DATA/go"
 }
 
+_build() {
+	local _rel="${1:-"tip"}"
+	local _env="$_GOSH_ENVS/$_rel"
+
+	if [ ! -d "$_env" ]; then
+		log.sh -f "cannot find given release"
+	fi
+
+	log.sh "building $_rel.."
+
+	if [ -f "$_env/src/cmd/dist/main.go" ]; then
+		if command -v "$_GO" > "/dev/null"; then
+			export GOROOT_BOOTSTRAP="$("$_GO" env "GOROOT")"
+		elif [ -f "$_env/src/cmd/dist/notgo117.go" ]; then
+			local _rel="release-branch.go1.17"
+			_main "$_rel"
+			export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_rel"
+		else
+			local _rel="release-branch.go1.4"
+			CGO_ENABLED=0 _main "$_rel"
+			export GOROOT_BOOTSTRAP="$_GOSH_ENVS/$_rel"
+		fi
+	fi
+
+	(cd "$_env/src" && unset GOROOT && ./make.bash)
+}
+
+_fetch() {
+	local _mode="${1:-"src"}"
+	local _rel="${2:-"tip"}"
+	local _env="$_GOSH_ENVS/$_rel"
+	local _tmp_env="$_GOSH_CACHE/$_rel-$_mode"
+
+	if [ ! -d "$_tmp_env" ]; then
+		mkdir "$_tmp_env"
+	fi
+
+	if [ "$_mode" = "src" ]; then
+		_git_archive "$_rel" | tar -C "$_tmp_env" -x
+	elif [ "$_mode" = "bin" ]; then
+		local _os="$(_host_os)"
+		local _arch="$(_host_arch)"
+		local _pkg="go$_rel.$_os-$_arch.tar.gz"
+		local _dl_pkg="$_GOSH_CACHE/$_pkg"
+
+		if [ ! -f "$_dl_pkg" ]; then
+			log.sh "downloading binary release $_rel.."
+			wget -cO "$_dl_pkg.part" "$_GO_MIRROR/$_pkg"
+			mv "$_dl_pkg.part" "$_dl_pkg"
+		fi
+
+		log.sh "decompressing binary release $_rel.. ($_dl_pkg)"
+		tar -C "$_tmp_env" --strip-components 1 -xpf "$_dl_pkg"
+	fi
+
+	mv "$_tmp_env" "$_env"
+}
+
 _git_archive() {
-	local _repo="${1:-"."}"
-	local _ref="${2:-"HEAD"}"
+	if [ ! -d "$_GO_SRC" ]; then
+		log.sh "cloning git repository.."
+		git clone --bare "$_GO_GIT_MIRROR" "$_GO_SRC"
+	else
+		log.sh "updating git repository.."
+		git -C "$_GO_SRC" fetch -fpPt origin || true
+	fi
+
+	local _rel="${1:-"tip"}"
+	local _ref="$_rel"
+
+	if [ "$_ref" = "tip" ]; then
+		_ref="master"
+	elif echo "$_ref" | grep -q "^[1-9]\+\."; then
+		_ref="go$_ref"
+	fi
+
+	log.sh "generating archive for $_rel from git repository.."
 
 	for _ref in "$_ref" "origin/$_ref"; do
-		git -C "$_repo" archive --format tar "$_ref" || continue
+		git -C "$_GO_SRC" archive --format tar "$_ref" || continue
 		return
 	done
 
