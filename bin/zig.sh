@@ -18,7 +18,8 @@ _ZIG_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/download"}"
 _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 
 _main() {
-	local _action="source"
+	local _action="activate"
+	local _mode="src"
 
 	local _opts="bcdhiLlps"
 	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
@@ -30,7 +31,8 @@ _main() {
 	while [ $# -gt 0 ]; do
 		case $1 in
 		-b | --bin)
-			_action="binary"
+			_action="activate"
+			_mode="bin"
 			;;
 
 		-c | --clear)
@@ -63,7 +65,8 @@ _main() {
 			;;
 
 		-s | --source)
-			_action="source"
+			_action="activate"
+			_mode="src"
 			;;
 
 		--deinit)
@@ -80,6 +83,28 @@ _main() {
 	done
 
 	case $_action in
+	activate)
+		local _rel=""
+
+		if [ $# -eq 0 ]; then
+			_rel="$(_latest_release)"
+		else
+			_rel="$1"
+		fi
+
+		local _env="$_ZIGSH_ENVS/$_rel"
+
+		if [ ! -d "$_env" ]; then
+			_fetch "$_mode" "$_rel"
+		fi
+
+		if [ ! -x "$_env/zig" ]; then
+			_build "$_rel"
+		fi
+
+		_activate "$_rel"
+		;;
+
 	clear)
 		rm -rf "${XDG_CACHE_HOME:-"$HOME/.cache"}/zig" "$_ZIGSH_CACHE"/*
 		;;
@@ -143,159 +168,11 @@ $_output"
 
 		echo "$_output" | sed '/^$/d'
 		;;
-
-	binary)
-		local _rel=""
-
-		if [ $# -eq 0 ]; then
-			_rel="$(_latest_release)"
-		else
-			_rel="$1"
-		fi
-
-		local _env="$_ZIGSH_ENVS/$_rel"
-
-		if [ ! -d "$_env" ]; then
-			local _os="$(_host_os)"
-			local _arch="$(_host_arch)"
-			local _pkg="zig-$_os-$_arch-$_rel.tar.xz"
-			local _dl_pkg="$_ZIGSH_CACHE/$_pkg"
-			local _mirror="$_ZIG_MIRROR/$_rel"
-
-			if echo "$_rel" | grep -q "[-]dev[.]"; then
-				_mirror="$_ZIG_BUILDS_MIRROR"
-			fi
-
-			if [ ! -f "$_dl_pkg" ]; then
-				log.sh "downloading binary release $_rel.."
-				wget -O "$_dl_pkg.part" "$_mirror/$_pkg"
-
-				if command -v minisign > "/dev/null"; then
-					wget -O "$_dl_pkg.part.minisig" "$_mirror/$_pkg.minisig"
-					minisign -Vm "$_dl_pkg.part" -P 'RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U'
-				fi
-
-				mv "$_dl_pkg.part" "$_dl_pkg"
-			fi
-
-			log.sh "decompressing binary release $_rel.. ($_dl_pkg)"
-			rm -rf "$_env.tmp"
-			mkdir "$_env.tmp"
-			tar -C "$_env.tmp" --strip-components 1 -xpf "$_dl_pkg"
-			mv "$_env.tmp" "$_env"
-		fi
-
-		_activate "$_rel"
-		;;
-
-	source)
-		local _rel=""
-
-		if [ $# -eq 0 ]; then
-			_rel="$(_latest_release)"
-		else
-			_rel="$1"
-		fi
-
-		local _env="$_ZIGSH_ENVS/$_rel"
-
-		if [ -d "$_env.src" ]; then
-			mv "$_env.src" "$_env"
-		fi
-
-		if [ ! -d "$_env" ]; then
-			local _repo="$_ZIG_SRC"
-
-			if [ ! -d "$_repo" ]; then
-				log.sh "cloning git repository.."
-				git clone --bare "$_ZIG_GIT_MIRROR" "$_repo"
-			else
-				log.sh "updating git repository.."
-				git -C "$_repo" fetch -fpPt origin || true
-			fi
-
-			local _ref="$_rel"
-
-			if echo "$_ref" | grep -q "^[0-9]\+\.[0-9]\+\$"; then
-				_ref="$_ref.x"
-			elif echo "$_ref" | grep -q "[-]dev[.]"; then
-				_ref="$(echo "$_ref" | cut -d '+' -f 2 | cut -d '.' -f 1)"
-			fi
-
-			log.sh "generating archive for $_rel from git repository.."
-			[ ! -d "$_env.tmp" ] && mkdir "$_env.tmp"
-			_git_archive "$_repo" "$_ref" | tar -C "$_env.tmp" -x
-			mv "$_env.tmp" "$_env"
-		fi
-
-		if [ ! -x "$_env/zig" ]; then
-			log.sh "compiling $_rel.."
-
-			local _old_pwd="$PWD"
-			cd "$_env"
-
-			mkdir -p "build"
-			cd "build"
-
-			if ! command -v "$_ZIG" > "/dev/null"; then
-				log.sh "bootstraping zig.."
-
-				cmake \
-					-DCMAKE_BUILD_TYPE="Release" \
-					-DZIG_USE_LLVM_CONFIG="ON" \
-					-DZIG_STATIC="ON" \
-					-DZIG_NO_LIB="ON" \
-					-DZIG_LIB_DIR="$PWD/../lib" \
-					-DZIG_HOST_TARGET_TRIPLE="$(_host_arch)-$(_host_os)-musl" \
-					-DZIG_TARGET_TRIPLE="native" \
-					-DZIG_TARGET_MCPU="native" \
-					".."
-
-				make -j "$(nproc)" install
-				_ZIG="stage3/bin/zig"
-			fi
-
-			log.sh "compiling with zig v$("$_ZIG" version).."
-
-			"$_ZIG" build \
-				--prefix "stage4" -Dflat \
-				-Doptimize="ReleaseFast" -Dstrip \
-				-Denable-llvm -Dstatic-llvm \
-				-Dtarget="native" \
-				-Dcpu="native" \
-				-Duse-zig-libcxx \
-				-Dno-autodocs \
-				-Dversion-string="$_rel"
-
-			log.sh "building documentation.."
-
-			"$_ZIG" build docs \
-				--prefix "stage4" -Dflat \
-				-Doptimize="ReleaseFast" -Dstrip \
-				-Dtarget="native-native-musl" \
-				-Dcpu="native" \
-				-Dversion-string="$_rel"
-
-			cd "$_old_pwd"
-			mv "$_env" "$_env.src"
-			mv "$_env.src/build/stage4" "$_env"
-			rm -rf "$_env.src"
-		fi
-
-		_activate "$_rel"
-		;;
 	esac
 }
 
 _activate() {
-	local _rel=""
-
-	if [ $# -eq 0 ]; then
-		log.sh -f "no release given"
-	else
-		_rel="$1"
-	fi
-
+	local _rel="${1:-"tip"}"
 	local _env="$_ZIGSH_ENVS/$_rel"
 
 	if [ ! -d "$_env" ]; then
@@ -307,12 +184,137 @@ _activate() {
 	ln -s "$_env" "$_ZIGSH_DATA/zig"
 }
 
+_build() {
+	local _rel="${1:-"master"}"
+	local _env="$_ZIGSH_ENVS/$_rel"
+
+	if [ ! -d "$_env" ]; then
+		log.sh -f "cannot find given release"
+	fi
+
+	log.sh "building $_rel.."
+
+	local _old_pwd="$PWD"
+
+	cd "$_env"
+	[ ! -d "build" ] && mkdir "build"
+	cd "build"
+
+	if ! command -v "$_ZIG" > "/dev/null"; then
+		log.sh "bootstraping zig.."
+
+		cmake \
+			-DCMAKE_BUILD_TYPE="Release" \
+			-DZIG_USE_LLVM_CONFIG="ON" \
+			-DZIG_STATIC="ON" \
+			-DZIG_NO_LIB="ON" \
+			-DZIG_LIB_DIR="$PWD/../lib" \
+			-DZIG_HOST_TARGET_TRIPLE="$(_host_arch)-$(_host_os)-musl" \
+			-DZIG_TARGET_TRIPLE="native" \
+			-DZIG_TARGET_MCPU="native" \
+			".."
+
+		make -j "$(nproc)" install
+		_ZIG="stage3/bin/zig"
+	fi
+
+	log.sh "building with zig v$("$_ZIG" version).."
+
+	"$_ZIG" build \
+		--prefix "stage4" -Dflat \
+		-Doptimize="ReleaseFast" -Dstrip \
+		-Denable-llvm -Dstatic-llvm \
+		-Dtarget="native" \
+		-Dcpu="native" \
+		-Duse-zig-libcxx \
+		-Dno-autodocs \
+		-Dversion-string="$_rel"
+
+	log.sh "building documentation.."
+
+	"$_ZIG" build docs \
+		--prefix "stage4" -Dflat \
+		-Doptimize="ReleaseFast" -Dstrip \
+		-Dtarget="native-native-musl" \
+		-Dcpu="native" \
+		-Dversion-string="$_rel"
+
+	log.sh "installing artifacts.."
+
+	local _tmp_env="$_ZIGSH_CACHE/$_rel-bld"
+
+	cd "$_old_pwd"
+	mv "$_env" "$_tmp_env"
+	mv "$_tmp_env/build/stage4" "$_env"
+	rm -rf "$_tmp_env"
+}
+
+_fetch() {
+	local _mode="${1:-"src"}"
+	local _rel="${2:-"tip"}"
+	local _env="$_ZIGSH_ENVS/$_rel"
+	local _tmp_env="$_ZIGSH_CACHE/$_rel-$_mode"
+
+	if [ ! -d "$_tmp_env" ]; then
+		mkdir "$_tmp_env"
+	fi
+
+	if [ "$_mode" = "src" ]; then
+		_git_archive "$_rel" | tar -C "$_tmp_env" -x
+	elif [ "$_mode" = "bin" ]; then
+		local _os="$(_host_os)"
+		local _arch="$(_host_arch)"
+		local _pkg="zig-$_os-$_arch-$_rel.tar.xz"
+		local _dl_pkg="$_ZIGSH_CACHE/$_pkg"
+		local _mirror="$_ZIG_MIRROR/$_rel"
+
+		if echo "$_rel" | grep -q "[-]dev[.]"; then
+			_mirror="$_ZIG_BUILDS_MIRROR"
+		fi
+
+		if [ ! -f "$_dl_pkg" ]; then
+			log.sh "downloading binary release $_rel.."
+			wget -O "$_dl_pkg.part" "$_mirror/$_pkg"
+
+			if command -v minisign > "/dev/null"; then
+				wget -O "$_dl_pkg.part.minisig" "$_mirror/$_pkg.minisig"
+				minisign -Vm "$_dl_pkg.part" -P 'RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U'
+			fi
+
+			mv "$_dl_pkg.part" "$_dl_pkg"
+		fi
+
+		local _tmp_env="$_ZIGSH_CACHE/$_rel-bin"
+
+		log.sh "decompressing binary release $_rel.. ($_dl_pkg)"
+		tar -C "$_tmp_env" --strip-components 1 -xpf "$_dl_pkg"
+	fi
+
+	mv "$_tmp_env" "$_env"
+}
+
 _git_archive() {
-	local _repo="${1:-"."}"
-	local _ref="${2:-"HEAD"}"
+	if [ ! -d "$_ZIG_SRC" ]; then
+		log.sh "cloning git repository.."
+		git clone --bare "$_ZIG_GIT_MIRROR" "$_ZIG_SRC"
+	else
+		log.sh "updating git repository.."
+		git -C "$_ZIG_SRC" fetch -fpPt origin || true
+	fi
+
+	local _rel="${1:-"master"}"
+	local _ref="$_rel"
+
+	if echo "$_ref" | grep -q "^[0-9]\+\.[0-9]\+\$"; then
+		_ref="$_ref.x"
+	elif echo "$_ref" | grep -q "[-]dev[.]"; then
+		_ref="$(echo "$_ref" | cut -d '+' -f 2 | cut -d '.' -f 1)"
+	fi
+
+	log.sh "generating archive for $_rel from git repository.."
 
 	for _ref in "$_ref" "origin/$_ref"; do
-		git -C "$_repo" archive --format tar "$_ref" || continue
+		git -C "$_ZIG_SRC" archive --format tar "$_ref" || continue
 		return
 	done
 
