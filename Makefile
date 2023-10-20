@@ -42,7 +42,7 @@ bin:
 
 .PHONY: git
 git:
-	cp -rpf "git/.gitconfig" "$$HOME/"
+	cp -rpf "git" "$(XDG_CONFIG_HOME)/"
 
 .PHONY: gpg
 gpg:
