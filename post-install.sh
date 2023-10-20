@@ -591,7 +591,8 @@ EOF
 			libreoffice \
 			obs-studio \
 			scribus \
-			tenacity
+			tenacity \
+			waydroid
 
 		#apk add manuskript
 
