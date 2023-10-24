@@ -17,9 +17,14 @@ _main() {
 	_current="$(cat "$_BATTERY/charge_now")"
 
 	local _max=0
-	_max="$(cat "$_BATTERY/charge_full")"
+	_max="$(cat "$_BATTERY/charge_full_design")"
 
-	echo "${_BATTERY##*/}: $((_current * 100 / _max))%"
+	local _current_p="$((_current * 100 / _max))"
+
+	local _status=0
+	_status="$(cat "$_BATTERY/status")"
+
+	echo "${_BATTERY##*/}: $_current_p% ($_status)"
 }
 
 _show_help() {
