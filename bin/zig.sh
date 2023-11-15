@@ -11,6 +11,9 @@ _ZIGSH_STATE="${ZIGSH_STATE:-"${XDG_STATE_HOME:-"$HOME/.local/var"}/zig.sh"}"
 _ZIGSH_CACHE="${ZIGSH_CACHE:-"${XDG_CACHE_HOME:-"$HOME/.cache"}/zig.sh"}"
 _ZIGSH_ENVS="${ZIGSH_ENVS:-"$_ZIGSH_STATE"}"
 
+_CC="${CC:-"cc"}"
+_NO_DOCS="${NO_DOCS:-""}"
+_USE_LLVM="${USE_LLVM:-""}"
 _ZIG="${ZIG:-"zig"}"
 _ZIG_BUILDS_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/builds"}"
 _ZIG_GIT_MIRROR="${ZIG_GIT_MIRROR:-"https://github.com/ziglang/zig"}"
@@ -197,47 +200,49 @@ _build() {
 	local _old_pwd="$PWD"
 
 	cd "$_env"
-	[ ! -d "build" ] && mkdir "build"
-	cd "build"
 
 	if ! command -v "$_ZIG" > "/dev/null"; then
 		log.sh "bootstraping zig.."
 
-		cmake \
-			-DCMAKE_BUILD_TYPE="Release" \
-			-DZIG_USE_LLVM_CONFIG="ON" \
-			-DZIG_STATIC="ON" \
-			-DZIG_NO_LIB="ON" \
-			-DZIG_LIB_DIR="$PWD/../lib" \
-			-DZIG_HOST_TARGET_TRIPLE="$(_host_arch)-$(_host_os)-musl" \
-			-DZIG_TARGET_TRIPLE="native" \
-			-DZIG_TARGET_MCPU="native" \
-			".."
+		if [ -f "bootstrap.c" ] && [ -z "$_USE_LLVM" ]; then
+			"$_CC" -o "bootstrap" "bootstrap.c"
+			_ZIG="./bootstrap"
+		else
+			cmake \
+				-DCMAKE_BUILD_TYPE="Release" \
+				-DZIG_USE_LLVM_CONFIG="ON" \
+				-DZIG_NO_LIB="ON" \
+				-DZIG_LIB_DIR="$PWD/../lib" \
+				-DZIG_HOST_TARGET_TRIPLE="$(_host_arch)-$(_host_os)-musl" \
+				-DZIG_TARGET_TRIPLE="native-native-musl" \
+				-DZIG_TARGET_MCPU="native"
 
-		make -j "$(nproc)" install
-		_ZIG="stage3/bin/zig"
+			make -j "$(nproc)" install
+			_ZIG="stage3/bin/zig"
+		fi
 	fi
 
 	log.sh "building with zig v$("$_ZIG" version).."
 
 	"$_ZIG" build \
 		--prefix "stage4" -Dflat \
-		-Doptimize="ReleaseFast" -Dstrip \
-		-Denable-llvm -Dstatic-llvm \
-		-Dtarget="native" \
-		-Dcpu="native" \
-		-Duse-zig-libcxx \
-		-Dno-autodocs \
-		-Dversion-string="$_rel"
-
-	log.sh "building documentation.."
-
-	"$_ZIG" build docs \
-		--prefix "stage4" -Dflat \
-		-Doptimize="ReleaseFast" -Dstrip \
+		-Doptimize="ReleaseSafe" -Dstrip \
 		-Dtarget="native-native-musl" \
 		-Dcpu="native" \
+		-Dno-autodocs -Dno-langref \
 		-Dversion-string="$_rel"
+
+	if [ -z "$_NO_DOCS" ]; then
+		log.sh "building documentation.."
+
+		"$_ZIG" build docs \
+			--prefix "stage4" -Dflat \
+			-Doptimize="ReleaseSafe" -Dstrip \
+			-Dtarget="native-native-musl" \
+			-Dcpu="native" \
+			-Dno-bin \
+			-Dversion-string="$_rel"
+	fi
 
 	log.sh "installing artifacts.."
 
@@ -245,7 +250,7 @@ _build() {
 
 	cd "$_old_pwd"
 	mv "$_env" "$_tmp_env"
-	mv "$_tmp_env/build/stage4" "$_env"
+	mv "$_tmp_env/stage4" "$_env"
 	rm -rf "$_tmp_env"
 }
 
@@ -378,7 +383,7 @@ If no release is given, the latest release will be used.
 
 Options:
   -b, --bin        Download pre-built binaries for the given release
-	-c, --clear      Clear cache data (build cache, binary downloads, etc...)
+  -c, --clear      Clear cache data (build cache, binary downloads, etc...)
   -d, --delete     Remove the given release
   -h, --help       Show this help message
   -i, --init       Setup the environment for using $_name
@@ -388,12 +393,14 @@ Options:
   -s, --source     Build given release from source (default)
 
 Environment variables:
-  * 'ZIG_BUILDS_MIRROR' is the mirror used to download the Zig dev assets.
-  * 'ZIG_GIT_MIRROR' is the mirror used to clone the Zig source code.
-  * 'ZIG_MIRROR' is the mirror used to download the Zig assets.
-  * 'ZIG_SRC' points to the directory that holds Zig source code.
+  - 'NO_DOCS' disables documentation generation.
+  - 'USE_LLVM' forces compilations with LLVM.
+  - 'ZIG_BUILDS_MIRROR' is the mirror used to download the Zig dev assets.
+  - 'ZIG_GIT_MIRROR' is the mirror used to clone the Zig source code.
+  - 'ZIG_MIRROR' is the mirror used to download the Zig assets.
+  - 'ZIG_SRC' points to the directory that holds Zig source code.
     ($_ZIG_SRC)
-  * 'ZIGSH_ENVS' points to the directory that will hold Zig releases.
+  - 'ZIGSH_ENVS' points to the directory that will hold Zig releases.
     ($_ZIGSH_ENVS)
 
 For logging options see 'log.sh --help'.
