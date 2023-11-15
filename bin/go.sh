@@ -199,6 +199,9 @@ _activate() {
 		log.sh "using global mode.."
 		rm -f "$_GOSH_DATA/go"
 		ln -s "$_env" "$_GOSH_DATA/go"
+
+		local _GOPATH="$(_go_path)"
+
 		echo "export GOPATH=$_GOPATH"
 		echo "export PATH=$_GOPATH/bin:$_GOSH_DATA/go/bin:$PATH"
 	fi
