@@ -23,9 +23,10 @@ _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 _main() {
 	local _action="activate"
 	local _mode="src"
+	local _global=""
 
-	local _opts="bcdhiLlps"
-	local _lopts="bin,clear,deinit,delete,help,init,list,prefix,releases,source"
+	local _opts="bcdghiLlps"
+	local _lopts="bin,clear,deinit,delete,global,help,init,list,prefix,releases,source"
 
 	eval set -- "$(
 		getopt --options "$_opts" --longoptions "$_lopts" --name "$0" -- "$@"
@@ -44,6 +45,11 @@ _main() {
 
 		-d | --delete)
 			_action="delete"
+			;;
+
+		-g | --global)
+			_action="activate"
+			_global="true"
 			;;
 
 		-h | --help)
@@ -175,7 +181,7 @@ $_output"
 }
 
 _activate() {
-	local _rel="${1:-"tip"}"
+	local _rel="${1:-"master"}"
 	local _env="$_ZIGSH_ENVS/$_rel"
 
 	if [ ! -d "$_env" ]; then
@@ -183,8 +189,15 @@ _activate() {
 	fi
 
 	log.sh "activating release $_rel.."
-	rm -f "$_ZIGSH_DATA/zig"
-	ln -s "$_env" "$_ZIGSH_DATA/zig"
+
+	if [ -z "$_global" ]; then
+		echo "export PATH=$_env:$PATH"
+	else
+		log.sh "using global mode.."
+		rm -f "$_ZIGSH_DATA/zig"
+		ln -s "$_env" "$_ZIGSH_DATA/zig"
+		echo "export PATH=$_ZIGSH_DATA/zig:$PATH"
+	fi
 }
 
 _build() {
@@ -351,7 +364,13 @@ _host_os() {
 }
 
 _latest_release() {
-	local _releases="$(_releases)"
+	local _releases="$(_releases || echo "")"
+
+	if [ -z "$_releases" ]; then
+		log.sh "using local latest release.."
+		_releases="$(ls "$_ZIGSH_ENVS" | tail -n 1)"
+	fi
+
 	echo "$_releases" | head -n 1
 }
 
@@ -371,7 +390,7 @@ _show_help() {
 	cat << EOF
 $_name - manage Zig environments.
 
-Usage: $_name [-b | -s] [RELEASE]
+Usage: \$($_name [-g] [-b | -s] [RELEASE])
    or: $_name -L
    or: $_name -l
    or: $_name -p [RELEASE]
@@ -385,6 +404,7 @@ Options:
   -b, --bin        Download pre-built binaries for the given release
   -c, --clear      Clear cache data (build cache, binary downloads, etc...)
   -d, --delete     Remove the given release
+  -g, --global     Use given release as global version
   -h, --help       Show this help message
   -i, --init       Setup the environment for using $_name
   -L, --releases   List available releases
@@ -393,6 +413,7 @@ Options:
   -s, --source     Build given release from source (default)
 
 Environment variables:
+  - 'CC' is the C compiler used for bootstraping (non LLVM version).
   - 'NO_DOCS' disables documentation generation.
   - 'USE_LLVM' forces compilations with LLVM.
   - 'ZIG_BUILDS_MIRROR' is the mirror used to download the Zig dev assets.
