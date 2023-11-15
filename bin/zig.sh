@@ -133,12 +133,13 @@ _main() {
 			log.sh -f "no release given"
 		fi
 
-		local _rel="$1"
-		local _env="$_ZIGSH_ENVS/$_rel"
+		local _rel=""
 
-		log.sh "deleting release $_rel.. ($_env)"
-
-		rm -r "$_env"
+		for _rel in "$@"; do
+			local _env="$_ZIGSH_ENVS/$_rel"
+			log.sh "deleting release $_rel.. ($_env)"
+			rm -r "$_env"
+		done
 		;;
 
 	init)
@@ -394,7 +395,7 @@ Usage: \$($_name [-g] [-b | -s] [RELEASE])
    or: $_name -L
    or: $_name -l
    or: $_name -p [RELEASE]
-   or: $_name -d RELEASE
+   or: $_name -d RELEASE...
    or: \$($_name --init)
    or: \$($_name --deinit)
 
@@ -403,7 +404,7 @@ If no release is given, the latest release will be used.
 Options:
   -b, --bin        Download pre-built binaries for the given release
   -c, --clear      Clear cache data (build cache, binary downloads, etc...)
-  -d, --delete     Remove the given release
+  -d, --delete     Remove the given releases
   -g, --global     Use given release as global version
   -h, --help       Show this help message
   -i, --init       Setup the environment for using $_name
