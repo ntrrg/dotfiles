@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-_RIVER_WALLPAPERS="${RIVER_WALLPAPERS:-"$HOME/Pictures/Wallpapers/Landscape"}"
+_RIVER_WALLPAPERS="${RIVER_WALLPAPERS:-"$HOME/Pictures/Wallpapers/Horizontal"}"
 _RIVER_WALLPAPERS_INTERVAL="${RIVER_WALLPAPERS_INTERVAL:-"30s"}"
 
 while true; do
