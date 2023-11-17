@@ -55,7 +55,7 @@ htop:
 
 .PHONY: ssh
 ssh:
-	mkdir -p "$$HOME/.ssh"
+	cp -rf "ssh/.ssh" "$$HOME/"
 	chmod -R a=,u=rwX "$$HOME/.ssh"
 
 .PHONY: vim
