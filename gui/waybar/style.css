@@ -91,12 +91,13 @@ widget > * {
   background: #b7472a;
 }
 
-#network.wifi {
-  background: #427819;
+#network {
+  padding-right: 1em;
 }
 
-#network.wireless {
-  padding-right: 1em;
+#network.ethernet,
+#network.wifi {
+  background: #427819;
 }
 
 #network.disabled {

@@ -19,6 +19,7 @@
   "modules-right": [
     "tray",
     "bluetooth",
+    "network#wire",
     "network#wireless",
     "pulseaudio",
     "backlight",
@@ -96,6 +97,20 @@
     "on-click": "foot -a popup -- bluetoothctl"
   },
 
+  "network#wire": {
+    "interface": "eth0",
+    "interval": 5,
+    "format-icons": {
+      "disconnected": "󰲝",
+      "disabled": "󰲛",
+      "default": "󰛳",
+    },
+    "format": "<span size=\"12pt\">{icon}</span>",
+    "tooltip-format": "{ipaddr}\n󰁆 {bandwidthDownBits} 󰁞 {bandwidthUpBits}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "foot -a popup -- su - -c 'iftop -i eth0 -P'"
+  },
+
   "network#wireless": {
     "interface": "wlan0",
     "interval": 5,
@@ -105,7 +120,7 @@
       "default": "󰖩",
     },
     "format": "<span size=\"12pt\">{icon}</span>",
-    "tooltip-format": "{essid} {frequency}GHz ({signalStrength}%)\n{ipaddr}\n󰁆{bandwidthDownBits} 󰁞{bandwidthUpBits}",
+    "tooltip-format": "{essid} {frequency}GHz ({signalStrength}%)\n{ipaddr}\n󰁆 {bandwidthDownBits} 󰁞 {bandwidthUpBits}",
     "tooltip-format-disconnected": "Disconnected",
     "on-click": "foot -a popup -- su - -c 'iftop -i wlan0 -P'"
   },
