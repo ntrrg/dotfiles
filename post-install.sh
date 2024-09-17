@@ -55,6 +55,7 @@ apk add \
 	strace \
 	transmission-cli \
 	unzip \
+	wireguard-tools \
 	xz \
 	zsh \
 	zsh-vcs
