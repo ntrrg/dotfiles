@@ -70,11 +70,13 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		ntfs-3g \
 		pciutils \
 		pm-utils \
-		powertop \
 		smartmontools \
 		testdisk \
+		tlp \
 		usbutils \
 		util-linux
+
+	rc-update add tlp default
 
 	if [ "$IS_LAPTOP" -ne 0 ]; then
 		apk add acpi cpufreqd hdparm
