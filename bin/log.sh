@@ -148,11 +148,11 @@ _level_to_color() {
 		;;
 
 	info | 4)
-		echo "\e[36m"
+		echo "\e[34m"
 		;;
 
 	debug | 5)
-		echo "\e[34m"
+		echo "\e[32m"
 		;;
 
 	*)
