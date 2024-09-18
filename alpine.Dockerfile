@@ -1,6 +1,6 @@
-FROM alpine:3.18
+FROM alpine:3.20
 ARG NEW_USER="ntrrg"
-ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.18"
+ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.20"
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
