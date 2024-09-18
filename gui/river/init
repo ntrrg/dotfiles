@@ -57,13 +57,14 @@ riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
 riverctl spawn "dunst"
 riverctl spawn "waybar"
 
-riverctl float-filter-add app-id "popup"
-riverctl float-filter-add app-id "conky"
-riverctl float-filter-add app-id "pavucontrol"
+riverctl rule-add -app-id 'float*' float
+riverctl rule-add -app-id "popup" float
+riverctl rule-add -app-id "conky" float
+riverctl rule-add -app-id "pavucontrol" float
 
-riverctl float-filter-add title "Picture-in-Picture"
+riverctl rule-add -title "Picture-in-Picture" float
 
-#riverctl csd-filter-add app-id "gedit"
+#riverctl rule-add -app-id "gedit" csd
 
 #########
 # Modes #
