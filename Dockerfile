@@ -10,7 +10,6 @@ RUN \
   apk update && apk upgrade alpine-keys && apk upgrade --available && \
   apk add doas && \
   echo "permit nopass $NEW_USER as root" >> /etc/doas.d/doas.conf && \
-  doas true && \
   NEW_USER="$NEW_USER" IS_HARDWARE=0 /tmp/post-install/post-install.sh && \
   cd / && rm -rf /tmp/post-install
 WORKDIR "/home/$NEW_USER"
