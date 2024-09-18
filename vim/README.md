@@ -59,5 +59,5 @@
   * <kbd>Leader</kbd> + <kbd>r</kbd> -> Rename symbol.
 
   * <kbd>K</kbd> -> Show symbol information.
-  * <kbd>Ctrl</kbd> + <kbd>n</kbd> -> Scroll down symbol information.
-  * <kbd>Ctrl</kbd> + <kbd>p</kbd> -> Scroll up symbol information.
+  * <kbd>Ctrl</kbd> + <kbd>j</kbd> -> Scroll down symbol information.
+  * <kbd>Ctrl</kbd> + <kbd>k</kbd> -> Scroll up symbol information.
