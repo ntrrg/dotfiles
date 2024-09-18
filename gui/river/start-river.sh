@@ -22,4 +22,4 @@ export ELM_ACCEL="opengl"
 export ECORE_EVAS_ENGINE="wayland_egl"
 export MOZ_ENABLE_WAYLAND="1"
 
-exec dbus-run-session river
+exec dbus-run-session river "$@"
