@@ -4,6 +4,9 @@ set -xeo pipefail
 
 _RIVER="${XDG_CONFIG_HOME:-"$HOME/.local/etc"}/river"
 
+riverctl map normal Alt+Shift F4 exit
+riverctl map normal Super T spawn "foot"
+
 ##############
 # Appareance #
 ##############
