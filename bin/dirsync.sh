@@ -17,6 +17,7 @@ _main() {
 	fi
 
 	local _cmd="$_CMD"
+	local _link=0
 
 	while [ $# -gt 0 ]; do
 		if [ "$1" = "--" ]; then
@@ -25,6 +26,17 @@ _main() {
 		fi
 
 		local _arg="$1"
+
+		if echo "$_arg" | grep -q '^--link-dest=\?'; then
+			_link=1
+
+			if [ "$_arg" = "--link-dest" ]; then
+				shift
+			fi
+
+			shift
+			continue
+		fi
 
 		if echo "$_arg" | grep -q '\s'; then
 			_arg="'$_arg'"
@@ -58,9 +70,20 @@ _main() {
 	for _target in "$@"; do
 		local __src="${_src%/}/$_target"
 		local __dst="${_dst%/}/$_target"
+		local __cmd="$_cmd"
 
-		cmd.sh mkdir -p "${__dst%/*}"
-		cmd.sh sh -c "$_cmd '$__src' '$__dst'"
+		if [ $_link -gt 0 ]; then
+			__cmd="$__cmd --link-dest"
+
+			if [ -d "$__src" ]; then
+				__cmd="$__cmd '$__src'"
+			else
+				__cmd="$__cmd '$_src'"
+			fi
+		fi
+
+		#cmd.sh mkdir -p "${__dst%/*}"
+		cmd.sh sh -c "$__cmd '$__src' '$__dst'"
 	done
 }
 
