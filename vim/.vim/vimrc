@@ -11,7 +11,7 @@ set sessionoptions-=folds
 " -----------------------------------------------------------------------------
 " UI
 
-set colorcolumn=80
+set colorcolumn=81
 set nonumber
 set relativenumber
 set signcolumn=number
@@ -87,7 +87,7 @@ syntax on
 
 let g:netrw_sort_sequence = '[\/]$,*,\.[ao]$,\.obj$,\.info$,\.swp$,\.bak$,\~$'
 set listchars=precedes:…,tab:-›,space:·,trail:·,extends:…,eol:¶
-set wrap
+set nowrap
 set autoindent
 filetype indent on
 set smarttab
