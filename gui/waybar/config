@@ -140,7 +140,7 @@
     //"device": "amdgpu_bl1",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "<span size=\"14pt\">󱍖</span>  {icon}",
-    "tootip-format": "{}%",
+    "tootip-format": "{percent}%",
     "on-click": "",
     "on-scroll-up": "brightness.sh +5",
     "on-scroll-down": "brightness.sh -5"
