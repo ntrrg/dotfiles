@@ -57,7 +57,7 @@ riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
 riverctl spawn "dunst"
 riverctl spawn "waybar"
 
-riverctl rule-add -app-id 'float*' float
+#riverctl rule-add -app-id 'float*' float
 riverctl rule-add -app-id "popup" float
 riverctl rule-add -app-id "conky" float
 riverctl rule-add -app-id "pavucontrol" float
@@ -79,9 +79,11 @@ _modes="$_modes layout"
 
 riverctl send-layout-cmd rivertile "main-location left"
 riverctl map layout Super Up send-layout-cmd rivertile "main-count +1"
+riverctl map layout Super+Shift Up send-layout-cmd rivertile ""
 riverctl map layout Super Right send-layout-cmd rivertile "main-ratio +0.005"
 riverctl map layout Super+Shift Right send-layout-cmd rivertile "main-ratio +0.05"
 riverctl map layout Super Down send-layout-cmd rivertile "main-count -1"
+riverctl map layout Super+Shift Down send-layout-cmd rivertile ""
 riverctl map layout Super Left send-layout-cmd rivertile "main-ratio -0.005"
 riverctl map layout Super+Shift Left send-layout-cmd rivertile "main-ratio -0.05"
 
@@ -90,17 +92,21 @@ riverctl map layout Super+Control Up spawn "
 	riverctl map layout Super Up send-layout-cmd rivertile 'main-ratio -0.005' &&
 	riverctl map layout Super+Shift Up send-layout-cmd rivertile 'main-ratio -0.05' &&
 	riverctl map layout Super Right send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super+Shift Right send-layout-cmd rivertile '' &&
 	riverctl map layout Super Down send-layout-cmd rivertile 'main-ratio +0.005' &&
 	riverctl map layout Super+Shift Down send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map layout Super Left send-layout-cmd rivertile 'main-count +1'
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super+Shift Left send-layout-cmd rivertile ''
 "
 
 riverctl map layout Super+Control Right spawn "
 	riverctl send-layout-cmd rivertile 'main-location right' &&
 	riverctl map layout Super Up send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super+Shift Up send-layout-cmd rivertile '' &&
 	riverctl map layout Super Right send-layout-cmd rivertile 'main-ratio -0.005' &&
 	riverctl map layout Super+Shift Right send-layout-cmd rivertile 'main-ratio -0.05' &&
 	riverctl map layout Super Down send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super+Shift Down send-layout-cmd rivertile '' &&
 	riverctl map layout Super Left send-layout-cmd rivertile 'main-ratio +0.005' &&
 	riverctl map layout Super+Shift Left send-layout-cmd rivertile 'main-ratio +0.05'
 "
@@ -110,17 +116,21 @@ riverctl map layout Super+Control Down spawn "
 	riverctl map layout Super Up send-layout-cmd rivertile 'main-ratio +0.005' &&
 	riverctl map layout Super+Shift Up send-layout-cmd rivertile 'main-ratio +0.05' &&
 	riverctl map layout Super Right send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super+Shift Right send-layout-cmd rivertile '' &&
 	riverctl map layout Super Down send-layout-cmd rivertile 'main-ratio -0.005' &&
 	riverctl map layout Super+Shift Down send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map layout Super Left send-layout-cmd rivertile 'main-count -1'
+	riverctl map layout Super Left send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super+Shift Left send-layout-cmd rivertile ''
 "
 
 riverctl map layout Super+Control Left spawn "
 	riverctl send-layout-cmd rivertile 'main-location left' &&
 	riverctl map layout Super Up send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map layout Super+Shift Up send-layout-cmd rivertile '' &&
 	riverctl map layout Super Right send-layout-cmd rivertile 'main-ratio +0.005' &&
 	riverctl map layout Super+Shift Right send-layout-cmd rivertile 'main-ratio +0.05' &&
 	riverctl map layout Super Down send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map layout Super+Shift Down send-layout-cmd rivertile '' &&
 	riverctl map layout Super Left send-layout-cmd rivertile 'main-ratio -0.005'&&
 	riverctl map layout Super+Shift Left send-layout-cmd rivertile 'main-ratio -0.05'
 "
@@ -159,30 +169,31 @@ riverctl map screens Super Up focus-output up
 riverctl map screens Super Right focus-output right
 riverctl map screens Super Down focus-output down
 riverctl map screens Super Left focus-output left
-riverctl map screens Super+Control Up send-to-output up
-riverctl map screens Super+Control Right send-to-output right
-riverctl map screens Super+Control Down send-to-output down
-riverctl map screens Super+Control Left send-to-output left
 
-riverctl map screens Super+Control+Shift Up spawn "
+riverctl map screens Super+Shift Up spawn "
 	riverctl send-to-output up &&
 	riverctl focus-output up
 "
 
-riverctl map screens Super+Control+Shift Right spawn "
+riverctl map screens Super+Shift Right spawn "
 	riverctl send-to-output right &&
 	riverctl focus-output right
 "
 
-riverctl map screens Super+Control+Shift Down spawn "
+riverctl map screens Super+Shift Down spawn "
 	riverctl send-to-output down &&
 	riverctl focus-output down
 "
 
-riverctl map screens Super+Control+Shift Left spawn "
+riverctl map screens Super+Shift Left spawn "
 	riverctl send-to-output left &&
 	riverctl focus-output left
 "
+
+riverctl map screens Super+Control Up send-to-output up
+riverctl map screens Super+Control Right send-to-output right
+riverctl map screens Super+Control Down send-to-output down
+riverctl map screens Super+Control Left send-to-output left
 
 # Passthrough
 
@@ -196,7 +207,7 @@ for _mode in $_modes; do
 	riverctl map $_mode Super Space spawn "wofi"
 	riverctl map $_mode Super+Shift Space spawn "wofi -S run"
 	riverctl map $_mode Super B spawn "waybar"
-	riverctl map $_mode Super+Control B spawn "pkill waybar"
+	riverctl map $_mode Super+Shift B spawn "pkill waybar"
 	riverctl map $_mode Super D spawn "dunstctl close"
 	riverctl map $_mode Super+Shift D spawn "dunstctl close-all"
 	riverctl map $_mode Super F spawn "thunar"
@@ -209,7 +220,7 @@ for _mode in $_modes; do
 	riverctl map $_mode Super T spawn "foot"
 	riverctl map $_mode Super W spawn "firefox"
 	riverctl map $_mode Super+Shift W spawn "firefox --new-window"
-	riverctl map $_mode Super+Control+Shift W spawn "firefox --private-window"
+	riverctl map $_mode Super+Control W spawn "firefox --private-window"
 	riverctl map $_mode None Print spawn "$_RIVER/screenshot.sh"
 	riverctl map $_mode Control+Alt Delete spawn ""
 	riverctl map $_mode Super Delete spawn "foot -a popup -W 40x2 -- su - -c 'pm-suspend'"
@@ -263,8 +274,8 @@ for _mode in $_modes; do
 
 	for _river_tag in 1 2 4 8 16 32 64 128 256; do
 		riverctl map $_mode Super $_tag set-focused-tags $_river_tag
-		riverctl map $_mode Super+Shift $_tag toggle-focused-tags $_river_tag
-		riverctl map $_mode Super+Control $_tag set-view-tags $_river_tag
+		riverctl map $_mode Super+Control $_tag toggle-focused-tags $_river_tag
+		riverctl map $_mode Super+Shift $_tag set-view-tags $_river_tag
 		riverctl map $_mode Super+Control+Shift $_tag toggle-view-tags $_river_tag
 		_tag="$((_tag + 1))"
 	done
@@ -276,8 +287,8 @@ for _mode in $_modes; do
 	# Scratchpad
 
 	_scratchpad=2147483648
-	riverctl map $_mode Super+Shift H set-focused-tags $_scratchpad
-	riverctl map $_mode Super+Control H set-view-tags $_scratchpad
+	riverctl map $_mode Super H set-focused-tags $_scratchpad
+	riverctl map $_mode Super+Shift H set-view-tags $_scratchpad
 
 	######################
 	# Keyboard functions #
