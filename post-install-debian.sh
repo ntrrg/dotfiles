@@ -88,6 +88,10 @@ apt-get install -y \
 	time \
 	vim
 
+if [ "$IS_HARDWARE" -ne 0 ]; then
+	apt-get install -y powertop
+fi
+
 ############
 # Firewall #
 ############

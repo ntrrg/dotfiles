@@ -112,6 +112,10 @@ apk add \
 
 #apk add time
 
+if [ "$IS_HARDWARE" -ne 0 ]; then
+	apk add powertop
+fi
+
 if [ "$IS_GUI" -eq 0 ]; then
 	# Applications.
 
