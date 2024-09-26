@@ -185,9 +185,15 @@ widget > * {
   animation-direction: alternate;
 }
 
+#custom-battery {
+  border-radius: 0px;
+  padding-left: 0.375em;
+  margin: 0px;
+}
+
 #temperature.battery {
   border-radius: 0px 0.25em 0.25em 0px;
-  padding-left: 0.375em;
+  padding-left: 0px;
 }
 
 #custom-dunst {

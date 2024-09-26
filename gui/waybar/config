@@ -19,7 +19,7 @@
   "modules-right": [
     "tray",
     "bluetooth",
-    "network#wire",
+    //"network#wire",
     "network#wireless",
     "pulseaudio",
     "backlight",
@@ -33,6 +33,7 @@
     "memory",
     "temperature#mem",
     "battery",
+    "custom/battery",
     "temperature#battery",
     "custom/dunst",
   ],
@@ -175,7 +176,8 @@
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "return-type": "json",
-    "interval": 1
+    "interval": 1,
+    "on-click": "foot -a popup -- htop"
   },
   "temperature#gpu": {
     "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
@@ -218,6 +220,14 @@
       "full": "󰂅",
     },
     "format": "<span size=\"12pt\">{icon}</span> {capacity}%",
+    "on-click": "foot -a popup -- su - -c 'powertop'"
+  },
+  "custom/battery": {
+    "exec": "~/.local/etc/waybar/custom/battery.sh",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "return-type": "json",
+    "interval": 1,
     "on-click": "foot -a popup -- su - -c 'powertop'"
   },
   "temperature#battery": {
