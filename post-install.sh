@@ -400,13 +400,15 @@ EOF
 			pipewire-pulse \
 			wireplumber
 
-		ntapk add river
+		#ntapk add river
 
 		apk add \
 			dunst \
 			grim \
+			river \
 			slurp \
 			spacefm \
+			swappy \
 			swaybg \
 			swaylock \
 			waybar \
@@ -415,9 +417,6 @@ EOF
 			xdg-desktop-portal-wlr
 
 		#ntapk add qt5ct
-
-		ntapk add \
-			swappy
 
 		mkdir -p "/usr/share/wayland-sessions"
 
@@ -540,10 +539,6 @@ EOF
 
 		apk add \
 			xfce4-clipman-plugin \
-			xfce4-whiskermenu-plugin \
-			xfce4-xkb-plugin
-
-		ntapk add \
 			xfce4-diskperf-plugin \
 			xfce4-docklike-plugin \
 			xfce4-genmon-plugin \
@@ -552,6 +547,8 @@ EOF
 			xfce4-sensors-plugin \
 			xfce4-systemload-plugin \
 			xfce4-timer-plugin
+			xfce4-whiskermenu-plugin \
+			xfce4-xkb-plugin
 		;;
 	esac
 
@@ -572,17 +569,16 @@ EOF
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
 			alacritty \
-			foot
+			foot \
+			mupdf \
+			nsxiv
 
 		#ntapk add conky
 
-		ntapk add \
-			mupdf \
-			st \
-			sxiv
+		ntapk add st || apk add st
 
 		apk del vim
-		ntapk add vim-huge
+		ntapk add vim-huge || apk add vim
 	fi
 
 	if [ "$EXTRA_APPS" -ne 0 ]; then
@@ -630,16 +626,17 @@ EOF
 
 	# Themes.
 
+	apk add adwaita-icon-theme 
+
 	apk add appstream-compose gtk-murrine-engine ostree
 
 	ntapk add \
-		adwaita-icon-theme \
 		everforest-gtk-theme \
 		everforest-gtk-theme-borderless \
 		everforest-gtk-theme-dark \
 		everforest-gtk-theme-dark-borderless \
 		everforest-icon-theme \
-		everforest-icon-theme-dark
+		everforest-icon-theme-dark || true
 fi
 
 ############
