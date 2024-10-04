@@ -54,6 +54,7 @@ _main() {
 	case "$_mode" in
 	encrypt)
 		local _args="-c --cipher-algo AES256"
+		local _orig_out="$_out"
 
 		if [ -n "$_pass" ]; then
 			_args="$_args --batch --yes --passphrase '$_pass'"
@@ -61,10 +62,15 @@ _main() {
 
 		local _file="${1:-"-"}"
 
-		gpg $_args -o "$_out" "$_file"
+		if [ "$_out" != "-" ] && [ $_confirm -eq 1 ]; then
+			_out="$_out.new"
+		fi
 
-		if [ "$_out" != "-" ] && [ -z "$_pass" ] && [ $_confirm -ne 0 ]; then
+		cmd.sh gpg $_args -o "$_out" "$_file"
+
+		if [ "$_out" != "$_orig_out" ]; then
 			_main -d "$_out" > "/dev/null" || log.sh -f "passphrases don't match"
+			mv "$_out" "$_orig_out"
 		fi
 		;;
 
