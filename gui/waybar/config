@@ -7,8 +7,8 @@
   //"include": [],
 
   "modules-left": [
-    "river/tags",
     "river/mode",
+    "river/tags",
     "river/window",
   ],
 
@@ -38,13 +38,13 @@
     "custom/dunst",
   ],
 
+  "river/mode": {
+    "format": "<b>{}</b>"
+  },
   "river/tags": {
     "num-tags": 9,
     //"tag-labels":["󰬺", "", " 󰪶", "󰈹", "󰕼", "󰬿", "󰭀", "󰭁", "󰭂"],
     "disable-click": false
-  },
-  "river/mode": {
-    "format": "[<small>{}</small>]"
   },
   "river/window": {
     "max-length": 30,

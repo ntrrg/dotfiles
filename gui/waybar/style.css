@@ -21,21 +21,23 @@ widget > * {
   color: #b7472a;
 }
 
+#mode {
+  border-radius: 0.25em 0px 0px 0.25em;
+  margin-right: 0px;
+}
+
 #tags {
-  margin-left: 0.5em;
+  border-radius: 0px 0.25em 0.25em 0px;
   padding: 0px;
 }
 
 #tags button {
-  min-width: 1em;
+  min-width: 0.5em;
   border-radius: 0px;
   border-bottom: 0.2em solid;
   color: #555;
   /*color: shade(@theme_text_color, 0.50);*/
-}
-
-#tags button:first-child {
-  border-radius: 0.25em 0px 0px 0.25em;
+  padding: 0px 0.75em;
 }
 
 #tags button:last-child {
@@ -59,14 +61,7 @@ widget > * {
 #tags button:hover {
 }
 
-#mode {
-  border-radius: 0.25em 0px 0px 0.25em;
-  margin-right: 0px;
-}
-
 #window {
-  border-radius: 0px 0.25em 0.25em 0px;
-  padding-left: 0px;
 }
 
 #clock {
