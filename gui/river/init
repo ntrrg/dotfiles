@@ -6,6 +6,8 @@ _RIVER="${XDG_CONFIG_HOME:-"$HOME/.local/etc"}/river"
 
 riverctl declare-mode N
 riverctl enter-mode N
+
+# See /usr/share/X11/xkb/symbols/pc for key names.
 riverctl map N Alt+Shift F4 exit
 riverctl map N Super T spawn "foot"
 
@@ -161,6 +163,11 @@ riverctl map F Super+Control+Shift Up resize vertical 25
 riverctl map F Super+Control+Shift Right resize horizontal 25
 riverctl map F Super+Control+Shift Down resize vertical -25
 riverctl map F Super+Control+Shift Left resize horizontal -25
+
+riverctl map F Super Prior snap up
+riverctl map F Super End snap right
+riverctl map F Super Next snap down
+riverctl map F Super Home snap left
 
 # Screens
 
