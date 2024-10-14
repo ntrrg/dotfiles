@@ -361,12 +361,12 @@ EOF
 			pulseaudio-utils
 
 		apk add \
+			dwm \
 			dunst \
 			dmenu \
-			dwm \
+			pcmanfm \
 			picom \
-			slock \
-			spacefm
+			slock
 
 		#ntapk add \
 		#	qt5ct \
@@ -374,15 +374,14 @@ EOF
 
 		cat << EOF > "/usr/share/xsessions/dwm.desktop"
 [Desktop Entry]
-Encoding=UTF-8
 Version=1.0
-Name=dwm
-Name[en]=dwm
-Comment=Dynamic Window Manager
-Comment[en]=Dynamic Window Manager
-Exec=dbus-run-session dwm
-Icon=dwm
 Type=XSession
+Name[en]=dwm
+Name=dwm
+Comment[en]=Dynamic Window Manager
+Comment=Dynamic Window Manager
+Icon=dwm
+Exec=dbus-run-session dwm
 X-DesktopNames=dwm
 Keywords=launch;dwm;desktop;session;
 EOF
@@ -403,14 +402,15 @@ EOF
 		#ntapk add river
 
 		apk add \
+			river \
 			dunst \
 			grim \
-			river \
 			slurp \
-			spacefm \
 			swappy \
 			swaybg \
 			swaylock \
+			thunar \
+			tumbler \
 			waybar \
 			wf-recorder \
 			wofi \
@@ -422,15 +422,14 @@ EOF
 
 		cat << EOF > "/usr/share/wayland-sessions/river.desktop"
 [Desktop Entry]
-Encoding=UTF-8
 Version=1.0
-Name=River
-Name[en]=River
-Comment=This session logs you into River
-Comment[en]=This session logs in you into River
-Exec=dbus-run-session river
-Icon=riverwm
 Type=Application
+Name[en]=River
+Name=River
+Comment[en]=This session logs in you into River
+Comment=This session logs you into River
+Icon=riverwm
+Exec=dbus-run-session river
 X-DesktopNames=River
 Keywords=launch;River;desktop;session;
 EOF
@@ -453,9 +452,9 @@ EOF
 			pulseaudio-utils
 
 		apk add \
+			xfce4 \
 			thunar \
 			thunar-archive-plugin \
-			xfce4 \
 			xfce4-notifyd \
 			xfce4-screensaver \
 			xfce4-screenshooter
@@ -546,7 +545,7 @@ EOF
 			xfce4-pulseaudio-plugin \
 			xfce4-sensors-plugin \
 			xfce4-systemload-plugin \
-			xfce4-timer-plugin
+			xfce4-timer-plugin \
 			xfce4-whiskermenu-plugin \
 			xfce4-xkb-plugin
 		;;
@@ -626,7 +625,7 @@ EOF
 
 	# Themes.
 
-	apk add adwaita-icon-theme 
+	apk add adwaita-icon-theme
 
 	apk add appstream-compose gtk-murrine-engine ostree
 
