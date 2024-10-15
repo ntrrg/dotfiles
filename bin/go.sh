@@ -150,7 +150,7 @@ _main() {
 		;;
 
 	list)
-		ls "$_GOSH_ENVS"
+		ls -w 1 "$_GOSH_ENVS"
 		;;
 
 	prefix)

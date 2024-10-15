@@ -148,7 +148,7 @@ _main() {
 		;;
 
 	list)
-		ls "$_ZIGSH_ENVS"
+		ls -w 1 "$_ZIGSH_ENVS"
 		;;
 
 	prefix)
