@@ -62,10 +62,14 @@ apk add \
 
 if [ "$IS_HARDWARE" -ne 0 ]; then
 	apk add \
+		acpi \
 		btrfs-progs \
+		cpufreqd \
 		cryptsetup \
 		dmidecode \
 		dosfstools \
+		hdparm \
+		keyd \
 		lvm2 \
 		ntfs-3g \
 		pciutils \
@@ -76,10 +80,14 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		usbutils \
 		util-linux
 
-	rc-update add tlp default
+	if ! grep -q "uinput" "/etc/modules"; then
+		echo '^uinput$' >> "/etc/modules"
+	fi
+
+	#rc-update add keyd default
 
 	if [ "$IS_LAPTOP" -ne 0 ]; then
-		apk add acpi cpufreqd hdparm
+		rc-update add tlp default
 		rc-update add cpufreqd default
 	fi
 
@@ -680,8 +688,8 @@ if [ -n "$NEW_USER" ]; then
 	fi
 
 	_GROUPS="
-		audio cdrom cdrw dialout disk floppy games input lp lpadmin netdev optical
-		plugdev power rfkill scanner seat storage usb users video wheel
+		audio cdrom cdrw dialout disk floppy games input keyd lp lpadmin netdev
+		optical plugdev power rfkill scanner seat storage usb users video wheel
 	"
 
 	for _GROUP in $_GROUPS; do
