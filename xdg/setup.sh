@@ -4,7 +4,7 @@ set -eu
 
 mkdir -p "$HOME/.local"
 
-for _pair in "$HOME/.local/bin" "$HOME/.local/etc:$HOME/.config" "$HOME/.local/share" "$HOME/.local/var:$HOME/.var" "$HOME/.local/var/cache:$HOME/.cache"; do
+for _pair in "$HOME/.local/bin" "$HOME/.local/etc:$HOME/.config" "$HOME/.local/share" "$HOME/Fonts:$HOME/.local/share/fonts" "$HOME/.local/var:$HOME/.var" "$HOME/.local/var/cache:$HOME/.cache"; do
 	_dir="$(echo "$_pair" | cut -d ':' -f 1)"
 	_target="$(echo "$_pair" | cut -d ':' -f 2)"
 

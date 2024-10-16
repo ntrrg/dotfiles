@@ -9,15 +9,7 @@ XDG_CACHE_HOME ?= $(XDG_STATE_HOME)/cache
 all: gui
 
 .PHONY: gui
-gui: tui fonts gtk
-	mkdir -p "$$HOME/Desktop"
-	mkdir -p "$$HOME/Downloads"
-	mkdir -p "$$HOME/Templates"
-	mkdir -p "$$HOME/Public"
-	mkdir -p "$$HOME/Documents"
-	mkdir -p "$$HOME/Music"
-	mkdir -p "$$HOME/Pictures"
-	mkdir -p "$$HOME/Videos"
+gui: tui gtk
 
 .PHONY: tui
 tui: xdg bin git gpg htop ssh vim zsh
@@ -66,6 +58,17 @@ xdg_scripts := xdg/setup.sh
 
 .PHONY: xdg
 xdg:
+	mkdir -p "$$HOME/Bookmarks"
+	mkdir -p "$$HOME/Desktop"
+	mkdir -p "$$HOME/Documents"
+	mkdir -p "$$HOME/Downloads"
+	mkdir -p "$$HOME/Fonts"
+	mkdir -p "$$HOME/Games"
+	mkdir -p "$$HOME/Music"
+	mkdir -p "$$HOME/Pictures"
+	mkdir -p "$$HOME/Public"
+	mkdir -p "$$HOME/Templates"
+	mkdir -p "$$HOME/Videos"
 	xdg/setup.sh
 	cp -pf "xdg/mimeapps.list" "xdg/user-dirs.dirs" "xdg/user-dirs.locale" "$(XDG_CONFIG_HOME)/"
 
@@ -92,11 +95,6 @@ conky:
 .PHONY: dunst
 dunst:
 	cp -rpf "gui/dunst" "$(XDG_CONFIG_HOME)/"
-
-.PHONY: fonts
-fonts:
-	cp -rpf "gui/fonts" "$(XDG_DATA_HOME)/"
-	fc-cache -f
 
 .PHONY: foot
 foot:
