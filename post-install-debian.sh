@@ -15,6 +15,8 @@ SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
 ALLOW_SSH="${ALLOW_SSH:-1}"
 ALLOW_MOSH="${ALLOW_MOSH:-1}"
 
+NEW_USER="${NEW_USER:-""}"
+
 ################
 # Installation #
 ################

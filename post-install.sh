@@ -416,6 +416,7 @@ EOF
 			slurp \
 			swappy \
 			swaybg \
+			swayidle \
 			swaylock \
 			thunar \
 			tumbler \

@@ -10,6 +10,7 @@ riverctl enter-mode N
 # See /usr/share/X11/xkb/symbols/pc for key names.
 riverctl map N Alt+Shift F4 exit
 riverctl map N Super T spawn "foot"
+riverctl map locked Super Delete spawn "screens.sh turn toggle"
 
 ##############
 # Appareance #
@@ -54,6 +55,7 @@ done
 riverctl spawn "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP"
 riverctl spawn "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP"
 riverctl spawn "/usr/libexec/pipewire-launcher"
+#riverctl spawn "swayidle -w timeout 300 'screens.sh turn off' resume 'screens.sh turn on' timeout 600 '$_RIVER/lock.sh'"
 
 riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal exec org.codeberg.dnkl.foot.desktop"
 riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
@@ -82,61 +84,81 @@ riverctl declare-mode L
 _modes="$_modes L"
 
 riverctl send-layout-cmd rivertile "main-location left"
-riverctl map L Super Up send-layout-cmd rivertile "main-count +1"
-riverctl map L Super+Shift Up send-layout-cmd rivertile ""
-riverctl map L Super Right send-layout-cmd rivertile "main-ratio +0.005"
-riverctl map L Super+Shift Right send-layout-cmd rivertile "main-ratio +0.05"
-riverctl map L Super Down send-layout-cmd rivertile "main-count -1"
-riverctl map L Super+Shift Down send-layout-cmd rivertile ""
-riverctl map L Super Left send-layout-cmd rivertile "main-ratio -0.005"
-riverctl map L Super+Shift Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map L None Up send-layout-cmd rivertile "main-count +1"
+riverctl map L Alt Up send-layout-cmd rivertile ""
+riverctl map L Shift Up send-layout-cmd rivertile ""
+riverctl map L None Right send-layout-cmd rivertile "main-ratio +0.025"
+riverctl map L Alt Right send-layout-cmd rivertile "main-ratio +0.005"
+riverctl map L Shift Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map L None Down send-layout-cmd rivertile "main-count -1"
+riverctl map L Alt Down send-layout-cmd rivertile ""
+riverctl map L Shift Down send-layout-cmd rivertile ""
+riverctl map L None Left send-layout-cmd rivertile "main-ratio -0.025"
+riverctl map L Alt Left send-layout-cmd rivertile "main-ratio -0.005"
+riverctl map L Shift Left send-layout-cmd rivertile "main-ratio -0.05"
 
-riverctl map L Super+Control Up spawn "
+riverctl map L Alt+Shift Up spawn "
 	riverctl send-layout-cmd rivertile 'main-location top' &&
-	riverctl map L Super Up send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map L Super+Shift Up send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map L Super Right send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map L Super+Shift Right send-layout-cmd rivertile '' &&
-	riverctl map L Super Down send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map L Super+Shift Down send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map L Super Left send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map L Super+Shift Left send-layout-cmd rivertile ''
+	riverctl map L None Up send-layout-cmd rivertile 'main-ratio -0.025' &&
+	riverctl map L Alt Up send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map L Shift Up send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map L None Right send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map L Alt Right send-layout-cmd rivertile '' &&
+	riverctl map L Shift Right send-layout-cmd rivertile '' &&
+	riverctl map L None Down send-layout-cmd rivertile 'main-ratio +0.025' &&
+	riverctl map L Alt Down send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map L Shift Down send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map L None Left send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map L Alt Left send-layout-cmd rivertile '' &&
+	riverctl map L Shift Left send-layout-cmd rivertile ''
 "
 
-riverctl map L Super+Control Right spawn "
+riverctl map L Alt+Shift Right spawn "
 	riverctl send-layout-cmd rivertile 'main-location right' &&
-	riverctl map L Super Up send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map L Super+Shift Up send-layout-cmd rivertile '' &&
-	riverctl map L Super Right send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map L Super+Shift Right send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map L Super Down send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map L Super+Shift Down send-layout-cmd rivertile '' &&
-	riverctl map L Super Left send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map L Super+Shift Left send-layout-cmd rivertile 'main-ratio +0.05'
+	riverctl map L None Up send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map L Alt Up send-layout-cmd rivertile '' &&
+	riverctl map L Shift Up send-layout-cmd rivertile '' &&
+	riverctl map L None Right send-layout-cmd rivertile 'main-ratio -0.025' &&
+	riverctl map L Alt Right send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map L Shift Right send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map L None Down send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map L Alt Down send-layout-cmd rivertile '' &&
+	riverctl map L Shift Down send-layout-cmd rivertile '' &&
+	riverctl map L None Left send-layout-cmd rivertile 'main-ratio +0.025' &&
+	riverctl map L Alt Left send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map L Shift Left send-layout-cmd rivertile 'main-ratio +0.05'
 "
 
-riverctl map L Super+Control Down spawn "
+riverctl map L Alt+Shift Down spawn "
 	riverctl send-layout-cmd rivertile 'main-location bottom' &&
-	riverctl map L Super Up send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map L Super+Shift Up send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map L Super Right send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map L Super+Shift Right send-layout-cmd rivertile '' &&
-	riverctl map L Super Down send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map L Super+Shift Down send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map L Super Left send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map L Super+Shift Left send-layout-cmd rivertile ''
+	riverctl map L None Up send-layout-cmd rivertile 'main-ratio +0.025' &&
+	riverctl map L Alt Up send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map L Shift Up send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map L None Right send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map L Alt Right send-layout-cmd rivertile '' &&
+	riverctl map L Shift Right send-layout-cmd rivertile '' &&
+	riverctl map L None Down send-layout-cmd rivertile 'main-ratio -0.025' &&
+	riverctl map L Alt Down send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map L Shift Down send-layout-cmd rivertile 'main-ratio -0.05' &&
+	riverctl map L None Left send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map L Alt Left send-layout-cmd rivertile '' &&
+	riverctl map L Shift Left send-layout-cmd rivertile ''
 "
 
-riverctl map L Super+Control Left spawn "
+riverctl map L Alt+Shift Left spawn "
 	riverctl send-layout-cmd rivertile 'main-location left' &&
-	riverctl map L Super Up send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map L Super+Shift Up send-layout-cmd rivertile '' &&
-	riverctl map L Super Right send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map L Super+Shift Right send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map L Super Down send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map L Super+Shift Down send-layout-cmd rivertile '' &&
-	riverctl map L Super Left send-layout-cmd rivertile 'main-ratio -0.005'&&
-	riverctl map L Super+Shift Left send-layout-cmd rivertile 'main-ratio -0.05'
+	riverctl map L None Up send-layout-cmd rivertile 'main-count +1' &&
+	riverctl map L Alt Up send-layout-cmd rivertile '' &&
+	riverctl map L Shift Up send-layout-cmd rivertile '' &&
+	riverctl map L None Right send-layout-cmd rivertile 'main-ratio +0.025' &&
+	riverctl map L Alt Right send-layout-cmd rivertile 'main-ratio +0.005' &&
+	riverctl map L Shift Right send-layout-cmd rivertile 'main-ratio +0.05' &&
+	riverctl map L None Down send-layout-cmd rivertile 'main-count -1' &&
+	riverctl map L Alt Down send-layout-cmd rivertile '' &&
+	riverctl map L Shift Down send-layout-cmd rivertile '' &&
+	riverctl map L None Left send-layout-cmd rivertile 'main-ratio -0.025'&&
+	riverctl map L Alt Left send-layout-cmd rivertile 'main-ratio -0.005' &&
+	riverctl map L Shift Left send-layout-cmd rivertile 'main-ratio -0.05'
 "
 
 # Floating
@@ -144,73 +166,63 @@ riverctl map L Super+Control Left spawn "
 riverctl declare-mode F
 _modes="$_modes F"
 
-riverctl map F Super Up move up 5
-riverctl map F Super Right move right 5
-riverctl map F Super Down move down 5
-riverctl map F Super Left move left 5
+riverctl map F None Up move up 25
+riverctl map F None Right move right 25
+riverctl map F None Down move down 25
+riverctl map F None Left move left 25
 
-riverctl map F Super+Shift Up move up 25
-riverctl map F Super+Shift Right move right 25
-riverctl map F Super+Shift Down move down 25
-riverctl map F Super+Shift Left move left 25
+riverctl map F Alt Up move up 5
+riverctl map F Alt Right move right 5
+riverctl map F Alt Down move down 5
+riverctl map F Alt Left move left 5
 
-riverctl map F Super+Control Up resize vertical 5
-riverctl map F Super+Control Right resize horizontal 5
-riverctl map F Super+Control Down resize vertical -5
-riverctl map F Super+Control Left resize horizontal -5
+riverctl map F Shift Up snap up
+riverctl map F Shift Right snap right
+riverctl map F Shift Down snap down
+riverctl map F Shift Left snap left
 
-riverctl map F Super+Control+Shift Up resize vertical 25
-riverctl map F Super+Control+Shift Right resize horizontal 25
-riverctl map F Super+Control+Shift Down resize vertical -25
-riverctl map F Super+Control+Shift Left resize horizontal -25
-
-riverctl map F Super Prior snap up
-riverctl map F Super End snap right
-riverctl map F Super Next snap down
-riverctl map F Super Home snap left
+riverctl map F Alt+Shift Up resize vertical 25
+riverctl map F Alt+Shift Right resize horizontal 25
+riverctl map F Alt+Shift Down resize vertical -25
+riverctl map F Alt+Shift Left resize horizontal -25
 
 # Screens
 
 riverctl declare-mode S
 _modes="$_modes S"
 
-riverctl map S Super Up focus-output up
-riverctl map S Super Right focus-output right
-riverctl map S Super Down focus-output down
-riverctl map S Super Left focus-output left
+riverctl map S None Up focus-output up
+riverctl map S None Right focus-output right
+riverctl map S None Down focus-output down
+riverctl map S None Left focus-output left
 
-riverctl map S Super+Shift Up spawn "
+riverctl map S Shift Up spawn "
 	riverctl send-to-output up &&
 	riverctl focus-output up
 "
 
-riverctl map S Super+Shift Right spawn "
+riverctl map S Shift Right spawn "
 	riverctl send-to-output right &&
 	riverctl focus-output right
 "
 
-riverctl map S Super+Shift Down spawn "
+riverctl map S Shift Down spawn "
 	riverctl send-to-output down &&
 	riverctl focus-output down
 "
 
-riverctl map S Super+Shift Left spawn "
+riverctl map S Shift Left spawn "
 	riverctl send-to-output left &&
 	riverctl focus-output left
 "
 
-riverctl map S Super+Control Up send-to-output up
-riverctl map S Super+Control Right send-to-output right
-riverctl map S Super+Control Down send-to-output down
-riverctl map S Super+Control Left send-to-output left
-
 # Passthrough
 
 riverctl declare-mode P
-riverctl map N Super+Shift F10 enter-mode P
-riverctl map P Super+Shift F10 enter-mode N
+riverctl map N Super F12 enter-mode P
+riverctl map P Super F12 enter-mode N
 
-# Key bindings
+# Any mode
 
 for _mode in $_modes; do
 	riverctl map $_mode Super Space spawn "wofi"
@@ -221,8 +233,6 @@ for _mode in $_modes; do
 	riverctl map $_mode Super+Shift D spawn "dunstctl close-all"
 	riverctl map $_mode Super F spawn "thunar"
 	riverctl map $_mode Super I spawn "wl-gammactl -c -1.000 -b 2.000 -g 1.000"
-	riverctl map $_mode Super K spawn ""
-	riverctl map $_mode Super L spawn "$_RIVER/lock.sh"
 	riverctl map $_mode Super M spawn "telegram-desktop"
 	riverctl map $_mode Super P spawn "wdisplays"
 	riverctl map $_mode Super S spawn "dunstctl set-paused toggle"
@@ -231,17 +241,19 @@ for _mode in $_modes; do
 	riverctl map $_mode Super+Shift W spawn "firefox --new-window"
 	riverctl map $_mode Super+Control W spawn "firefox --private-window"
 	riverctl map $_mode None Print spawn "$_RIVER/screenshot.sh"
+	riverctl map $_mode Super Delete spawn "screens.sh turn toggle"
+	riverctl map $_mode Super+Shift Delete spawn "screens.sh turn off && $_RIVER/lock.sh"
+	riverctl map $_mode Super+Shift+Alt Delete spawn "foot -a popup -W 40x2 -- su - -c 'pm-suspend'"
 	riverctl map $_mode Control+Alt Delete spawn ""
-	riverctl map $_mode Super Delete spawn "foot -a popup -W 40x2 -- su - -c 'pm-suspend'"
 
 	#########
 	# Modes #
 	#########
 
 	riverctl map $_mode Super Escape enter-mode N
-	riverctl map $_mode Super+Shift F enter-mode F
-	riverctl map $_mode Super+Shift L enter-mode L
-	riverctl map $_mode Super+Shift S enter-mode S
+	riverctl map $_mode Super F1 enter-mode L
+	riverctl map $_mode Super F2 enter-mode F
+	riverctl map $_mode Super F3 enter-mode S
 
 	#########
 	# Mouse #
@@ -265,12 +277,12 @@ for _mode in $_modes; do
 	riverctl map $_mode Super Tab focus-output next
 	riverctl map $_mode Super+Shift Tab focus-output previous
 
-	riverctl map $_mode Super+Control Tab spawn "
+	riverctl map $_mode Super+Alt Tab spawn "
 		riverctl send-to-output next &&
 		riverctl focus-output next
 	"
 
-	riverctl map $_mode Super+Control+Shift Tab spawn "
+	riverctl map $_mode Super+Alt+Shift Tab spawn "
 		riverctl send-to-output previous &&
 		riverctl focus-output previous
 	"
@@ -283,9 +295,9 @@ for _mode in $_modes; do
 
 	for _river_tag in 1 2 4 8 16 32 64 128 256; do
 		riverctl map $_mode Super $_tag set-focused-tags $_river_tag
-		riverctl map $_mode Super+Control $_tag toggle-focused-tags $_river_tag
+		riverctl map $_mode Super+Alt $_tag toggle-focused-tags $_river_tag
 		riverctl map $_mode Super+Shift $_tag set-view-tags $_river_tag
-		riverctl map $_mode Super+Control+Shift $_tag toggle-view-tags $_river_tag
+		riverctl map $_mode Super+Alt+Shift $_tag toggle-view-tags $_river_tag
 		_tag="$((_tag + 1))"
 	done
 
@@ -296,8 +308,8 @@ for _mode in $_modes; do
 	# Scratchpad
 
 	_scratchpad=2147483648
-	riverctl map $_mode Super H set-focused-tags $_scratchpad
-	riverctl map $_mode Super+Shift H set-view-tags $_scratchpad
+	riverctl map $_mode Super F11 set-focused-tags $_scratchpad
+	riverctl map $_mode Super+Shift F11 set-view-tags $_scratchpad
 
 	######################
 	# Keyboard functions #
