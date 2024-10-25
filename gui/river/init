@@ -308,8 +308,8 @@ for _mode in $_modes; do
 	# Scratchpad
 
 	_scratchpad=2147483648
-	riverctl map $_mode Super F11 set-focused-tags $_scratchpad
-	riverctl map $_mode Super+Shift F11 set-view-tags $_scratchpad
+	riverctl map $_mode Super+Alt 0 set-focused-tags $_scratchpad
+	riverctl map $_mode Super+Alt+Shift 0 set-view-tags $_scratchpad
 
 	######################
 	# Keyboard functions #
