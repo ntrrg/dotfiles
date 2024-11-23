@@ -4,8 +4,7 @@
 
 set -eo pipefail
 
-_BATTERIES="$(find "/sys/class/power_supply/" -mindepth 1 -maxdepth 1)"
-_BATTERY="${BATTERY:-"$(echo "$_BATTERIES" | grep "BAT" | head -n 1)"}"
+_BATTERIES="$(find "/sys/class/power_supply/" -iname "BAT*" -mindepth 1 -maxdepth 1)"
 
 _main() {
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -13,18 +12,31 @@ _main() {
 		return
 	fi
 
-	local _current=0
-	_current="$(cat "$_BATTERY/charge_now")"
+	local _battery=""
 
-	local _max=0
-	_max="$(cat "$_BATTERY/charge_full_design")"
+	for _battery in $_BATTERIES; do
+		local _current=0
+		_current="$(cat "$_battery/charge_now")"
 
-	local _current_p="$((_current * 100 / _max))"
+		local _max=0
+		_max="$(cat "$_battery/charge_full_design")"
 
-	local _status=0
-	_status="$(cat "$_BATTERY/status")"
+		local _current_p="$((_current * 100 / _max))"
 
-	echo "${_BATTERY##*/}: $_current_p% ($_status)"
+		local _status=0
+		_status="$(cat "$_battery/status")"
+
+		local _consumption=""
+
+		if [ "$_status" = "Discharging" ]; then
+			_info="$(upower -i /org/freedesktop/UPower/devices/battery_${_battery##*/})"
+			_rate="$(echo "$_info" | grep "energy-rate:" | grep -oE '[0-9]+(\.[0-9]+)?')"
+			_current="$(echo "$_info" | grep "energy:" | grep -oE '[0-9]+(\.[0-9]+)?')"
+			_consumption=" @ $_rate W of $_current Wh"
+		fi
+
+		echo "${_battery##*/}: $_current_p% ($_status$_consumption)"
+	done
 }
 
 _show_help() {
@@ -37,10 +49,6 @@ Usage: $_name
 
 Options:
   -h, --help   Show this help message
-
-Environment variables:
-  * 'BATTERY' points to the battery control directory, useful for avoiding
-    ambiguity between batteries. ($_BATTERY)
 
 Copyright (c) 2022 Miguel Angel Rivera Notararigo
 Released under the MIT License
