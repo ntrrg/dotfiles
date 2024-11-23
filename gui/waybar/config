@@ -7,7 +7,7 @@
   //"include": [],
 
   "modules-left": [
-    "river/mode",
+    //"river/mode",
     "river/tags",
     "river/window",
   ],
@@ -38,9 +38,9 @@
     "custom/dunst",
   ],
 
-  "river/mode": {
-    "format": "<b>{}</b>"
-  },
+  //"river/mode": {
+  //  "format": "<b>{}</b>"
+  //},
   "river/tags": {
     "num-tags": 9,
     //"tag-labels":["󰬺", "", " 󰪶", "󰈹", "󰕼", "󰬿", "󰭀", "󰭁", "󰭂"],

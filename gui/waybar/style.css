@@ -27,7 +27,8 @@ widget > * {
 }
 
 #tags {
-  border-radius: 0px 0.25em 0.25em 0px;
+  /*border-radius: 0px 0.25em 0.25em 0px;*/
+  border-radius: 0.25em;
   padding: 0px;
 }
 
@@ -38,6 +39,10 @@ widget > * {
   color: #555;
   /*color: shade(@theme_text_color, 0.50);*/
   padding: 0px 0.75em;
+}
+
+#tags button:first-child {
+  border-radius: 0.25em 0px 0px 0.25em;
 }
 
 #tags button:last-child {
@@ -79,11 +84,11 @@ widget > * {
 }
 
 #bluetooth.connected {
-  background: #427819;
+  color: lighter(#427819);
 }
 
 #bluetooth.disabled {
-  background: #b7472a;
+  color: lighter(#b7472a);
 }
 
 #network {
@@ -92,15 +97,15 @@ widget > * {
 
 #network.ethernet,
 #network.wifi {
-  background: #427819;
+  color: lighter(#427819);
 }
 
 #network.disabled {
-  background: #b7472a;
+  color: lighter(#b7472a);
 }
 
 #pulseaudio.muted {
-  background: #b7472a;
+  color: lighter(#b7472a);
 }
 
 #custom-cpu-icon {
@@ -158,11 +163,11 @@ widget > * {
 }
 
 #battery.charging {
-  background: #427819;
+  color: lighter(#427819);
 }
 
 #battery.warning:not(.charging) {
-  background: #ffcf00;
+  color: lighter(#ffcf00);
 }
 
 @keyframes blink {
@@ -196,7 +201,7 @@ widget > * {
 }
 
 #custom-dunst.has-notifications {
-  background: #b7472a;
+  color: lighter(#b7472a);
 }
 
 #custom-dunst.is-paused {
