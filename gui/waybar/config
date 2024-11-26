@@ -17,6 +17,7 @@
   ],
 
   "modules-right": [
+    "group/keyboard-layout",
     "tray",
     "bluetooth",
     //"network#wire",
@@ -38,6 +39,10 @@
     "custom/dunst",
   ],
 
+  //////////
+  // Left //
+  //////////
+
   //"river/mode": {
   //  "format": "<b>{}</b>"
   //},
@@ -50,6 +55,10 @@
     "max-length": 35,
     "tooltip": true
   },
+
+  ////////////
+  // Center //
+  ////////////
 
   "clock": {
     "interval": 1,
@@ -76,6 +85,49 @@
       "on-click-forward": "tz_up",
       "on-click-backward": "tz_down"
     }
+  },
+
+  ///////////
+  // Right //
+  ///////////
+
+  "group/keyboard-layout": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 250,
+      "children-class": "",
+      "transition-left-to-right": false,
+      "click-to-reveal": true
+    },
+    "modules": [
+      "custom/keyboard-layout",
+      "custom/keyboard-layout-la",
+      "custom/keyboard-layout-es",
+      "custom/keyboard-layout-us"
+    ]
+  },
+
+  "custom/keyboard-layout": {
+    "format": "󰌌",
+    "tooltip-format": "Keyboard layout"
+  },
+
+  "custom/keyboard-layout-la": {
+    "format": "LA",
+    "tooltip-format": "Spanish - Latin America",
+    "on-click": "riverctl keyboard-layout latam"
+  },
+
+  "custom/keyboard-layout-es": {
+    "format": "ES",
+    "tooltip-format": "Spanish - International",
+    "on-click": "riverctl keyboard-layout es"
+  },
+
+  "custom/keyboard-layout-us": {
+    "format": "US",
+    "tooltip-format": "English - US",
+    "on-click": "riverctl keyboard-layout us"
   },
 
   "tray": {
@@ -141,7 +193,7 @@
     //"device": "amdgpu_bl1",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "<span size=\"14pt\">󱍖</span>  {icon}",
-    "tootip-format": "{percent}%",
+    "tooltip": false,
     "on-click": "",
     "on-scroll-up": "brightness.sh +5",
     "on-scroll-down": "brightness.sh -5"
