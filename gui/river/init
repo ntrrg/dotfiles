@@ -66,12 +66,18 @@ riverctl spawn "waybar"
 #riverctl rule-add -app-id 'float*' float
 riverctl rule-add -app-id "popup" float
 
+# Conky
 riverctl rule-add -app-id "conky" float
 
+# Firefox
+riverctl rule-add -title "Picture-in-Picture" float
+
+# Thunar
+riverctl rule-add -title "File Operation Progress" float
+
+# Volume controls
 riverctl rule-add -app-id "pavucontrol" float
 riverctl rule-add -title "Volume Control" float
-
-riverctl rule-add -title "Picture-in-Picture" float
 
 #riverctl rule-add -app-id "gedit" csd
 
