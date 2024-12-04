@@ -79,6 +79,9 @@ riverctl rule-add -title "File Operation Progress" float
 riverctl rule-add -app-id "pavucontrol" float
 riverctl rule-add -title "Volume Control" float
 
+# wdisplays
+riverctl rule-add -app-id "wdisplays" float
+
 #riverctl rule-add -app-id "gedit" csd
 
 #########
@@ -246,6 +249,7 @@ for _mode in $_modes; do
 	riverctl map $_mode Super P spawn "wdisplays"
 	riverctl map $_mode Super S spawn "dunstctl set-paused toggle"
 	riverctl map $_mode Super T spawn "foot"
+	riverctl map $_mode Super+Shift T spawn "foot -a popup"
 	riverctl map $_mode Super W spawn "firefox"
 	riverctl map $_mode Super+Shift W spawn "firefox --new-window"
 	riverctl map $_mode Super+Control W spawn "firefox --private-window"
