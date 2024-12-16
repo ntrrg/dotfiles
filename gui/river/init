@@ -72,7 +72,11 @@ riverctl rule-add -app-id "conky" float
 # Firefox
 riverctl rule-add -title "Picture-in-Picture" float
 
+# nsxiv
+riverctl rule-add -title "nsxiv" float
+
 # Thunar
+riverctl rule-add -title "Confirm to replace files" float
 riverctl rule-add -title "File Operation Progress" float
 
 # Volume controls
