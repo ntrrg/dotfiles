@@ -73,10 +73,6 @@ widget > * {
   padding: 0px 1.25em
 }
 
-#custom-keyboard-layout {
-  padding: 0px 0em 0px 0.15em;
-}
-
 #tray {
 }
 
@@ -85,6 +81,10 @@ widget > * {
   border-radius: 0px;
   padding: 0px;
   margin-right: 0px;
+}
+
+#custom-keyboard-layout {
+  padding: 0px 0em 0px 0.15em;
 }
 
 #bluetooth.connected {

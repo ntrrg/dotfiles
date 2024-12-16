@@ -17,8 +17,8 @@
   ],
 
   "modules-right": [
-    "group/keyboard-layout",
     "tray",
+    "group/keyboard-layout",
     "bluetooth",
     //"network#wire",
     "network#wireless",
@@ -91,6 +91,13 @@
   // Right //
   ///////////
 
+  "tray": {
+    //"icon-size": 18,
+    //"reverse-direction": true,
+    "show-passive-items": true,
+    "spacing": 10
+  },
+
   "group/keyboard-layout": {
     "orientation": "inherit",
     "drawer": {
@@ -128,13 +135,6 @@
     "format": "US",
     "tooltip-format": "English - US",
     "on-click": "riverctl keyboard-layout us"
-  },
-
-  "tray": {
-    //"icon-size": 18,
-    //"reverse-direction": true,
-    "show-passive-items": true,
-    "spacing": 10
   },
 
   "bluetooth": {
