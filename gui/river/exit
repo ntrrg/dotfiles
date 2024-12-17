@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -xeo pipefail
+
+pkill -15 wallpapers.sh
+pkill -15 pipewire
+riverctl exit

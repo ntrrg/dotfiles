@@ -8,7 +8,7 @@ _RIVER="${XDG_CONFIG_HOME:-"$HOME/.local/etc"}/river"
 riverctl enter-mode normal
 
 # See /usr/share/X11/xkb/symbols/pc for key names.
-riverctl map normal Alt+Shift F4 exit
+riverctl map normal Alt+Shift F4 spawn "$_RIVER/exit"
 riverctl map normal Super T spawn "foot"
 riverctl map locked Super Delete spawn "screens.sh turn toggle"
 
@@ -241,6 +241,7 @@ riverctl map passthrough Super F12 enter-mode normal
 # All modes
 
 for _mode in $_modes; do
+	riverctl map $_mode Alt+Shift F4 spawn "$_RIVER/exit"
 	riverctl map $_mode Super Space spawn "wofi"
 	riverctl map $_mode Super+Shift Space spawn "wofi -S run"
 	riverctl map $_mode Super B spawn "waybar"
@@ -284,7 +285,6 @@ for _mode in $_modes; do
 	# Windows #
 	###########
 
-	riverctl map $_mode Alt+Shift F4 exit
 	riverctl map $_mode Alt F4 close
 	riverctl map $_mode Alt F10 zoom
 	riverctl map $_mode Alt F11 toggle-fullscreen
