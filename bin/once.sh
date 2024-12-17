@@ -104,6 +104,7 @@ _on_exit() {
 	local _err=$?
 
 	_clean
+	trap - TERM
 	trap - INT
 	trap - EXIT
 	return $_err
@@ -135,6 +136,7 @@ EOF
 	return
 }
 
+trap true TERM
 trap true INT
 trap _on_exit EXIT
 
