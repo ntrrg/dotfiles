@@ -8,4 +8,4 @@ _rate="$(echo "$_info" | grep "energy-rate:" | grep -oE '[0-9]+(\.[0-9]+)?')"
 _current="$(echo "$_info" | grep "energy:" | grep -oE '[0-9]+(\.[0-9]+)?')"
 _percent="$(echo "$_rate * 100 / $_current" | bc)"
 
-printf '{"percentage": %s, "tooltip": "%s"}' "$_percent" "$_rate W"
+printf '{"percentage": %s, "tooltip": "%s"}' "$_percent" "$_rate W / $_current Wh"
