@@ -48,7 +48,7 @@
   //},
   "river/tags": {
     "num-tags": 9,
-    //"tag-labels":["󰬺", "", " 󰪶", "󰈹", "󰕼", "󰬿", "󰭀", "󰭁", "󰭂"],
+    //"tag-labels": ["", "󰪶 ", "󰈹", "󰕼", "5", "6", "7", "8", "9"],
     "disable-click": false
   },
   "river/window": {
@@ -72,7 +72,7 @@
         "weeks":      "<span><b>W{}</b></span>",
         "weekdays":   "<span><b>{}</b></span>",
         "days":       "<span>{}</span>",
-        "today":      "<span color='#427819'><b><u>{}</u></b></span>"
+        "today":      "<span color='#427819'><b>{}</b></span>"
       }
     },
     "format": "{:%H:%M}",
