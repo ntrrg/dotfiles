@@ -87,6 +87,13 @@ widget > * {
   padding: 0px 0em 0px 0.15em;
 }
 
+#pulseaudio {
+}
+
+#pulseaudio.muted {
+  color: lighter(#b7472a);
+}
+
 #bluetooth {
   border-radius: 0.35em 0px 0px 0.35em;
   margin-right: 0.15em;
@@ -120,17 +127,49 @@ widget > * {
   color: lighter(#b7472a);
 }
 
-#pulseaudio {
+#backlight {
   border-radius: 0.35em 0px 0px 0.35em;
   margin-right: 0.15em;
 }
 
-#pulseaudio.muted {
-  color: lighter(#b7472a);
+#battery {
+  border-radius: 0px;
+  padding-right: 0.375em;
+  margin-right: 0px;
 }
 
-#backlight {
+#battery.charging {
+  color: lighter(#427819);
+}
+
+#battery.warning:not(.charging) {
+  color: lighter(#ffcf00);
+}
+
+@keyframes blink {
+  to {
+    background: #b7472a;
+    color: #fff;
+  }
+}
+
+#battery.critical:not(.charging) {
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#custom-battery {
+  border-radius: 0px;
+  padding-left: 0.375em;
+  margin: 0px;
+}
+
+#temperature.battery {
   border-radius: 0px 0.35em 0.35em 0px;
+  padding-left: 0px;
 }
 
 #custom-cpu-icon {
@@ -179,46 +218,6 @@ widget > * {
 }
 
 #temperature.mem {
-  border-radius: 0px 0.35em 0.35em 0px;
-  padding-left: 0px;
-}
-
-#battery {
-  border-radius: 0.35em 0px 0px 0.35em;
-  padding-right: 0.375em;
-  margin-right: 0px;
-}
-
-#battery.charging {
-  color: lighter(#427819);
-}
-
-#battery.warning:not(.charging) {
-  color: lighter(#ffcf00);
-}
-
-@keyframes blink {
-  to {
-    background: #b7472a;
-    color: #fff;
-  }
-}
-
-#battery.critical:not(.charging) {
-  animation-name: blink;
-  animation-duration: 1s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-
-#custom-battery {
-  border-radius: 0px;
-  padding-left: 0.375em;
-  margin: 0px;
-}
-
-#temperature.battery {
   border-radius: 0px 0.35em 0.35em 0px;
   padding-left: 0px;
 }
