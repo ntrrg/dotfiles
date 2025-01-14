@@ -100,6 +100,10 @@ dunst:
 foot:
 	cp -rpf "gui/foot" "$(XDG_CONFIG_HOME)/"
 
+.PHONY: ghostty
+ghostty:
+	cp -rpf "gui/ghostty" "$(XDG_CONFIG_HOME)/"
+
 .PHONY: gtk
 gtk:
 	cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
@@ -120,7 +124,7 @@ wofi:
 river_scripts := $(shell find gui/river -type f -executable)
 
 .PHONY: river
-river: dunst foot waybar wofi
+river: dunst foot ghostty waybar wofi
 	cp -rpf "gui/river" "$(XDG_CONFIG_HOME)/"
 
 .PHONY: xfce
