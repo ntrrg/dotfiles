@@ -107,7 +107,7 @@ ghostty:
 
 .PHONY: gtk
 gtk:
-	cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
+	#cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
 	cp -rpf "gui/gtk-3.0" "$(XDG_CONFIG_HOME)/"
 
 waybar_scripts := $(shell find gui/waybar -type f -executable)
