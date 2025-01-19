@@ -29,8 +29,13 @@ riverctl border-color-unfocused 0x586e75
 riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme ntrrg"
 riverctl spawn "gsettings set org.gnome.desktop.interface icon-theme Everforest-Light"
 riverctl spawn "gsettings set org.gnome.desktop.interface cursor-theme phinger-cursors-light"
+#riverctl spawn "gsettings set org.gnome.desktop.interface cursor-size 24"
+riverctl spawn "gsettings set org.mate.peripherals-mouse cursor-theme phinger-cursors-light"
+#riverctl spawn "gsettings set org.mate.peripherals-mouse cursor-size 24"
+riverctl spawn "xfconf-query --channel xsettings --property /Gtk/CursorThemeName --set phinger-cursors-light"
+#riverctl spawn "xfconf-query --channel xsettings --property /Gtk/CursorThemeSize --set 24"
 riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
-riverctl xcursor-theme Adwaita
+riverctl xcursor-theme phinger-cursors-light
 
 riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
 
