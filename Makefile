@@ -75,6 +75,7 @@ xdg:
 .PHONY: zsh
 zsh:
 	cp -rpf \
+		"zsh/.profile" \
 		"zsh/.zlogin" \
 		"zsh/.zlogout" \
 		"zsh/.zprofile" \

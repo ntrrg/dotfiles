@@ -22,8 +22,6 @@
 
 * Vim-like key bindings (*Insert* mode by default).
 
-* Just type the directory name, `cd` is not needed.
-
 * Simple prompt with Git support.
 
   <p align="center">
