@@ -26,9 +26,9 @@ riverctl border-color-urgent 0xb7472a
 riverctl border-color-focused 0x427819
 riverctl border-color-unfocused 0x586e75
 
-riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme Everforest-Green-Dark"
+riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme ntrrg"
 riverctl spawn "gsettings set org.gnome.desktop.interface icon-theme Everforest-Light"
-riverctl spawn "gsettings set org.gnome.desktop.interface cursor-theme Adwaita"
+riverctl spawn "gsettings set org.gnome.desktop.interface cursor-theme phinger-cursors-light"
 riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
 riverctl xcursor-theme Adwaita
 
@@ -258,7 +258,7 @@ for _mode in $_modes; do
 	riverctl map $_mode Super+Shift T spawn "foot -a popup"
 	riverctl map $_mode Super W spawn "firefox"
 	riverctl map $_mode Super+Shift W spawn "firefox --new-window"
-	riverctl map $_mode Super+Control W spawn "firefox --private-window"
+	riverctl map $_mode Super+Shift+Alt W spawn "firefox --private-window"
 	riverctl map $_mode None Print spawn "$_RIVER/screenshot.sh"
 	riverctl map $_mode Super Delete spawn "screens.sh turn toggle"
 	riverctl map $_mode Super+Shift Delete spawn "screens.sh turn off && $_RIVER/lock.sh"
