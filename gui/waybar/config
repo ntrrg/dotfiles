@@ -231,7 +231,7 @@
   },
 
   "custom/cpu-icon": {
-    "format": "<span size=\"14pt\">󰻠</span>",
+    "format": "<span size=\"14pt\">󰍛</span>",
     "tooltip": false,
     "on-click": "foot -a popup -- htop"
   },
@@ -250,7 +250,7 @@
   },
 
   "custom/gpu-icon": {
-    "format": "<span size=\"14pt\">󰢮</span>",
+    "format": "<span size=\"16pt\">󰾲</span>",
     "tooltip": false,
     "on-click": "foot -a popup -- htop"
   },
@@ -271,7 +271,7 @@
   },
 
   "custom/mem-icon": {
-    "format": "<span size=\"14pt\">󰍛</span>",
+    "format": "<span size=\"10pt\"></span>",
     "tooltip": false,
     "on-click": "foot -a popup -- htop"
   },

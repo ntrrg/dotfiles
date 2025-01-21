@@ -110,27 +110,29 @@ gtk:
 	#cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
 	cp -rpf "gui/gtk-3.0" "$(XDG_CONFIG_HOME)/"
 
+.PHONY: rofi
+rofi:
+	cp -rpf "gui/rofi" "$(XDG_CONFIG_HOME)/"
+
 waybar_scripts := $(shell find gui/waybar -type f -executable)
 
 .PHONY: waybar
 waybar:
 	cp -rpf "gui/waybar" "$(XDG_CONFIG_HOME)/"
 
-.PHONY: wofi
-wofi:
-	cp -rpf "gui/wofi" "$(XDG_CONFIG_HOME)/"
-
 # GUI - DE
 
 river_scripts := $(shell find gui/river -type f -executable)
 
 .PHONY: river
-river: dunst foot ghostty waybar wofi
+river:
 	cp -rpf "gui/river" "$(XDG_CONFIG_HOME)/"
+	@echo "See also: dunst foot ghostty rofi waybar"
 
 .PHONY: xfce
-xfce: alacritty conky dunst
+xfce:
 	cp -rpf "gui/xfce4" "$(XDG_CONFIG_HOME)/"
+	@echo "See also: alacritty conky dunst"
 
 ###############
 # Development #

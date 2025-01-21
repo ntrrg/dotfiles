@@ -11,7 +11,7 @@ screen
 window
 region
 point
-color" | wofi --dmenu -L 7 -p "Select a screenshot mode:"
+color" | rofi -dmenu -l 7 -p "Screenshot mode:"
 	)
 fi
 

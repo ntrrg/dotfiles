@@ -59,7 +59,7 @@
     sticky_history = yes
     history_length = 100
 
-    dmenu = /usr/bin/wofi --dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
     browser = /usr/bin/xdg-open
     always_run_script = true
 

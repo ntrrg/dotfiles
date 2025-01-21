@@ -248,8 +248,8 @@ riverctl map passthrough Super F12 enter-mode normal
 
 for _mode in $_modes; do
 	riverctl map $_mode Alt+Shift F4 spawn "$_RIVER/exit"
-	riverctl map $_mode Super Space spawn "wofi"
-	riverctl map $_mode Super+Shift Space spawn "wofi -S run"
+	riverctl map $_mode Super Space spawn "rofi -show drun"
+	riverctl map $_mode Super+Shift Space spawn "rofi -show run"
 	riverctl map $_mode Super B spawn "waybar"
 	riverctl map $_mode Super+Shift B spawn "pkill waybar"
 	riverctl map $_mode Super D spawn "dunstctl close"
@@ -338,7 +338,7 @@ for _mode in $_modes; do
 	# Keyboard functions #
 	######################
 
-	riverctl map $_mode None XF86Search spawn "wofi"
+	riverctl map $_mode None XF86Search spawn "rofi -show drun"
 
 	riverctl map $_mode None XF86AudioRecord spawn ""
 	riverctl map $_mode None XF86ContrastAdjust spawn ""

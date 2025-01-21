@@ -191,6 +191,7 @@ widget > * {
 
 #custom-gpu-icon {
   border-radius: 0px;
+  padding-right: 1em;
   margin-right: 0px;
 }
 
@@ -208,6 +209,7 @@ widget > * {
 
 #custom-mem-icon {
   border-radius: 0px;
+  padding-right: 1.25em;
   margin-right: 0px;
 }
 

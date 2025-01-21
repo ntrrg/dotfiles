@@ -411,6 +411,7 @@ EOF
 
 		apk add \
 			river \
+			rofi-wayland \
 			dunst \
 			grim \
 			slurp \
@@ -422,7 +423,6 @@ EOF
 			tumbler \
 			waybar \
 			wf-recorder \
-			wofi \
 			xdg-desktop-portal-wlr
 
 		#ntapk add qt5ct

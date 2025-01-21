@@ -1,0 +1,246 @@
+configuration {
+  modi: "drun,run,filebrowser";
+  show-icons: true;
+  display-drun: "";
+  display-run: "";
+  display-filebrowser: "";
+  drun-display-format: "{name} [<span weight='light' size='small'>({generic})</span>]";
+}
+
+* {
+  font: "monospace 10";
+
+  background: #000;
+  background-alt: #272e33;
+  foreground: #fff;
+  selected: #427819;
+  active: #A7C080FF;
+  urgent: #b7472a;
+
+  border-color: var(selected);
+  handle-color: var(foreground);
+  background-color: var(background);
+  foreground-color: var(foreground);
+  alternate-background: var(background-alt);
+  normal-background: var(background);
+  normal-foreground: var(foreground);
+  urgent-background: var(urgent);
+  urgent-foreground: var(background);
+  active-background: var(active);
+  active-foreground: var(background);
+  selected-normal-background: var(selected);
+  selected-normal-foreground: var(background);
+  selected-urgent-background: var(active);
+  selected-urgent-foreground: var(background);
+  selected-active-background: var(urgent);
+  selected-active-foreground: var(background);
+  alternate-normal-background: var(background);
+  alternate-normal-foreground: var(foreground);
+  alternate-urgent-background: var(urgent);
+  alternate-urgent-foreground: var(background);
+  alternate-active-background: var(active);
+  alternate-active-foreground: var(background);
+}
+
+window {
+  enabled: true;
+  transparency: "real";
+  location: center;
+  anchor: center;
+  fullscreen: false;
+
+  width: 400px;
+  border: 0.10em solid;
+  border-color: @border-color;
+  border-radius: 0.35em;
+  cursor: "default";
+  background-color: @background-color;
+  //background-image: url("/path/to/image.png", none);
+  padding: 1em;
+}
+
+mainbox {
+  enabled: true;
+  children: [ "inputbar", "message", "listview", "mode-switcher" ];
+
+  background-color: transparent;
+}
+
+inputbar {
+  enabled: true;
+  children: [ "prompt", "entry" ];
+
+  background-color: transparent;
+  spacing: 0.5em;
+  margin: 0px 0px 0.5em 0px;
+}
+
+prompt {
+  enabled: true;
+
+  padding: 0px 0.25em;
+}
+
+textbox-prompt-colon {
+  enabled: false;
+}
+
+entry {
+  enabled: true;
+  placeholder: "search...";
+}
+
+num-filtered-rows {
+  enabled: true;
+}
+
+textbox-num-sep {
+  enabled: true;
+  str: "/";
+}
+
+num-rows {
+  enabled: true;
+}
+
+case-indicator {
+  enabled: true;
+}
+
+listview {
+  enabled: true;
+  columns: 1;
+  lines: 10;
+  cycle: false;
+  dynamic: true;
+  scrollbar: true;
+  layout: vertical;
+  reverse: false;
+  fixed-height: true;
+  fixed-columns: true;
+
+  border: 0px solid;
+  background-color: transparent;
+  spacing: 0.15em;
+}
+
+scrollbar {
+  handle-width: 0.15em;
+  handle-color: @handle-color;
+
+  border-radius: 0px;
+  background-color: @alternate-background;
+}
+
+element {
+  enabled: true;
+
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0.5em;
+}
+
+element normal.normal {
+  background-color: var(normal-background);
+  text-color: var(normal-foreground);
+}
+
+element normal.urgent {
+  background-color: var(urgent-background);
+  text-color: var(urgent-foreground);
+}
+
+element normal.active {
+  background-color: var(active-background);
+  text-color: var(active-foreground);
+}
+
+element selected.normal {
+  background-color: var(normal-foreground);
+  text-color: var(normal-background);
+}
+
+element selected.urgent {
+  background-color: var(selected-urgent-background);
+  text-color: var(selected-urgent-foreground);
+}
+
+element selected.active {
+  background-color: var(selected-active-background);
+  text-color: var(selected-active-foreground);
+}
+
+element alternate.normal {
+  background-color: var(alternate-normal-background);
+  text-color: var(alternate-normal-foreground);
+}
+
+element alternate.urgent {
+  background-color: var(alternate-urgent-background);
+  text-color: var(alternate-urgent-foreground);
+}
+
+element alternate.active {
+  background-color: var(alternate-active-background);
+  text-color: var(alternate-active-foreground);
+}
+
+element-icon {
+  size: 1.15em;
+
+  margin: 0px 0.25em 0px 0px;
+}
+
+element-text {
+  vertical-align: 0.5;
+  horizontal-align: 0.0;
+}
+
+mode-switcher{
+  enabled: true;
+
+  spacing: 0.5em;
+  margin: 0.5em 0px 0px 0px;
+}
+
+button {
+  border-radius: 0.15em;
+  background-color: @alternate-background;
+  text-color: @foreground-color;
+  cursor: pointer;
+  padding: 0.5em 0.15em;
+}
+
+button selected {
+  background-color: var(selected-normal-background);
+  text-color: var(selected-normal-foreground);
+}
+
+message {
+  enabled: true;
+
+  margin: 0px;
+  padding: 0px;
+  text-color: @foreground-color;
+}
+
+textbox {
+  vertical-align: 0.5;
+  horizontal-align: 0.0;
+  highlight: none;
+  placeholder-color: @foreground-color;
+  blink: true;
+  markup: true;
+
+  border-radius: 0.15em;
+  background-color: @alternate-background;
+  text-color: @foreground-color;
+  padding: 0.5em;
+}
+
+error-message {
+  border-radius: 0.15em;
+  background-color: @background-color;
+  text-color: @foreground-color;
+  padding: 0.5em;
+}

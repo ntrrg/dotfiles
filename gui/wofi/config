@@ -1,6 +1,0 @@
-style=/home/ntrrg/.local/etc/wofi/style.css
-show=drun
-allow_images=true
-insensitive=true
-lines=11
-key_expand=Tab
