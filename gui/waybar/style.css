@@ -27,7 +27,6 @@ widget > * {
 }
 
 #tags {
-  /*border-radius: 0px 0.35em 0.35em 0px;*/
   border-radius: 0.35em;
   padding: 0px;
 }
@@ -35,7 +34,6 @@ widget > * {
 #tags button {
   min-width: 0.5em;
   border-radius: 0px;
-  border-bottom: 0.2em solid;
   color: #555;
   /*color: shade(@theme_text_color, 0.50);*/
   padding: 0px 0.75em;
@@ -46,24 +44,27 @@ widget > * {
 }
 
 #tags button:last-child {
+  border: none;
   border-radius: 0px 0.35em 0.35em 0px;
 }
 
 #tags button.occupied {
   color: @theme_text_color;
+  font-weight: bold;
 }
 
 #tags button.focused {
-  color: @theme_text_color;
-  background: #427819;
+  color: #427819;
+  font-weight: bold;
 }
 
 #tags button.urgent {
-  color: @theme_text_color;
-  background: #b7472a;
+  color: #b7472a;
+  font-weight: bold;
 }
 
 #tags button:hover {
+  background: lighter(@theme_base_color);
 }
 
 #window {
