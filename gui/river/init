@@ -24,7 +24,7 @@ riverctl background-color 0x000000
 riverctl border-width 2
 riverctl border-color-urgent 0xb7472a
 riverctl border-color-focused 0x427819
-riverctl border-color-unfocused 0x586e75
+riverctl border-color-unfocused 0x555555
 
 riverctl spawn "gsettings set org.gnome.desktop.interface gtk-theme Everforest-Green-Black"
 riverctl spawn "gsettings set org.gnome.desktop.interface icon-theme Everforest-Light"
