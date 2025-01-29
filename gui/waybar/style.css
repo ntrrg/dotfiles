@@ -56,11 +56,13 @@ widget > * {
 #tags button.focused {
   color: #427819;
   font-weight: bold;
+  border-bottom: 0.15em solid #427819;
 }
 
 #tags button.urgent {
   color: #b7472a;
   font-weight: bold;
+  border-bottom: 0.15em solid #b7472a;
 }
 
 #tags button:hover {
