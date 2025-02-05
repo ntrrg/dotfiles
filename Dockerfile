@@ -17,5 +17,5 @@ COPY . dotfiles
 RUN chown -R "$NEW_USER":"$NEW_USER" "/home/$NEW_USER"
 USER "$NEW_USER"
 RUN cd dotfiles && make tui
-CMD ["/bin/zsh"]
+CMD ["/bin/zsh", "-c", "source ~/.zprofile && zsh --interactive"]
 

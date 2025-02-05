@@ -1,6 +1,6 @@
-FROM alpine:3.20
+FROM alpine:3.21
 ARG NEW_USER="ntrrg"
-ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.20"
+ARG MIRROR="http://dl-cdn.alpinelinux.org/alpine/v3.21"
 WORKDIR "/tmp/post-install"
 COPY post-install.sh .
 RUN \
@@ -16,5 +16,5 @@ COPY . dotfiles
 RUN chown -R "$NEW_USER":"$NEW_USER" "/home/$NEW_USER"
 USER "$NEW_USER"
 RUN cd dotfiles && make tui
-CMD ["/bin/zsh"]
+CMD ["/bin/zsh", "-c", "source ~/.zprofile && zsh --interactive"]
 
