@@ -269,7 +269,10 @@ hostinfo() {
 "
 }
 
-#. "$HOME/.zprofile"
+if [[ $NT_ZSH != 1 ]]; then
+  . "$HOME/.zprofile"
+fi
+
 hostinfo
 zle -N hostinfo
 
@@ -332,6 +335,8 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*:descriptions' format '%BCoincidences:%b'
 zstyle ':completion:*:warnings' format '%BNot found..%b'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+fpath=($XDG_DATA_HOME/zsh/vendor-functions $XDG_DATA_HOME/zsh/vendor-completions $fpath)
 
 # setopt correctall
 setopt extendedglob
