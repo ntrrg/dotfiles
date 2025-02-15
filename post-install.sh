@@ -16,7 +16,7 @@ IS_GUI="${IS_GUI:-0}"
 DE="${DE:-"none"}"
 EXTRA_APPS="${EXTRA_APPS:-0}"
 
-SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
+SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
 ALLOW_SSH="${ALLOW_SSH:-1}"
 ALLOW_MOSH="${ALLOW_MOSH:-1}"
 
@@ -651,7 +651,7 @@ fi
 # Firewall #
 ############
 
-if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
+if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	apk add iptables
 
 	iptables -Z

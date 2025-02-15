@@ -11,7 +11,7 @@ IS_HARDWARE="${IS_HARDWARE:-1}"
 HAS_BLUETOOTH="${HAS_BLUETOOTH:-0}"
 HAS_WIRELESS="${HAS_WIRELESS:-0}"
 
-SETUP_FIREWALL="${SETUP_FIREWALL:-1}"
+SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
 ALLOW_SSH="${ALLOW_SSH:-1}"
 ALLOW_MOSH="${ALLOW_MOSH:-1}"
 
@@ -98,7 +98,7 @@ fi
 # Firewall #
 ############
 
-if [ "$IS_HARDWARE" -ne 0 ] && [ "$SETUP_FIREWALL" -ne 0 ]; then
+if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	apt-get install -y iptables
 
 	iptables -Z
