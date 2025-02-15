@@ -1,0 +1,26 @@
+# /etc/fstab
+
+# DEVICE/FILE_SYSTEM   MOUNT_POINT   TYPE   OPTIONS   DUMP   VERIFICATION
+
+# Device
+/dev/vg0/data   /media/data   btrfs   defaults   0   2
+
+# Swap
+/dev/vg0/swap   swap   swap   defaults   0   0
+
+# Directory
+/media/data/var/lib/docker   /var/lib/docker   btrfs   bind   0   0
+
+# Remote file system
+ntrrg@home.nt.web.ve:/home/ntrrg   /home/ntrrg   fuse.sshfs   defaults,_netdev   0   0
+
+# Overlay
+overlay   /usr   overlay   lowerdir=/usr,upperdir=/media/usb/usr,workdir=/media/usb/.work/usr   0   0
+overlay   /bin   overlay   lowerdir=/home/ntrrg/.local/bin:/usr/bin:/bin                        0   0
+
+# RAM
+tmpfs   /media/ramdisk   tmpfs     nodev,nosuid,noexec,nodiratime,size=2048M                        0      0
+tmpfs   /var/log         tmpfs     rw,nodev,nosuid,noexec,nodiratime,relatime,size=10%,mode=755     0      0
+
+# Virtual machines storage (UB on CoW FS)
+/dev/vg0/data   /media/vms       btrfs     defaults,nodatacow   0      0

@@ -1,0 +1,19 @@
+# $HOME/.local/share/applications/NAME.desktop
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name[es]=Vim
+Name=Vim
+GenericName[es]=Editor de texto
+GenericName=Text Editor
+Comment[es]=Editar archivos de texto
+Comment=Edit text files
+Icon=gvim
+Exec=vim -p %F
+Terminal=true
+StartupNotify=false
+MimeType=text/plain;
+Keywords[es]=Texto;editor;
+Keywords=Text;editor;
+Categories=Utility;Development;

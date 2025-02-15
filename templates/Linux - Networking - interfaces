@@ -1,0 +1,102 @@
+# /etc/network/interfaces
+
+# Stanzas:
+#
+# * `auto`: Brings up the interface when `ifup -a` is used or at boot time.
+#
+# * `allow-hotplug`: Brings up the interface when it is plugged, note that this
+#   means the whole device, not the Ethernet cable (useful for USB devices).
+
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+# Ethernet - DHCP
+
+# auto NET_DEVICE
+# iface NET_DEVICE inet dhcp
+
+auto eth0
+iface eth0 inet dhcp
+
+# Ethernet - Static
+
+# auto NET_DEVICE
+# iface NET_DEVICE inet static
+#     address IP
+#     netmask SUBNET_MASK
+#     network NETWORK_IP
+#     broadcast BROADCAST_IP
+#     gateway GATEWAY_IP
+
+auto eth0
+iface eth0 inet static
+    address 192.168.0.50
+    netmask 255.255.255.0
+    network 192.168.0.0
+    broadcast 192.168.0.255
+    gateway 192.168.0.1
+
+# Wireless - DHCP
+
+# auto NET_DEVICE
+# iface NET_DEVICE inet dhcp
+#     wpa-conf WPA_SUPPLICANT_CONFIG_PATH
+
+auto wlan0
+iface wlan0 inet dhcp
+    wpa-conf /etc/wpa_supplicant/networks/home.conf
+
+# Wireless - Static
+
+# auto NET_DEVICE
+# iface NET_DEVICE inet static
+#     address IP
+#     netmask SUBNET_MASK
+#     network NETWORK_IP
+#     broadcast BROADCAST_IP
+#     gateway GATEWAY_IP
+#     wpa-conf WPA_SUPPLICANT_CONFIG_PATH
+
+auto wlan0
+iface wlan0 inet static
+    address 192.168.0.50
+    netmask 255.255.255.0
+    network 192.168.0.0
+    broadcast 192.168.0.255
+    gateway 192.168.0.1
+    wpa-conf /etc/wpa_supplicant/networks/home.conf 
+
+# Templates
+
+# iface NAME inet static
+#     address IP
+#     netmask SUBNET_MASK
+#     network NETWORK_IP
+#     broadcast BROADCAST_IP
+#     gateway GATEWAY_IP
+#     wpa-conf /path/to/wpa_passphrase/file.conf 
+#
+# auto NET_DEVICE
+# iface NET_DEVICE inet static inherits NAME
+#     OPTIONS
+
+iface ntnet inet static
+    address 192.168.0.50
+    netmask 255.255.255.0
+    network 192.168.0.0
+    broadcast 192.168.0.255
+    gateway 192.168.0.1
+
+iface eth0 inet static inherits ntnet
+
+auto wlan0
+iface wlan0 inet static inherits ntnet
+    wpa-conf /etc/wpa_supplicant/networks/home.conf 
+
+# Wireguard
+
+auto wg0
+iface wg0 inet static
+    pre-up wg-quick up wg0

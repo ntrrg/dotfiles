@@ -50,6 +50,11 @@ ssh:
 	cp -rf "ssh/.ssh" "$$HOME/"
 	chmod -R a=,u=rwX "$$HOME/.ssh"
 
+.PHONY: templates
+templates:
+	cp -pf $(shell find templates -mindepth 1 ! -path "templates/.*" | sed 's/ /\\ /g') \
+		"$$HOME/Templates"
+
 .PHONY: vim
 vim:
 	cp -rpf "vim/.vim" "$$HOME/"
@@ -109,7 +114,6 @@ ghostty:
 
 .PHONY: gtk
 gtk:
-	#cp -rpf "gui/themes" "$(XDG_DATA_HOME)/"
 	cp -rpf "gui/gtk-3.0" "$(XDG_CONFIG_HOME)/"
 
 .PHONY: rofi

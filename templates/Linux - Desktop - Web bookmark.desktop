@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Link
+Name[es]=Nombre del sitio web
+Name=Website name
+Comment[es]=Descripcion del sitio web
+Comment=Website description
+Icon=web-browser
+URL=https://example.com
+#Categories=Game;Development;
+#Keywords=Text;editor;

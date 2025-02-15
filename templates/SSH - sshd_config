@@ -1,0 +1,65 @@
+# /etc/ssh/sshd_config
+
+Protocol 2
+AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+Port 22
+
+#AcceptEnv ENV_VAR...
+AcceptEnv LANG LC_*
+
+# AllowUsers USER...
+AllowUsers ntrrg
+
+Banner none
+PrintMotd no
+PrintLastLog no
+SyslogFacility AUTH
+LogLevel INFO
+
+Compression no
+#PermitTTY yes
+#PrintMotd yes
+#PrintLastLog yes
+#TCPKeepAlive yes
+GatewayPorts no
+AllowTcpForwarding no
+X11Forwarding no
+#X11DisplayOffset 10
+#X11UseLocalhost yes
+
+# --------------------
+
+HostbasedAuthentication no
+StrictModes yes
+ChallengeResponseAuthentication no
+UsePAM yes
+
+#MaxSessions 10
+MaxAuthTries 1
+PasswordAuthentication no
+PubkeyAuthentication yes
+PermitRootLogin no
+
+#AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+# Variables:
+# - %u: Username.
+AuthorizedKeysFile .ssh/authorized_keys
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# --------------------
+
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+# Match User USER,...
+Match User storage
+  PasswordAuthentication yes
+  GatewayPorts yes
+  AllowTcpForwarding yes
+  #ChrootDirectory none
+  #ForceCommand internal-sftp
+

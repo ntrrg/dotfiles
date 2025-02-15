@@ -1,0 +1,9 @@
+# /etc/docker/daemon.json
+
+{
+  "registry-mirrors": [
+    // "CUSTOM_REGISTRY_URL",
+    "https://registry-1.docker.io"
+  ]
+}
+

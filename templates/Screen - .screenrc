@@ -1,0 +1,19 @@
+only
+# screen TEXT_EDITOR_COMMAND
+screen vim
+title "Text editor"
+split
+split -v
+resize 85
+focus
+screen
+title "Console [|]"
+focus
+screen
+title "Console [-]"
+resize -v 10
+focus
+mousetrack off
+# layout save PROJECT_NAME
+# sessionname PROJECT_NAME
+

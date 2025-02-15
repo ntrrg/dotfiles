@@ -1,0 +1,5 @@
+# /etc/crypttab
+
+# TARGET_NAME   SOURCE_DEVICE   KEY_FILE   OPTIONS
+Data            /dev/VG/Data    none       luks
+
