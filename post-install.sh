@@ -80,8 +80,8 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		usbutils \
 		util-linux
 
-	if ! grep -q "uinput" "/etc/modules"; then
-		echo '^uinput$' >> "/etc/modules"
+	if ! grep -q "^uinput$" "/etc/modules"; then
+		echo 'uinput' >> "/etc/modules"
 	fi
 
 	#rc-update add keyd default
@@ -120,15 +120,17 @@ apk add \
 
 #apk add time
 
+if [ "$NEW_USER" = "ntrrg" ]; then
+	apk del vim
+	ntapk add vim || apk add vim
+fi
+
 if [ "$IS_HARDWARE" -ne 0 ]; then
 	apk add powertop
 fi
 
 if [ "$IS_GUI" -eq 0 ]; then
-	# Applications.
-
-	apk del vim
-	ntapk add vim || apk add vim
+	true
 else
 	# Fonts
 
@@ -583,10 +585,7 @@ EOF
 
 		#ntapk add conky
 
-		ntapk add st || apk add st
-
-		apk del vim
-		ntapk add vim-huge || apk add vim
+		#ntapk add st || apk add st
 	fi
 
 	if [ "$EXTRA_APPS" -ne 0 ]; then
@@ -638,13 +637,13 @@ EOF
 
 	apk add appstream-compose gtk-murrine-engine ostree
 
-	ntapk add \
-		everforest-gtk-theme \
-		everforest-gtk-theme-borderless \
-		everforest-gtk-theme-dark \
-		everforest-gtk-theme-dark-borderless \
-		everforest-icon-theme \
-		everforest-icon-theme-dark || true
+	#ntapk add \
+	#	everforest-gtk-theme \
+	#	everforest-gtk-theme-borderless \
+	#	everforest-gtk-theme-dark \
+	#	everforest-gtk-theme-dark-borderless \
+	#	everforest-icon-theme \
+	#	everforest-icon-theme-dark || true
 fi
 
 ############

@@ -64,10 +64,12 @@ xdg:
 	mkdir -p "$$HOME/Downloads"
 	mkdir -p "$$HOME/Fonts"
 	mkdir -p "$$HOME/Games"
+	mkdir -p "$$HOME/Icons"
 	mkdir -p "$$HOME/Music"
 	mkdir -p "$$HOME/Pictures"
 	mkdir -p "$$HOME/Public"
 	mkdir -p "$$HOME/Templates"
+	mkdir -p "$$HOME/Themes"
 	mkdir -p "$$HOME/Videos"
 	xdg/setup.sh
 	cp -pf "xdg/mimeapps.list" "xdg/user-dirs.dirs" "xdg/user-dirs.locale" "$(XDG_CONFIG_HOME)/"
