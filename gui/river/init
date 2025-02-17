@@ -9,7 +9,7 @@ riverctl enter-mode normal
 
 # See /usr/share/X11/xkb/symbols/pc for key names.
 riverctl map normal Alt+Shift F4 spawn "$_RIVER/exit"
-riverctl map normal Super T spawn "foot"
+riverctl map normal Super T spawn "ghostty"
 riverctl map locked Super Delete spawn "screens.sh turn toggle"
 
 ##############
@@ -62,7 +62,7 @@ riverctl spawn "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_
 riverctl spawn "/usr/libexec/pipewire-launcher"
 #riverctl spawn "swayidle -w timeout 300 'screens.sh turn off' resume 'screens.sh turn on' timeout 600 '$_RIVER/lock.sh'"
 
-riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal exec org.codeberg.dnkl.foot.desktop"
+riverctl spawn "gsettings set org.gnome.desktop.default-applications.terminal exec com.mitchellh.ghostty.desktop"
 riverctl spawn "xdg-settings set default-web-browser firefox.desktop"
 
 riverctl spawn "dunst"
@@ -265,15 +265,15 @@ for _mode in $_modes; do
 	riverctl map $_mode Super M spawn "telegram-desktop"
 	riverctl map $_mode Super P spawn "wdisplays"
 	riverctl map $_mode Super S spawn "dunstctl set-paused toggle"
-	riverctl map $_mode Super T spawn "foot"
-	riverctl map $_mode Super+Shift T spawn "foot -a popup"
+	riverctl map $_mode Super T spawn "ghostty"
+	riverctl map $_mode Super+Shift T spawn "ghostty --title=popup"
 	riverctl map $_mode Super W spawn "firefox"
 	riverctl map $_mode Super+Shift W spawn "firefox --new-window"
 	riverctl map $_mode Super+Shift+Alt W spawn "firefox --private-window"
 	riverctl map $_mode None Print spawn "$_RIVER/screenshot.sh"
 	riverctl map $_mode Super Delete spawn "screens.sh turn toggle"
 	riverctl map $_mode Super+Shift Delete spawn "screens.sh turn off && $_RIVER/lock.sh"
-	riverctl map $_mode Super+Shift+Alt Delete spawn "foot -a popup -W 40x2 -- su - -c 'pm-suspend'"
+	riverctl map $_mode Super+Shift+Alt Delete spawn "ghostty --title=popup --window-decoration=false --window-width=40 --window-width=2 -e doas pm-suspend"
 	riverctl map $_mode Control+Alt Delete spawn ""
 
 	#########

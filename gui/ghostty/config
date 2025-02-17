@@ -2,6 +2,8 @@
 #working-directory = inherit
 #copy-on-select = false
 
+keybind = ctrl+b=toggle_window_decorations
+
 ##########
 # Window #
 ##########
@@ -10,6 +12,7 @@
 #title = " "
 gtk-single-instance = false
 
+window-theme = ghostty
 window-decoration = false
 #fullscreen = false
 window-width = 85
@@ -47,7 +50,7 @@ palette = 13=#ff00ff
 palette = 14=#00ffff
 palette = 15=#ffffff
 
-#cursor-style = block
+cursor-style = block
 #cursor-color = #c0c0c0
 #cursor-text = #000000
 cursor-invert-fg-bg = true
@@ -57,8 +60,8 @@ cursor-invert-fg-bg = true
 # Font #
 ########
 
-font-size = 11
-#font-family =
+font-size = 10.5
+font-family = monospace
 #font-family-bold =
 #font-family-italic =
 #font-family-bold-italic =

@@ -158,7 +158,7 @@
     "tooltip-format-connected": "{status} - {controller_alias} ({controller_address})\n\n{num_connections} devices connected:\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "- {device_alias} ({device_address})",
     "tooltip-format-enumerate-connected-battery": "- {device_alias} 󰁹 {device_battery_percentage}% ({device_address})",
-    "on-click": "foot -a popup -- bluetoothctl"
+    "on-click": "ghostty --title=popup -e bluetoothctl"
   },
 
   "network#wire": {
@@ -172,7 +172,7 @@
     "format": "<span size=\"12pt\">{icon}</span>",
     "tooltip-format": "{ipaddr}\n󰁆 {bandwidthDownBits} 󰁞 {bandwidthUpBits}",
     "tooltip-format-disconnected": "Disconnected",
-    "on-click": "foot -a popup -- doas iftop -i eth0 -P"
+    "on-click": "ghostty --title=popup -e doas iftop -i eth0 -P"
   },
 
   "network#wireless": {
@@ -186,7 +186,7 @@
     "format": "<span size=\"12pt\">{icon}</span>",
     "tooltip-format": "{essid} {frequency}GHz ({signalStrength}%)\n{ipaddr}\n󰁆 {bandwidthDownBits} 󰁞 {bandwidthUpBits}",
     "tooltip-format-disconnected": "Disconnected",
-    "on-click": "foot -a popup -- doas iftop -i wlan0 -P"
+    "on-click": "ghostty --title=popup -e doas iftop -i wlan0 -P"
   },
 
   "backlight": {
@@ -212,7 +212,7 @@
       "full": "󰂅",
     },
     "format": "<span size=\"12pt\">{icon}</span> {capacity}%",
-    "on-click": "foot -a popup -- doas powertop"
+    "on-click": "ghostty --title=popup -e doas powertop"
   },
   "custom/battery": {
     "exec": "~/.local/etc/waybar/custom/battery.sh",
@@ -220,39 +220,39 @@
     "format": "{icon}",
     "return-type": "json",
     "interval": 1,
-    "on-click": "foot -a popup -- doas powertop"
+    "on-click": "ghostty --title=popup -e doas powertop"
   },
   "temperature#battery": {
     "hwmon-path": "/sys/class/thermal/thermal_zone0/temp",
     "critical-threshold": 60,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
-    "on-click": "foot -a popup -- doas powertop"
+    "on-click": "ghostty --title=popup -e doas powertop"
   },
 
   "custom/cpu-icon": {
     "format": "<span size=\"14pt\">󰍛</span>",
     "tooltip": false,
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "cpu": {
     "interval": 10,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#cpu": {
     "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
     "critical-threshold": 60,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
 
   "custom/gpu-icon": {
     "format": "<span size=\"16pt\">󰾲</span>",
     "tooltip": false,
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "custom/gpu": {
     "exec": "~/.local/etc/waybar/custom/gpu.sh",
@@ -260,34 +260,34 @@
     "format": "{icon}",
     "return-type": "json",
     "interval": 1,
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#gpu": {
     "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
     "critical-threshold": 60,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
 
   "custom/mem-icon": {
     "format": "<span size=\"10pt\"></span>",
     "tooltip": false,
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "memory": {
     "interval": 10,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "tooltip-format": "{used}GiB / {total}GiB ({percentage}%)",
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#mem": {
     "hwmon-path": "/sys/class/hwmon/hwmon3/temp4_input",
     "critical-threshold": 60,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
-    "on-click": "foot -a popup -- htop"
+    "on-click": "ghostty --title=popup -e htop"
   },
 
   "custom/dunst": {
