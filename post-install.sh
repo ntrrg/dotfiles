@@ -568,6 +568,7 @@ EOF
 		ffmpeg \
 		ffmpeg-libs \
 		firefox \
+		flatpak \
 		imagemagick \
 		libsixel-tools \
 		telegram-desktop \
@@ -576,9 +577,11 @@ EOF
 		xarchiver \
 		zbar
 
+	flatpak remote-add --if-not-exists \
+		flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
+
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
-			alacritty \
 			foot \
 			mupdf \
 			nsxiv
@@ -593,7 +596,6 @@ EOF
 			blender \
 			chromium \
 			evince \
-			flatpak \
 			gimp \
 			inkscape \
 			kdenlive \
@@ -605,9 +607,6 @@ EOF
 			waydroid
 
 		#apk add manuskript
-
-		flatpak remote-add --if-not-exists \
-			flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
 
 		if [ "$LANGUAGE" != "C" ]; then
 			_LANG="${LANGUAGE%_*}"
@@ -688,9 +687,13 @@ if [ -n "$NEW_USER" ]; then
 	fi
 
 	_GROUPS="
-		audio cdrom cdrw dialout disk floppy games input keyd lp lpadmin netdev
-		optical plugdev power rfkill scanner seat storage usb users video wheel
+		audio disk floppy input keyd kvm netdev optical plugdev power rfkill
+		storage usb users video wheel
 	"
+
+	if [ "$IS_GUI" -ne 0 ]; then
+		_GROUPS="$_GROUPS games lp lpadmin scanner seat"
+	fi
 
 	for _GROUP in $_GROUPS; do
 		addgroup "$_GROUP" 2> /dev/null || true
