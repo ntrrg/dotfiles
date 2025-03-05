@@ -68,6 +68,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		cryptsetup \
 		dmidecode \
 		dosfstools \
+		dvd+rw-tools \
 		hdparm \
 		keyd \
 		lvm2 \
@@ -652,8 +653,8 @@ fi
 if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	apk add iptables
 
-	iptables -Z
-	iptables -F
+	#iptables -Z
+	#iptables -F
 	iptables -P INPUT DROP
 	iptables -P FORWARD ACCEPT
 	iptables -P OUTPUT ACCEPT

@@ -101,8 +101,8 @@ fi
 if [ "$SETUP_FIREWALL" -ne 0 ]; then
 	apt-get install -y iptables
 
-	iptables -Z
-	iptables -F
+	#iptables -Z
+	#iptables -F
 	iptables -P INPUT DROP
 	iptables -P FORWARD ACCEPT
 	iptables -P OUTPUT ACCEPT
