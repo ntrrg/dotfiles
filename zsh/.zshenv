@@ -4,7 +4,7 @@
 # Applications #
 ################
 
-export BROWSER="firefox"
+export BROWSER="chromium"
 export EDITOR="vim"
 export PAGER="less"
 export SHELL="zsh"

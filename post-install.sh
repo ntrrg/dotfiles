@@ -568,7 +568,7 @@ EOF
 	apk add \
 		ffmpeg \
 		ffmpeg-libs \
-		firefox \
+		chromium \
 		flatpak \
 		imagemagick \
 		libsixel-tools \
@@ -595,7 +595,6 @@ EOF
 	if [ "$EXTRA_APPS" -ne 0 ]; then
 		apk add \
 			blender \
-			chromium \
 			evince \
 			gimp \
 			inkscape \
