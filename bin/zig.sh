@@ -6,11 +6,6 @@ set -euo pipefail
 
 export LOGPREFIX="${LOGPREFIX:-""}${0##*/}: "
 
-_ZIGSH_DATA="${ZIGSH_DATA:-"${XDG_DATA_HOME:-"$HOME/.local/share"}/zig.sh"}"
-_ZIGSH_STATE="${ZIGSH_STATE:-"${XDG_STATE_HOME:-"$HOME/.local/var"}/zig.sh"}"
-_ZIGSH_CACHE="${ZIGSH_CACHE:-"${XDG_CACHE_HOME:-"$HOME/.cache"}/zig.sh"}"
-_ZIGSH_ENVS="${ZIGSH_ENVS:-"$_ZIGSH_STATE"}"
-
 _CC="${CC:-"cc"}"
 _NO_DOCS="${NO_DOCS:-""}"
 _USE_LLVM="${USE_LLVM:-""}"
@@ -18,6 +13,11 @@ _ZIG="${ZIG:-"zig"}"
 _ZIG_BUILDS_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/builds"}"
 _ZIG_GIT_MIRROR="${ZIG_GIT_MIRROR:-"https://github.com/ziglang/zig"}"
 _ZIG_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/download"}"
+
+_ZIGSH_DATA="${ZIGSH_DATA:-"${XDG_DATA_HOME:-"$HOME/.local/share"}/zig.sh"}"
+_ZIGSH_STATE="${ZIGSH_STATE:-"${XDG_STATE_HOME:-"$HOME/.local/var"}/zig.sh"}"
+_ZIGSH_CACHE="${ZIGSH_CACHE:-"${XDG_CACHE_HOME:-"$HOME/.cache"}/zig.sh"}"
+_ZIGSH_ENVS="${ZIGSH_ENVS:-"$_ZIGSH_STATE"}"
 _ZIG_SRC="${ZIG_SRC:-"$_ZIGSH_CACHE/src"}"
 
 _main() {
@@ -413,6 +413,8 @@ Options:
   -p, --prefix     Print release prefix
   -s, --source     Build given release from source (default)
 
+  For logging options see 'log.sh --help'.
+
 Environment variables:
   - 'CC' is the C compiler used for bootstraping (non LLVM version).
   - 'NO_DOCS' disables documentation generation.
@@ -424,8 +426,6 @@ Environment variables:
     ($_ZIG_SRC)
   - 'ZIGSH_ENVS' points to the directory that will hold Zig releases.
     ($_ZIGSH_ENVS)
-
-For logging options see 'log.sh --help'.
 
 Copyright (c) 2023 Miguel Angel Rivera Notararigo
 Released under the MIT License

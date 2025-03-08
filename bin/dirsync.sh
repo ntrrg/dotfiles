@@ -98,32 +98,32 @@ Usage: $_name [CMD_OPTION]... -- SRC DEST [ITEM]...
 Options:
   -h, --help   Show this help message
 
+  For logging options see 'log.sh --help'.
+
 Environment variables:
-  * 'CMD' is the syncronization command to be used. ($_CMD)
+  - 'CMD' is the syncronization command to be used. ($_CMD)
 
 Examples:
 
-  * Clone full Alpine Linux package repository:
+  - Clone full Alpine Linux package repository:
 
     $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine
 
-  * Clone Alpine Linux edge branch:
+  - Clone Alpine Linux edge branch:
 
     $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine edge/
 
-  * Clone Alpine Linux edge branch for aarch64 and x86_64 architectures:
+  - Clone Alpine Linux edge branch for aarch64 and x86_64 architectures:
 
     $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine edge/{main,community,testing}/{aarch64,x86_64}/
 
-  * Clone Alpine Linux stable branches 3.16, 3.17 and 3.18 without releases:
+  - Clone Alpine Linux stable branches 3.16, 3.17 and 3.18 without releases:
 
     $_name -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine v3.1{6,7,8}/{main,community}/
 
-  * Clone full Alpine Linux package repository with rsync flags:
+  - Clone full Alpine Linux package repository with rsync flags:
 
     $_name -azAHXh --delay-updates --delete-delay --progress -- rsync://rsync.alpinelinux.org/alpine ~/Downloads/alpine
-
-For logging options see 'log.sh --help'.
 
 Copyright (c) 2023 Miguel Angel Rivera Notararigo
 Released under the MIT License
