@@ -37,7 +37,7 @@ riverctl spawn "xfconf-query --channel xsettings --property /Gtk/CursorThemeName
 riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
 riverctl xcursor-theme phinger-cursors-light
 
-riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
+#riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
 
 #################
 # Input methods #
@@ -354,7 +354,7 @@ for _mode in $_modes; do
 	riverctl map $_mode None XF86MonBrightnessDown spawn "brightness.sh -10"
 	riverctl map $_mode None XF86Next_VMode spawn ""
 	riverctl map $_mode None XF86Prev_VMode spawn ""
-	riverctl map $_mode None XF86ScreenSaver spawn ""
+	riverctl map $_mode None XF86ScreenSaver spawn "screens.sh turn toggle"
 	riverctl map $_mode None XF86SplitScreen spawn ""
 	riverctl map $_mode None XF86WebCam spawn ""
 	riverctl map $_mode None XF86iTouch spawn ""
@@ -396,7 +396,7 @@ for _mode in $_modes; do
 	riverctl map $_mode None XF86ScrollDown spawn ""
 	riverctl map $_mode None XF86ScrollUp spawn ""
 	riverctl map $_mode None XF86Send spawn ""
-	riverctl map $_mode None XF86Sleep spawn ""
+	riverctl map $_mode None XF86Sleep spawn "ghostty --title=popup --window-decoration=false --window-width=40 --window-height=2 -e doas pm-suspend"
 	riverctl map $_mode None XF86Start spawn ""
 	riverctl map $_mode None XF86Standby spawn ""
 	riverctl map $_mode None XF86Stop spawn ""
