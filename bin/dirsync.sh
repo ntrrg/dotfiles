@@ -16,7 +16,7 @@ _main() {
 		return
 	fi
 
-	local _cmd="$_CMD"
+	local _args=""
 	local _link=0
 
 	while [ $# -gt 0 ]; do
@@ -42,7 +42,7 @@ _main() {
 			_arg="'$_arg'"
 		fi
 
-		_cmd="$_cmd $_arg"
+		_args="$_args $_arg"
 		shift
 	done
 
@@ -70,20 +70,30 @@ _main() {
 	for _target in "$@"; do
 		local __src="${_src%/}/$_target"
 		local __dst="${_dst%/}/$_target"
-		local __cmd="$_cmd"
 
 		if [ $_link -gt 0 ]; then
-			__cmd="$__cmd --link-dest"
+			_args="$_args --link-dest"
 
 			if [ -d "$__src" ]; then
-				__cmd="$__cmd '$__src'"
+				_args="$_args '$__src'"
 			else
-				__cmd="$__cmd '$_src'"
+				_args="$_args '$_src'"
 			fi
 		fi
 
-		#cmd.sh mkdir -p "${__dst%/*}"
-		cmd.sh sh -c "$__cmd '$__src' '$__dst'"
+		local __cmd="$_CMD"
+		local __args="$_args"
+
+		if echo "$_CMD" | grep -q 'rclone$'; then
+			if [ -f "$__src" ] || [ -f "$__dst" ]; then
+				__cmd="$__cmd copyto"
+				__args=""
+			else
+				__cmd="$__cmd sync"
+			fi
+		fi
+
+		cmd.sh sh -c "$__cmd $__args '$__src' '$__dst'"
 	done
 }
 
