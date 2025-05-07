@@ -12,8 +12,9 @@ HAS_BLUETOOTH="${HAS_BLUETOOTH:-0}"
 HAS_WIRELESS="${HAS_WIRELESS:-0}"
 
 SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
-ALLOW_SSH="${ALLOW_SSH:-1}"
+CLEAR_FIREWALL_RULES="${CLEAR_FIREWALL_RULES:-0}"
 ALLOW_MOSH="${ALLOW_MOSH:-1}"
+ALLOW_SSH="${ALLOW_SSH:-1}"
 
 NEW_USER="${NEW_USER:-""}"
 
@@ -52,7 +53,7 @@ apt-get install -y \
 	xz-utils \
 	zsh
 
-if [ "$IS_HARDWARE" -ne 0 ]; then
+if [ "$IS_HARDWARE" -eq 1 ]; then
 	apt-get install -y \
 		btrfs-progs \
 		cryptsetup \
@@ -66,11 +67,11 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		usbutils \
 		vbetool
 
-	if [ "$HAS_WIRELESS" -ne 0 ]; then
+	if [ "$HAS_WIRELESS" -eq 1 ]; then
 		apt-get install -y rfkill wireless-tools wpasupplicant
 	fi
 
-	if [ "$HAS_BLUETOOTH" -ne 0 ]; then
+	if [ "$HAS_BLUETOOTH" -eq 1 ]; then
 		apt-get install -y bluez
 	fi
 fi
@@ -90,7 +91,7 @@ apt-get install -y \
 	time \
 	vim
 
-if [ "$IS_HARDWARE" -ne 0 ]; then
+if [ "$IS_HARDWARE" -eq 1 ]; then
 	apt-get install -y powertop
 fi
 
@@ -98,25 +99,13 @@ fi
 # Firewall #
 ############
 
-if [ "$SETUP_FIREWALL" -ne 0 ]; then
+if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	apt-get install -y iptables
 
-	#iptables -Z
-	#iptables -F
-	iptables -P INPUT DROP
-	iptables -P FORWARD ACCEPT
-	iptables -P OUTPUT ACCEPT
-	iptables -A INPUT -i lo -j ACCEPT
-	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-	iptables -A INPUT -p icmp -j ACCEPT
-
-	if [ "$ALLOW_SSH" -ne 0 ]; then
-		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
-		if [ "$ALLOW_MOSH" -ne 0 ]; then
-			iptables -A INPUT -p udp --dport 60000:61000 -j ACCEPT
-		fi
-	fi
+	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
+	ALLOW_MOSH="$ALLOW_MOSH" \
+	ALLOW_SSH="$ALLOW_SSH" \
+	./firewall.sh
 
 	iptables-save > "/etc/iptables.up.rules"
 

@@ -17,8 +17,9 @@ DE="${DE:-"none"}"
 EXTRA_APPS="${EXTRA_APPS:-0}"
 
 SETUP_FIREWALL="${SETUP_FIREWALL:-0}"
-ALLOW_SSH="${ALLOW_SSH:-1}"
+CLEAR_FIREWALL_RULES="${CLEAR_FIREWALL_RULES:-0}"
 ALLOW_MOSH="${ALLOW_MOSH:-1}"
+ALLOW_SSH="${ALLOW_SSH:-1}"
 
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
@@ -60,7 +61,7 @@ apk add \
 	zsh \
 	zsh-vcs
 
-if [ "$IS_HARDWARE" -ne 0 ]; then
+if [ "$IS_HARDWARE" -eq 1 ]; then
 	apk add \
 		acpi \
 		btrfs-progs \
@@ -87,12 +88,12 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 
 	#rc-update add keyd default
 
-	if [ "$IS_LAPTOP" -ne 0 ]; then
+	if [ "$IS_LAPTOP" -eq 1 ]; then
 		rc-update add tlp default
 		rc-update add cpufreqd default
 	fi
 
-	if [ "$HAS_WIRELESS" -ne 0 ]; then
+	if [ "$HAS_WIRELESS" -eq 1 ]; then
 		apk add wireless-tools wpa_supplicant
 
 		if [ "$NEW_USER" != "ntrrg" ]; then
@@ -100,7 +101,7 @@ if [ "$IS_HARDWARE" -ne 0 ]; then
 		fi
 	fi
 
-	if [ "$HAS_BLUETOOTH" -ne 0 ]; then
+	if [ "$HAS_BLUETOOTH" -eq 1 ]; then
 		apk add bluez
 
 		if [ "$NEW_USER" != "ntrrg" ]; then
@@ -126,7 +127,7 @@ if [ "$NEW_USER" = "ntrrg" ]; then
 	ntapk add vim || apk add vim
 fi
 
-if [ "$IS_HARDWARE" -ne 0 ]; then
+if [ "$IS_HARDWARE" -eq 1 ]; then
 	apk add powertop
 fi
 
@@ -353,7 +354,7 @@ EOF
 
 	setup-devd udev
 
-	if [ "$IS_HARDWARE" -ne 0 ]; then
+	if [ "$IS_HARDWARE" -eq 1 ]; then
 		chmod u+s "/usr/sbin/dmidecode"
 		chmod u+s "/usr/sbin/smartctl"
 	fi
@@ -481,7 +482,7 @@ EOF
 
 		apk add consolekit2 xfce-polkit || apk fix
 
-		if [ "$IS_HARDWARE" -ne 0 ]; then
+		if [ "$IS_HARDWARE" -eq 1 ]; then
 			apk add xfburn
 
 			if [ "$NEW_USER" != "ntrrg" ]; then
@@ -509,7 +510,7 @@ EOF
 
 				rc-update add networkmanager default
 
-				if [ "$HAS_WIRELESS" -ne 0 ]; then
+				if [ "$HAS_WIRELESS" -eq 1 ]; then
 					apk add iwd networkmanager-wifi
 
 					cat << EOF >> "/etc/NetworkManager/NetworkManager.conf"
@@ -521,7 +522,7 @@ EOF
 					rc-update add iwd default
 				fi
 
-				if [ "$HAS_BLUETOOTH" -ne 0 ]; then
+				if [ "$HAS_BLUETOOTH" -eq 1 ]; then
 					apk add networkmanager-bluetooth
 				fi
 
@@ -583,7 +584,7 @@ EOF
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
-			foot \
+			ghostty \
 			mupdf \
 			nsxiv
 
@@ -592,7 +593,7 @@ EOF
 		#ntapk add st || apk add st
 	fi
 
-	if [ "$EXTRA_APPS" -ne 0 ]; then
+	if [ "$EXTRA_APPS" -eq 1 ]; then
 		apk add \
 			blender \
 			evince \
@@ -617,7 +618,7 @@ EOF
 		fi
 	fi
 
-	if [ "$IS_HARDWARE" -ne 0 ]; then
+	if [ "$IS_HARDWARE" -eq 1 ]; then
 		apk add \
 			cheese \
 			cups \
@@ -632,9 +633,7 @@ EOF
 
 	# Themes.
 
-	apk add adwaita-icon-theme
-
-	apk add appstream-compose gtk-murrine-engine ostree
+	apk add adwaita-icon-theme appstream-compose gtk-murrine-engine ostree
 
 	#ntapk add \
 	#	everforest-gtk-theme \
@@ -649,25 +648,13 @@ fi
 # Firewall #
 ############
 
-if [ "$SETUP_FIREWALL" -ne 0 ]; then
+if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	apk add iptables
 
-	#iptables -Z
-	#iptables -F
-	iptables -P INPUT DROP
-	iptables -P FORWARD ACCEPT
-	iptables -P OUTPUT ACCEPT
-	iptables -A INPUT -i lo -j ACCEPT
-	iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-	iptables -A INPUT -p icmp -j ACCEPT
-
-	if [ "$ALLOW_SSH" -ne 0 ]; then
-		iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-
-		if [ "$ALLOW_MOSH" -ne 0 ]; then
-			iptables -A INPUT -p udp --dport 60000:61000 -j ACCEPT
-		fi
-	fi
+	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
+	ALLOW_MOSH="$ALLOW_MOSH" \
+	ALLOW_SSH="$ALLOW_SSH" \
+	./firewall.sh
 
 	rc-service iptables save
 	rc-update add iptables default
@@ -691,7 +678,7 @@ if [ -n "$NEW_USER" ]; then
 		storage usb users video wheel
 	"
 
-	if [ "$IS_GUI" -ne 0 ]; then
+	if [ "$IS_GUI" -eq 1 ]; then
 		_GROUPS="$_GROUPS games lp lpadmin scanner seat"
 	fi
 
