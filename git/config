@@ -2,13 +2,18 @@
 	email = ntrrgx@gmail.com
 	name = Miguel Angel Rivera Notararigo
 	signingkey = 3D1B29B605EE7608
+
 [core]
 	editor = vim
 	eol = lf
 	autocrlf = input
+  #sshCommand = ssh -i ~/.ssh/id_rsa.pub -o IdentitiesOnly=yes -o AddKeysToAgent=yes
 
 [init]
   defaultBranch = main
 
 [merge]
 	ff = only
+
+[includeIf "gitdir:~/Work/"]
+  path = ~/Work/.gitconfig
