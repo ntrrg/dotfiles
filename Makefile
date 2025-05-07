@@ -9,7 +9,19 @@ XDG_CACHE_HOME ?= $(XDG_STATE_HOME)/cache
 all: gui
 
 .PHONY: gui
-gui: tui gtk
+gui: tui xdg-gui gtk
+	mkdir -p "$$HOME/Desktop"
+	mkdir -p "$$HOME/Documents"
+	mkdir -p "$$HOME/Downloads"
+	ln -s "$(XDG_DATA_HOME)/fonts" "$$HOME/Fonts"
+	mkdir -p "$$HOME/Games"
+	ln -s "$(XDG_DATA_HOME)/icons" "$$HOME/Icons"
+	mkdir -p "$$HOME/Music"
+	mkdir -p "$$HOME/Pictures"
+	mkdir -p "$$HOME/Public"
+	mkdir -p "$$HOME/Templates"
+	ln -s "$(XDG_DATA_HOME)/themes" "$$HOME/Themes"
+	mkdir -p "$$HOME/Videos"
 
 .PHONY: tui
 tui: xdg bin git gpg htop ssh vim zsh
@@ -63,20 +75,10 @@ xdg_scripts := xdg/setup.sh
 
 .PHONY: xdg
 xdg:
-	mkdir -p "$$HOME/Bookmarks"
-	mkdir -p "$$HOME/Desktop"
-	mkdir -p "$$HOME/Documents"
-	mkdir -p "$$HOME/Downloads"
-	mkdir -p "$$HOME/Fonts"
-	mkdir -p "$$HOME/Games"
-	mkdir -p "$$HOME/Icons"
-	mkdir -p "$$HOME/Music"
-	mkdir -p "$$HOME/Pictures"
-	mkdir -p "$$HOME/Public"
-	mkdir -p "$$HOME/Templates"
-	mkdir -p "$$HOME/Themes"
-	mkdir -p "$$HOME/Videos"
 	xdg/setup.sh
+
+.PHONY: xdg-gui
+xdg-gui: xdg
 	cp -pf "xdg/mimeapps.list" "xdg/user-dirs.dirs" "xdg/user-dirs.locale" "$(XDG_CONFIG_HOME)/"
 
 .PHONY: zsh
@@ -133,7 +135,7 @@ river_scripts := $(shell find gui/river -type f -executable)
 .PHONY: river
 river:
 	cp -rpf "gui/river" "$(XDG_CONFIG_HOME)/"
-	@echo "See also: dunst foot ghostty rofi waybar"
+	@echo "See also: dunst ghostty rofi waybar"
 
 .PHONY: xfce
 xfce:
