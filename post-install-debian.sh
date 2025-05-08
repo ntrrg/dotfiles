@@ -103,9 +103,9 @@ if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	apt-get install -y iptables
 
 	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
-	ALLOW_MOSH="$ALLOW_MOSH" \
-	ALLOW_SSH="$ALLOW_SSH" \
-	./firewall.sh
+		ALLOW_MOSH="$ALLOW_MOSH" \
+		ALLOW_SSH="$ALLOW_SSH" \
+		./firewall.sh
 
 	iptables-save > "/etc/iptables.up.rules"
 

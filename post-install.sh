@@ -652,9 +652,9 @@ if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	apk add iptables
 
 	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
-	ALLOW_MOSH="$ALLOW_MOSH" \
-	ALLOW_SSH="$ALLOW_SSH" \
-	./firewall.sh
+		ALLOW_MOSH="$ALLOW_MOSH" \
+		ALLOW_SSH="$ALLOW_SSH" \
+		./firewall.sh
 
 	rc-service iptables save
 	rc-update add iptables default
