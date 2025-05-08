@@ -255,11 +255,12 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "custom/gpu": {
-    "exec": "~/.local/etc/waybar/custom/gpu.sh",
+    "interval": 10,
+    //"exec": "~/.local/etc/waybar/custom/gpu.sh",
+    "exec": "echo '{\"percentage\": 0, \"tooltip\": \"0%\"}'",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "return-type": "json",
-    "interval": 1,
     "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#gpu": {
