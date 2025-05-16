@@ -95,18 +95,12 @@ if [ "$IS_HARDWARE" -eq 1 ]; then
 
 	if [ "$HAS_WIRELESS" -eq 1 ]; then
 		apk add wireless-tools wpa_supplicant
-
-		if [ "$NEW_USER" != "ntrrg" ]; then
-			rc-update add wpa_supplicant boot
-		fi
+		#rc-update add wpa_supplicant boot
 	fi
 
 	if [ "$HAS_BLUETOOTH" -eq 1 ]; then
 		apk add bluez
-
-		if [ "$NEW_USER" != "ntrrg" ]; then
-			rc-update add bluetooth default
-		fi
+		#rc-update add bluetooth default
 	fi
 fi
 
@@ -411,8 +405,6 @@ EOF
 			pipewire-pulse \
 			wireplumber
 
-		#ntapk add river
-
 		apk add \
 			river \
 			rofi-wayland \
@@ -453,10 +445,7 @@ EOF
 		_setup_xorg
 
 		apk add lightdm-gtk-greeter
-
-		if [ "$NEW_USER" != "ntrrg" ]; then
-			rc-update add lightdm default
-		fi
+		#rc-update add lightdm default
 
 		apk add \
 			alsa-utils \
@@ -589,7 +578,6 @@ EOF
 			nsxiv
 
 		#ntapk add conky
-
 		#ntapk add st || apk add st
 	fi
 
@@ -626,22 +614,28 @@ EOF
 			scrcpy \
 			simple-scan
 
-		if [ "$NEW_USER" != "ntrrg" ]; then
-			rc-update add cupsd default
-		fi
+		#rc-update add cupsd default
 	fi
 
 	# Themes.
 
 	apk add adwaita-icon-theme appstream-compose gtk-murrine-engine ostree
 
+	#if [ -n "$NEW_USER" ]; then
+	#	(
+	#		if ! git branch -l | grep -q "home"; then
+	#			git fetch --depth 1 origin home
+	#			git branch home FETCH_HEAD
+	#		fi
+
+	#		git archive --format tar home | tar -C "/home/$NEW_USER" -x
+	#	) || true
+	#fi
+
 	#ntapk add \
-	#	everforest-gtk-theme \
-	#	everforest-gtk-theme-borderless \
-	#	everforest-gtk-theme-dark \
-	#	everforest-gtk-theme-dark-borderless \
+	#	everforest-gtk-theme-green-black \
 	#	everforest-icon-theme \
-	#	everforest-icon-theme-dark || true
+	#	phinger-cursor-theme || true
 fi
 
 ############

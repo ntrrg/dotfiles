@@ -17,9 +17,14 @@ export SDL_VIDEODRIVER="wayland"
 export ELM_DISPLAY="wl"
 export ELM_ACCEL="opengl"
 export ECORE_EVAS_ENGINE="wayland_egl"
-export MOZ_ENABLE_WAYLAND="1"
+export MOZ_ENABLE_WAYLAND=1
 
 export XDG_CURRENT_DESKTOP="river"
 export XDG_SESSION_DESKTOP="river"
+
+export GTK_THEME="Everforest-Green-Black"
+export ICON_THEME="Everforest-Light"
+export XCURSOR_THEME="phinger-cursors-light"
+export XCURSOR_SIZE=24
 
 exec dbus-run-session river "$@"

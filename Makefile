@@ -26,7 +26,7 @@ gui: tui xdg-gui gtk
 .PHONY: tui
 tui: xdg bin git gpg htop ssh vim zsh
 
-pi_scripts := $(shell find . -maxdepth 1 -name "post-install*.sh")
+pi_scripts := $(shell find . -maxdepth 1 -name "post-install*.sh") firewall.sh
 
 ###########
 # Actions #
