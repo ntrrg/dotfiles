@@ -236,7 +236,7 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "cpu": {
-    "interval": 10,
+    "interval": 5,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "on-click": "ghostty --title=popup -e htop"
@@ -255,9 +255,9 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "custom/gpu": {
-    "interval": 10,
-    //"exec": "~/.local/etc/waybar/custom/gpu.sh",
-    "exec": "echo '{\"percentage\": 0, \"tooltip\": \"0%\"}'",
+    "interval": 5,
+    "exec": "~/.local/etc/waybar/custom/gpu.sh",
+    //"exec": "echo '{\"percentage\": 0, \"tooltip\": \"0%\"}'",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "return-type": "json",
@@ -277,7 +277,7 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "memory": {
-    "interval": 10,
+    "interval": 5,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "tooltip-format": "{used}GiB / {total}GiB ({percentage}%)",
