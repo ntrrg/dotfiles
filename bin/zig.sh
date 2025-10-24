@@ -283,20 +283,30 @@ _fetch() {
 	elif [ "$_mode" = "bin" ]; then
 		local _os="$(_host_os)"
 		local _arch="$(_host_arch)"
-		local _pkg="zig-$_os-$_arch-$_rel.tar.xz"
+		local _pkg="zig-$_arch-$_os-$_rel.tar.xz"
 		local _dl_pkg="$_ZIGSH_CACHE/$_pkg"
 		local _mirror="$_ZIG_MIRROR/$_rel"
 
-		if echo "$_rel" | grep -q "[-]dev[.]"; then
+		if echo "$_rel" | grep -q '[0-9]\+\.[0-9]\+\.[0-9]\+'; then
+			local _v_major="$(echo "$_rel" | cut -d '.' -f 1)"
+			local _v_minor="$(echo "$_rel" | cut -d '.' -f 2)"
+			local _v_patch="$(echo "$_rel" | cut -d '.' -f 3)"
+
+			if [ $_v_major -eq 0 -a $_v_minor -le 13 ]; then
+				_pkg="zig-$_os-$_arch-$_rel.tar.xz"
+			elif [ $_v_major -eq 0 -a $_v_minor -eq 14 -a $_v_patch -eq 0 ]; then
+				_pkg="zig-$_os-$_arch-$_rel.tar.xz"
+			fi
+		elif echo "$_rel" | grep -q "[-]dev[.]"; then
 			_mirror="$_ZIG_BUILDS_MIRROR"
 		fi
 
 		if [ ! -f "$_dl_pkg" ]; then
 			log.sh "downloading binary release $_rel.."
-			wget -O "$_dl_pkg.part" "$_mirror/$_pkg"
+			cmd.sh wget -O "$_dl_pkg.part" "$_mirror/$_pkg"
 
 			if command -v minisign > "/dev/null"; then
-				wget -O "$_dl_pkg.part.minisig" "$_mirror/$_pkg.minisig"
+				cmd.sh wget -O "$_dl_pkg.part.minisig" "$_mirror/$_pkg.minisig"
 				minisign -Vm "$_dl_pkg.part" -P 'RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U'
 			fi
 
