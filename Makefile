@@ -13,14 +13,14 @@ gui: tui xdg-gui gtk
 	mkdir -p "$$HOME/Desktop"
 	mkdir -p "$$HOME/Documents"
 	mkdir -p "$$HOME/Downloads"
-	ln -s "$(XDG_DATA_HOME)/fonts" "$$HOME/Fonts"
+	[ -d "$$HOME/Fonts" ] || ln -sf "$(XDG_DATA_HOME)/fonts" "$$HOME/Fonts"
 	mkdir -p "$$HOME/Games"
-	ln -s "$(XDG_DATA_HOME)/icons" "$$HOME/Icons"
+	[ -d "$$HOME/Icons" ] || ln -sf "$(XDG_DATA_HOME)/icons" "$$HOME/Icons"
 	mkdir -p "$$HOME/Music"
 	mkdir -p "$$HOME/Pictures"
 	mkdir -p "$$HOME/Public"
 	mkdir -p "$$HOME/Templates"
-	ln -s "$(XDG_DATA_HOME)/themes" "$$HOME/Themes"
+	[ -d "$$HOME/Themes" ] || ln -sf "$(XDG_DATA_HOME)/themes" "$$HOME/Themes"
 	mkdir -p "$$HOME/Videos"
 
 .PHONY: tui
@@ -78,8 +78,9 @@ xdg:
 	xdg/setup.sh
 
 .PHONY: xdg-gui
-xdg-gui: xdg
+xdg-gui:
 	cp -pf "xdg/mimeapps.list" "xdg/user-dirs.dirs" "xdg/user-dirs.locale" "$(XDG_CONFIG_HOME)/"
+	IS_GUI=1 xdg/setup.sh
 
 .PHONY: zsh
 zsh:
