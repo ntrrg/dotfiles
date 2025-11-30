@@ -2,6 +2,7 @@
 
 set -xeuo pipefail
 
+DOTFILES="${DOTFILES:-"$PWD"}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 
 CHARSET="${CHARSET:-"UTF-8"}"
@@ -105,7 +106,7 @@ if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
 		ALLOW_MOSH="$ALLOW_MOSH" \
 		ALLOW_SSH="$ALLOW_SSH" \
-		./firewall.sh
+		"$DOTFILES/firewall.sh"
 
 	iptables-save > "/etc/iptables.up.rules"
 

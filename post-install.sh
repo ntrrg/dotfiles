@@ -2,6 +2,7 @@
 
 set -xeuo pipefail
 
+DOTFILES="${DOTFILES:-"$PWD"}"
 BASEPATH="${BASEPATH:-"/tmp"}"
 
 CHARSET="${CHARSET:-"UTF-8"}"
@@ -89,6 +90,8 @@ if [ "$IS_HARDWARE" -eq 1 ]; then
 	#rc-update add keyd default
 
 	if [ "$IS_LAPTOP" -eq 1 ]; then
+		apk add upower
+
 		rc-update add tlp default
 		rc-update add cpufreqd default
 	fi
@@ -648,7 +651,7 @@ if [ "$SETUP_FIREWALL" -eq 1 ]; then
 	CLEAR_FIREWALL_RULES="$CLEAR_FIREWALL_RULES" \
 		ALLOW_MOSH="$ALLOW_MOSH" \
 		ALLOW_SSH="$ALLOW_SSH" \
-		./firewall.sh
+		"$DOTFILES/firewall.sh"
 
 	rc-service iptables save
 	rc-update add iptables default
