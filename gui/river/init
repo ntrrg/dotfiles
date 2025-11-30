@@ -48,7 +48,7 @@ riverctl keyboard-layout -options "grp:rctrl_rshift_toggle" "us,es,latam"
 
 for _device in $(riverctl list-inputs | grep -i touchpad); do
 	riverctl input $_device events enabled
-	riverctl input $_device tap disabled
+	riverctl input $_device tap enabled
 	riverctl input $_device natural-scroll enabled
 	#riverctl input $_device disable-while-typing enabled
 done
@@ -81,6 +81,10 @@ riverctl rule-add -app-id "conky" csd
 riverctl rule-add -title "Picture-in-Picture" float
 riverctl rule-add -title "Picture-in-Picture" csd
 
+# GIMP
+riverctl rule-add -title "Export Image as *" float
+riverctl rule-add -title "Export Image as *" csd
+
 # nsxiv
 riverctl rule-add -title "nsxiv" float
 
@@ -89,6 +93,8 @@ riverctl rule-add -title "Confirm to replace files" float
 riverctl rule-add -title "Confirm to replace files" csd
 riverctl rule-add -title "File Operation Progress" float
 riverctl rule-add -title "File Operation Progress" csd
+riverctl rule-add -title "Rename *" float
+riverctl rule-add -title "Rename *" csd
 
 # Volume controls
 riverctl rule-add -app-id "pavucontrol" float
@@ -224,22 +230,22 @@ riverctl map screen None Right focus-output right
 riverctl map screen None Down focus-output down
 riverctl map screen None Left focus-output left
 
-riverctl map screen Shift Up spawn "
+riverctl map screen Alt+Shift Up spawn "
 	riverctl send-to-output up &&
 	riverctl focus-output up
 "
 
-riverctl map screen Shift Right spawn "
+riverctl map screen Alt+Shift Right spawn "
 	riverctl send-to-output right &&
 	riverctl focus-output right
 "
 
-riverctl map screen Shift Down spawn "
+riverctl map screen Alt+Shift Down spawn "
 	riverctl send-to-output down &&
 	riverctl focus-output down
 "
 
-riverctl map screen Shift Left spawn "
+riverctl map screen Alt+Shift Left spawn "
 	riverctl send-to-output left &&
 	riverctl focus-output left
 "
@@ -302,6 +308,11 @@ for _mode in $_modes; do
 	riverctl map $_mode Alt F12 toggle-float
 	riverctl map $_mode Alt Tab focus-view next
 	riverctl map $_mode Alt+Shift Tab focus-view previous
+
+	###########
+	# Screens #
+	###########
+
 	riverctl map $_mode Super Tab focus-output next
 	riverctl map $_mode Super+Shift Tab focus-output previous
 
@@ -323,21 +334,21 @@ for _mode in $_modes; do
 
 	for _river_tag in 1 2 4 8 16 32 64 128 256; do
 		riverctl map $_mode Super $_tag set-focused-tags $_river_tag
-		riverctl map $_mode Super+Alt $_tag toggle-focused-tags $_river_tag
 		riverctl map $_mode Super+Shift $_tag set-view-tags $_river_tag
+		riverctl map $_mode Super+Alt $_tag toggle-focused-tags $_river_tag
 		riverctl map $_mode Super+Alt+Shift $_tag toggle-view-tags $_river_tag
 		_tag="$((_tag + 1))"
 	done
 
 	_all_tags=2147483647
-	riverctl map $_mode Super 0 set-focused-tags $_all_tags
-	riverctl map $_mode Super+Shift 0 set-view-tags $_all_tags
+	riverctl map $_mode Super+Alt 0 set-focused-tags $_all_tags
+	riverctl map $_mode Super+Alt+Shift 0 set-view-tags $_all_tags
 
 	# Scratchpad
 
 	_scratchpad=2147483648
-	riverctl map $_mode Super+Alt 0 set-focused-tags $_scratchpad
-	riverctl map $_mode Super+Alt+Shift 0 set-view-tags $_scratchpad
+	riverctl map $_mode Super 0 set-focused-tags $_scratchpad
+	riverctl map $_mode Super+Shift 0 set-view-tags $_scratchpad
 
 	######################
 	# Keyboard functions #

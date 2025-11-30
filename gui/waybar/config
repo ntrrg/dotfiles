@@ -224,7 +224,7 @@
   },
   "temperature#battery": {
     "hwmon-path": "/sys/class/thermal/thermal_zone0/temp",
-    "critical-threshold": 60,
+    "critical-threshold": 80,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "on-click": "ghostty --title=popup -e doas powertop"
@@ -242,8 +242,8 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#cpu": {
-    "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
-    "critical-threshold": 60,
+    "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+    "critical-threshold": 90,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "on-click": "ghostty --title=popup -e htop"
@@ -264,8 +264,8 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#gpu": {
-    "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
-    "critical-threshold": 60,
+    "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+    "critical-threshold": 90,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "on-click": "ghostty --title=popup -e htop"
@@ -284,8 +284,8 @@
     "on-click": "ghostty --title=popup -e htop"
   },
   "temperature#mem": {
-    "hwmon-path": "/sys/class/hwmon/hwmon3/temp4_input",
-    "critical-threshold": 60,
+    "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
+    "critical-threshold": 80,
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "{icon}",
     "on-click": "ghostty --title=popup -e htop"
