@@ -90,6 +90,14 @@ widget > * {
   padding: 0px 0em 0px 0.15em;
 }
 
+#mpris.playing {
+  color: lighter(#427819);
+}
+
+#mpris.stopped {
+  color: lighter(#b7472a);
+}
+
 #pulseaudio {
 }
 
@@ -132,6 +140,13 @@ widget > * {
 
 #backlight {
   border-radius: 0.35em 0px 0px 0.35em;
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+#custom-backlight {
+  border-radius: 0px;
+  padding-left: 0px;
   margin-right: 0.15em;
 }
 

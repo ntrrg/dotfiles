@@ -405,8 +405,22 @@ EOF
 			pavucontrol \
 			pipewire \
 			pipewire-alsa \
+			pipewire-jack \
 			pipewire-pulse \
 			wireplumber
+
+		apk add \
+			easyeffects \
+			calf-lv2 \
+			lsp-plugins-lv2 \
+			mda-lv2 \
+			zam-plugins-lv2
+
+		if [ "$IS_HARDWARE" -eq 1 ]; then
+			if [ "$HAS_BLUETOOTH" -eq 1 ]; then
+				apk add pipewire-spa-bluez
+			fi
+		fi
 
 		apk add \
 			river \

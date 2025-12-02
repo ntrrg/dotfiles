@@ -37,7 +37,7 @@ riverctl spawn "xfconf-query --channel xsettings --property /Gtk/CursorThemeName
 riverctl spawn "gsettings set org.gnome.desktop.interface font-name 'Sans serif'"
 riverctl xcursor-theme phinger-cursors-light
 
-#riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
+riverctl spawn "once.sh -- $_RIVER/wallpapers.sh"
 
 #################
 # Input methods #
@@ -68,43 +68,34 @@ riverctl spawn "xdg-settings set default-web-browser chromium.desktop"
 riverctl spawn "dunst"
 riverctl spawn "waybar"
 
-riverctl rule-add -title "*" ssd
+riverctl rule-add -title "*" csd
 #riverctl rule-add -app-id 'float*' float
 riverctl rule-add -app-id "popup" float
 riverctl rule-add -title "popup" float
 
 # Conky
 riverctl rule-add -app-id "conky" float
-riverctl rule-add -app-id "conky" csd
 
 # Firefox
 riverctl rule-add -title "Picture-in-Picture" float
-riverctl rule-add -title "Picture-in-Picture" csd
 
 # GIMP
 riverctl rule-add -title "Export Image as *" float
-riverctl rule-add -title "Export Image as *" csd
 
 # nsxiv
 riverctl rule-add -title "nsxiv" float
 
 # Thunar
 riverctl rule-add -title "Confirm to replace files" float
-riverctl rule-add -title "Confirm to replace files" csd
 riverctl rule-add -title "File Operation Progress" float
-riverctl rule-add -title "File Operation Progress" csd
 riverctl rule-add -title "Rename *" float
-riverctl rule-add -title "Rename *" csd
 
 # Volume controls
 riverctl rule-add -app-id "pavucontrol" float
-riverctl rule-add -app-id "pavucontrol" csd
 riverctl rule-add -title "Volume Control" float
-riverctl rule-add -title "Volume Control" csd
 
 # wdisplays
 riverctl rule-add -app-id "wdisplays" float
-riverctl rule-add -app-id "wdisplays" csd
 
 #########
 # Modes #
@@ -374,11 +365,11 @@ for _mode in $_modes; do
 	riverctl map $_mode None XF86AudioRaiseVolume spawn "pactl -- set-sink-volume @DEFAULT_SINK@ +5%"
 	riverctl map $_mode None XF86AudioLowerVolume spawn "pactl -- set-sink-volume @DEFAULT_SINK@ -5%"
 	riverctl map $_mode None XF86AudioMute spawn "pactl -- set-sink-mute @DEFAULT_SINK@ toggle"
-	riverctl map $_mode None XF86AudioPlay spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
-	riverctl map $_mode None XF86AudioPause spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause"
-	riverctl map $_mode None XF86AudioStop spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
-	riverctl map $_mode None XF86AudioPrev spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
-	riverctl map $_mode None XF86AudioNext spawn "dbus-send --type=method_call --dest=org.mpris.MediaPlayer2.vlc /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+	riverctl map $_mode None XF86AudioPlay spawn "playerctl play-pause"
+	riverctl map $_mode None XF86AudioPause spawn "playerctl pause"
+	riverctl map $_mode None XF86AudioStop spawn "playerctl stop"
+	riverctl map $_mode None XF86AudioPrev spawn "playerctl previous"
+	riverctl map $_mode None XF86AudioNext spawn "playerctl next"
 	riverctl map $_mode None XF86AudioRewind spawn ""
 
 	riverctl map $_mode None XF86Back spawn ""

@@ -37,7 +37,7 @@ abuild:
 	cp -rf "alpine/.abuild" "$$HOME/"
 	chmod -R a=,u=rwX "$$HOME/.abuild"
 
-shell_scripts := $(shell find bin -name "*.sh")
+shell_scripts := $(shell find bin -name "*.sh" -executable)
 
 .PHONY: bin
 bin:

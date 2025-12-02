@@ -40,6 +40,8 @@
 
   - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>F4</kbd> -> Close window manager.
   - <kbd>Alt</kbd> + <kbd>F4</kbd> -> Close window.
+  - <kbd>Alt</kbd> + <kbd>F11</kbd> -> Toggle full screen.
+  - <kbd>Alt</kbd> + <kbd>F12</kbd> -> Toggle floating.
   - <kbd>⌘</kbd> + <kbd>Esc</kbd> -> Enter normal mode.
   - <kbd>⌘</kbd> + <kbd>F12</kbd> -> Toggle pass through mode (enable/disable all windows manager keybindings).
   - <kbd>⌘</kbd> + <kbd>P</kbd> -> Open display settings.
@@ -75,8 +77,6 @@
   **Layout:**
 
   - <kbd>Alt</kbd> + <kbd>F10</kbd> -> Set as main window.
-  - <kbd>Alt</kbd> + <kbd>F11</kbd> -> Toggle full screen.
-  - <kbd>Alt</kbd> + <kbd>F12</kbd> -> Toggle floating.
   - <kbd>Alt</kbd> + <kbd>Tab</kbd> -> Cycle windows.
   - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd> -> Reverse cycle windows.
   - <kbd>⌘</kbd> + <kbd>F1</kbd> -> Enter layout mode.

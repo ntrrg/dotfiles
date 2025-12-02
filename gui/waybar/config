@@ -19,11 +19,13 @@
   "modules-right": [
     "tray",
     "group/keyboard-layout",
+    "mpris",
     "pulseaudio",
     "bluetooth",
     //"network#wire",
     "network#wireless",
     "backlight",
+    "custom/backlight",
     "battery",
     "custom/battery",
     "temperature#battery",
@@ -137,6 +139,19 @@
     "on-click": "riverctl keyboard-layout us"
   },
 
+  "mpris": {
+    "interval": 1,
+    "format": "{status_icon}",
+    "tooltip-format": "{dynamic} [{player}]",
+    "status-icons": {
+      "playing": "",
+      "paused": ""
+    },
+    "dynamic-separator": " - ",
+    "dynamic-order": ["artist", "title", "album", "position", "length"],
+    // "ignored-players": ["chromium", "vlc"]
+  },
+
   "pulseaudio": {
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "<span size=\"12pt\">󰕾</span> {icon}",
@@ -145,7 +160,7 @@
     "tooltip-format": "{desc} {volume}%",
     "scroll-step": 1,
     "on-click": "pavucontrol",
-    "ignored-sinks": ["Easy Effects Sink"]
+    //"ignored-sinks": ["Easy Effects Sink"]
   },
 
   "bluetooth": {
@@ -191,12 +206,19 @@
 
   "backlight": {
     //"device": "amdgpu_bl1",
-    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    //"format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
     "format": "<span size=\"14pt\">󱍖</span>  {icon}",
     "tooltip": false,
     "on-click": "",
     "on-scroll-up": "brightness.sh +5",
     "on-scroll-down": "brightness.sh -5"
+  },
+  "custom/backlight": {
+    "exec": "~/.local/etc/waybar/custom/brightness.sh",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "format": "{icon}",
+    "return-type": "json",
+    "interval": 1
   },
 
   "battery": {

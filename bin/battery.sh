@@ -21,6 +21,13 @@ _main() {
 		local _max=0
 		_max="$(cat "$_battery/charge_full_design")"
 
+		local _full=0
+		_full="$(cat "$_battery/charge_full")"
+
+		if [ $_full -gt $_max ]; then
+			_max="$_full"
+		fi
+
 		local _current_p="$((_current * 100 / _max))"
 
 		local _status=0
@@ -28,7 +35,7 @@ _main() {
 
 		local _consumption=""
 
-		if [ "$_status" = "Discharging" ]; then
+		if [ "$_status" = "Discharging" ] && command -v upower > "/dev/null"; then
 			_info="$(upower -i /org/freedesktop/UPower/devices/battery_${_battery##*/})"
 			_rate="$(echo "$_info" | grep "energy-rate:" | grep -oE '[0-9]+(\.[0-9]+)?')"
 			_current="$(echo "$_info" | grep "energy:" | grep -oE '[0-9]+(\.[0-9]+)?')"
