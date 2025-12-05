@@ -16,10 +16,6 @@ riverctl map locked Super Delete spawn "screens.sh turn toggle"
 # Appareance #
 ##############
 
-riverctl default-layout rivertile
-riverctl attach-mode bottom
-rivertile -view-padding 5 -outer-padding 5 &
-
 riverctl background-color 0x000000
 riverctl border-width 2
 riverctl border-color-urgent 0xb7472a
@@ -108,83 +104,13 @@ _modes="normal"
 riverctl declare-mode layout
 _modes="$_modes layout"
 
-riverctl send-layout-cmd rivertile "main-location left"
-riverctl map layout None Up send-layout-cmd rivertile "main-count +1"
-riverctl map layout Alt Up send-layout-cmd rivertile ""
-riverctl map layout Shift Up send-layout-cmd rivertile ""
-riverctl map layout None Right send-layout-cmd rivertile "main-ratio +0.025"
-riverctl map layout Alt Right send-layout-cmd rivertile "main-ratio +0.005"
-riverctl map layout Shift Right send-layout-cmd rivertile "main-ratio +0.05"
-riverctl map layout None Down send-layout-cmd rivertile "main-count -1"
-riverctl map layout Alt Down send-layout-cmd rivertile ""
-riverctl map layout Shift Down send-layout-cmd rivertile ""
-riverctl map layout None Left send-layout-cmd rivertile "main-ratio -0.025"
-riverctl map layout Alt Left send-layout-cmd rivertile "main-ratio -0.005"
-riverctl map layout Shift Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl attach-mode bottom
 
-riverctl map layout Alt+Shift Up spawn "
-	riverctl send-layout-cmd rivertile 'main-location top' &&
-	riverctl map layout None Up send-layout-cmd rivertile 'main-ratio -0.025' &&
-	riverctl map layout Alt Up send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map layout Shift Up send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map layout None Right send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map layout Alt Right send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Right send-layout-cmd rivertile '' &&
-	riverctl map layout None Down send-layout-cmd rivertile 'main-ratio +0.025' &&
-	riverctl map layout Alt Down send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map layout Shift Down send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map layout None Left send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map layout Alt Left send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Left send-layout-cmd rivertile ''
-"
-
-riverctl map layout Alt+Shift Right spawn "
-	riverctl send-layout-cmd rivertile 'main-location right' &&
-	riverctl map layout None Up send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map layout Alt Up send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Up send-layout-cmd rivertile '' &&
-	riverctl map layout None Right send-layout-cmd rivertile 'main-ratio -0.025' &&
-	riverctl map layout Alt Right send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map layout Shift Right send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map layout None Down send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map layout Alt Down send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Down send-layout-cmd rivertile '' &&
-	riverctl map layout None Left send-layout-cmd rivertile 'main-ratio +0.025' &&
-	riverctl map layout Alt Left send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map layout Shift Left send-layout-cmd rivertile 'main-ratio +0.05'
-"
-
-riverctl map layout Alt+Shift Down spawn "
-	riverctl send-layout-cmd rivertile 'main-location bottom' &&
-	riverctl map layout None Up send-layout-cmd rivertile 'main-ratio +0.025' &&
-	riverctl map layout Alt Up send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map layout Shift Up send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map layout None Right send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map layout Alt Right send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Right send-layout-cmd rivertile '' &&
-	riverctl map layout None Down send-layout-cmd rivertile 'main-ratio -0.025' &&
-	riverctl map layout Alt Down send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map layout Shift Down send-layout-cmd rivertile 'main-ratio -0.05' &&
-	riverctl map layout None Left send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map layout Alt Left send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Left send-layout-cmd rivertile ''
-"
-
-riverctl map layout Alt+Shift Left spawn "
-	riverctl send-layout-cmd rivertile 'main-location left' &&
-	riverctl map layout None Up send-layout-cmd rivertile 'main-count +1' &&
-	riverctl map layout Alt Up send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Up send-layout-cmd rivertile '' &&
-	riverctl map layout None Right send-layout-cmd rivertile 'main-ratio +0.025' &&
-	riverctl map layout Alt Right send-layout-cmd rivertile 'main-ratio +0.005' &&
-	riverctl map layout Shift Right send-layout-cmd rivertile 'main-ratio +0.05' &&
-	riverctl map layout None Down send-layout-cmd rivertile 'main-count -1' &&
-	riverctl map layout Alt Down send-layout-cmd rivertile '' &&
-	riverctl map layout Shift Down send-layout-cmd rivertile '' &&
-	riverctl map layout None Left send-layout-cmd rivertile 'main-ratio -0.025'&&
-	riverctl map layout Alt Left send-layout-cmd rivertile 'main-ratio -0.005' &&
-	riverctl map layout Shift Left send-layout-cmd rivertile 'main-ratio -0.05'
-"
+if command -v "wideriver" > "/dev/null"; then
+	"$_RIVER/setup-wideriver.sh"
+else
+	"$_RIVER/setup-rivertile.sh"
+fi
 
 # Floating
 
@@ -293,8 +219,8 @@ for _mode in $_modes; do
 	# Windows #
 	###########
 
+	riverctl map $_mode Super Return zoom
 	riverctl map $_mode Alt F4 close
-	riverctl map $_mode Alt F10 zoom
 	riverctl map $_mode Alt F11 toggle-fullscreen
 	riverctl map $_mode Alt F12 toggle-float
 	riverctl map $_mode Alt Tab focus-view next

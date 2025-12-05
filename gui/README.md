@@ -76,7 +76,7 @@
 
   **Layout:**
 
-  - <kbd>Alt</kbd> + <kbd>F10</kbd> -> Set as main window.
+  - <kbd>Super</kbd> + <kbd>Enter</kbd> -> Set as main window.
   - <kbd>Alt</kbd> + <kbd>Tab</kbd> -> Cycle windows.
   - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd> -> Reverse cycle windows.
   - <kbd>⌘</kbd> + <kbd>F1</kbd> -> Enter layout mode.
