@@ -407,6 +407,7 @@ EOF
 			pipewire-alsa \
 			pipewire-jack \
 			pipewire-pulse \
+			qpwgraph \
 			wireplumber
 
 		apk add \
