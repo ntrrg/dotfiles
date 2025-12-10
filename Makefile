@@ -9,7 +9,7 @@ XDG_CACHE_HOME ?= $(XDG_STATE_HOME)/cache
 all: gui
 
 .PHONY: gui
-gui: tui xdg-gui gtk
+gui: tui xdg-gui gtk assets
 	mkdir -p "$$HOME/Desktop"
 	mkdir -p "$$HOME/Documents"
 	mkdir -p "$$HOME/Downloads"
@@ -98,6 +98,12 @@ zsh:
 .PHONY: alacritty
 alacritty:
 	cp -rpf "gui/alacritty" "$(XDG_CONFIG_HOME)/"
+
+.PHONY: assets
+assets:
+	git rev-parse --verify --quiet assets > "/dev/null" || \
+		git fetch --depth 1 origin assets:assets
+	git archive --format tar assets | tar -C ~ -x
 
 .PHONY: conky
 conky:
