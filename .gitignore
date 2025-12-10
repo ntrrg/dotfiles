@@ -1,5 +1,8 @@
 nogit-*
 
+# Worktrees
+/assets/
+
 #########
 # Tools #
 #########
