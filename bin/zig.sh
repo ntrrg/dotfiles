@@ -11,7 +11,7 @@ _NO_DOCS="${NO_DOCS:-""}"
 _USE_LLVM="${USE_LLVM:-""}"
 _ZIG="${ZIG:-"zig"}"
 _ZIG_BUILDS_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/builds"}"
-_ZIG_GIT_MIRROR="${ZIG_GIT_MIRROR:-"https://github.com/ziglang/zig"}"
+_ZIG_GIT_MIRROR="${ZIG_GIT_MIRROR:-"https://codeberg.org/ziglang/zig"}"
 _ZIG_MIRROR="${ZIG_MIRROR:-"https://ziglang.org/download"}"
 
 _ZIGSH_DATA="${ZIGSH_DATA:-"${XDG_DATA_HOME:-"$HOME/.local/share"}/zig.sh"}"
@@ -342,12 +342,11 @@ _git_archive() {
 
 	log.sh "generating archive for $_rel from git repository.."
 
-	for _ref in "$_ref" "origin/$_ref"; do
-		git -C "$_ZIG_SRC" archive --format tar "$_ref" || continue
-		return
-	done
+	if ! git -C "$_ZIG_SRC" rev-parse --verify --quiet "$_ref" > "/dev/null"; then
+		git -C "$_ZIG_SRC" fetch origin "$_ref:$_ref"
+	fi
 
-	log.sh -f "%s is not a valid git object name" "$_ref"
+	git -C "$_ZIG_SRC" archive --format tar "$_ref"
 }
 
 _host_arch() {
