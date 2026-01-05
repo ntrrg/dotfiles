@@ -62,6 +62,7 @@
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> -> Run a command.
   - <kbd>⌘</kbd> + <kbd>F</kbd> -> Open default file manager.
   - <kbd>⌘</kbd> + <kbd>M</kbd> -> Open messaging application.
+  - <kbd>⌘</kbd> + <kbd>N</kbd> -> Open notes application.
   - <kbd>⌘</kbd> + <kbd>T</kbd> -> Open default terminal.
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd> -> Open default terminal as floating window.
   - <kbd>⌘</kbd> + <kbd>W</kbd> -> Open default web browser.
