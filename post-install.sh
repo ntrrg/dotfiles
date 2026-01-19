@@ -73,6 +73,7 @@ if [ "$IS_HARDWARE" -eq 1 ]; then
 		dvd+rw-tools \
 		hdparm \
 		keyd \
+		libvirt-client \
 		lvm2 \
 		ntfs-3g \
 		pciutils \
@@ -577,17 +578,23 @@ EOF
 		ffmpeg \
 		ffmpeg-libs \
 		chromium \
-		flatpak \
 		imagemagick \
+		libreoffice \
 		libsixel-tools \
 		telegram-desktop \
 		transmission \
 		vlc-qt \
 		xarchiver \
+		waydroid \
 		zbar
 
-	flatpak remote-add --if-not-exists \
-		flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
+	if [ "$LANGUAGE" != "C" ]; then
+		_LANG="${LANGUAGE%_*}"
+		apk add "libreoffice-lang-$_LANG" || true
+
+		_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
+		apk add "libreoffice-lang-$_LANG" || true
+	fi
 
 	if [ "$NEW_USER" = "ntrrg" ]; then
 		apk add \
@@ -600,37 +607,36 @@ EOF
 	fi
 
 	if [ "$EXTRA_APPS" -eq 1 ]; then
-		apk add \
-			blender \
-			evince \
-			gimp \
-			inkscape \
-			kdenlive \
-			krita \
-			libreoffice \
-			obs-studio \
-			scribus \
-			tenacity \
-			waydroid
+		apk add flatpak
 
-		#apk add manuskript
+		flatpak remote-add --if-not-exists \
+			flathub 'https://flathub.org/repo/flathub.flatpakrepo' || true
 
-		if [ "$LANGUAGE" != "C" ]; then
-			_LANG="${LANGUAGE%_*}"
-			apk add "libreoffice-lang-$_LANG" || true
-
-			_LANG="$(echo "$LANGUAGE" | tr '[:upper:]' '[:lower:]')"
-			apk add "libreoffice-lang-$_LANG" || true
-		fi
+		flatpak install flathub \
+			ch.theologeek.Manuskript \
+			com.github.tchx84.Flatseal \
+			com.google.Chrome \
+			com.heroicgameslauncher.hgl \
+			com.obsproject.Studio \
+			com.usebottles.bottles \
+			com.valvesoftware.Steam \
+			md.obsidian.Obsidian \
+			net.scribus.Scribus \
+			org.blender.Blender \
+			org.gimp.GIMP \
+			org.inkscape.Inkscape \
+			org.kde.kdenlive \
+			org.kde.krita \
+			org.tenacityaudio.Tenacity || true
 	fi
 
 	if [ "$IS_HARDWARE" -eq 1 ]; then
 		apk add \
-			cheese \
 			cups \
 			cups-filters \
 			scrcpy \
-			simple-scan
+			simple-scan \
+			virt-manager
 
 		#rc-update add cupsd default
 	fi
