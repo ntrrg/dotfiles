@@ -25,7 +25,7 @@ ALLOW_SSH="${ALLOW_SSH:-1}"
 NEW_USER="${NEW_USER:-""}"
 NEW_USER_PASSWORD="${NEW_USER_PASSWORD:-""}"
 
-NTALPINE="${NTALPINE:-"/media/ntDisk/Baul/Software/Linux/Mirrors/ntalpine/edge/main"}"
+NTALPINE="${NTALPINE:-"/media/ntHDD/Baul/Software/Linux/Mirrors/ntalpine/edge/main"}"
 
 ntapk() {
 	apk -X "$NTALPINE" --allow-untrusted --no-cache "$@"
@@ -341,6 +341,7 @@ EOF
 			wlr-randr \
 			wlrctl \
 			xdg-desktop-portal \
+			xdg-desktop-portal-gtk \
 			xwayland
 	}
 
@@ -425,7 +426,7 @@ EOF
 		fi
 
 		apk add \
-			river \
+			river-classic \
 			rofi-wayland \
 			dunst \
 			grim \
@@ -643,7 +644,8 @@ EOF
 
 	# Themes.
 
-	apk add adwaita-icon-theme appstream-compose gtk-murrine-engine ostree
+	apk add adwaita-icon-theme
+	#apk add appstream-compose gtk-murrine-engine ostree
 
 	#if [ -n "$NEW_USER" ]; then
 	#	(
