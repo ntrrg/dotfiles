@@ -71,16 +71,6 @@ _main() {
 		local __src="${_src%/}/$_target"
 		local __dst="${_dst%/}/$_target"
 
-		if [ $_link -gt 0 ]; then
-			_args="$_args --link-dest"
-
-			if [ -d "$__src" ]; then
-				_args="$_args '$__src'"
-			else
-				_args="$_args '$_src'"
-			fi
-		fi
-
 		local __cmd="$_CMD"
 		local __args="$_args"
 
@@ -90,6 +80,16 @@ _main() {
 				__args=""
 			else
 				__cmd="$__cmd sync"
+			fi
+		else
+			if [ $_link -gt 0 ]; then
+				__args="$__args --link-dest"
+
+				if [ -d "$__src" ]; then
+					__args="$__args '$__src'"
+				else
+					__args="$__args '$_src'"
+				fi
 			fi
 		fi
 
