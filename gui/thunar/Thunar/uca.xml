@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>com.mitchellh.ghostty</icon>
+	<name>Open in terminal</name>
+	<submenu></submenu>
+	<unique-id>1764384347992069-1</unique-id>
+	<command>ghostty --working-directory=&quot;%f&quot;</command>
+	<description>Open current directory in a terminal emulator</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>nsxiv</icon>
+	<name>Open images</name>
+	<submenu></submenu>
+	<unique-id>1770132705473369-1</unique-id>
+	<command>nsxiv %F</command>
+	<description>Open images with nsxiv</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+	<image-files/>
+</action>
+</actions>

@@ -129,25 +129,29 @@ gtk:
 rofi:
 	cp -rpf "gui/rofi" "$(XDG_CONFIG_HOME)/"
 
+.PHONY: thunar
+thunar:
+	cp -rpf "gui/thunar/Thunar" "$(XDG_CONFIG_HOME)/"
+
 waybar_scripts := $(shell find gui/waybar -type f -executable)
 
 .PHONY: waybar
 waybar:
 	cp -rpf "gui/waybar" "$(XDG_CONFIG_HOME)/"
 
-# GUI - DE
+# GUI - Desktop Environments
 
 river_scripts := $(shell find gui/river -type f -executable)
 
 .PHONY: river
 river:
 	cp -rpf "gui/river" "$(XDG_CONFIG_HOME)/"
-	@echo "See also: dunst ghostty rofi waybar"
+	@echo "See also: dunst ghostty rofi thunar waybar"
 
 .PHONY: xfce
 xfce:
 	cp -rpf "gui/xfce4" "$(XDG_CONFIG_HOME)/"
-	@echo "See also: alacritty conky dunst"
+	@echo "See also: alacritty conky dunst thunar"
 
 ###############
 # Development #
