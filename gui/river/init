@@ -131,15 +131,35 @@ riverctl map float Alt Right move right 5
 riverctl map float Alt Down move down 5
 riverctl map float Alt Left move left 5
 
-riverctl map float Shift Up snap up
-riverctl map float Shift Right snap right
-riverctl map float Shift Down snap down
-riverctl map float Shift Left snap left
+riverctl map float Shift Up move up 50
+riverctl map float Shift Right move right 50
+riverctl map float Shift Down move down 50
+riverctl map float Shift Left move left 50
 
-riverctl map float Alt+Shift Up resize vertical 25
-riverctl map float Alt+Shift Right resize horizontal 25
-riverctl map float Alt+Shift Down resize vertical -25
-riverctl map float Alt+Shift Left resize horizontal -25
+riverctl map float Alt+Shift Up snap up
+riverctl map float Alt+Shift Right snap right
+riverctl map float Alt+Shift Down snap down
+riverctl map float Alt+Shift Left snap left
+
+riverctl map float Control Up resize vertical 25
+riverctl map float Control Right resize horizontal 25
+riverctl map float Control Down resize vertical -25
+riverctl map float Control Left resize horizontal -25
+
+riverctl map float Control+Alt Up resize vertical 5
+riverctl map float Control+Alt Right resize horizontal 5
+riverctl map float Control+Alt Down resize vertical -5
+riverctl map float Control+Alt Left resize horizontal -5
+
+riverctl map float Control+Shift Up resize vertical 50
+riverctl map float Control+Shift Right resize horizontal 50
+riverctl map float Control+Shift Down resize vertical -50
+riverctl map float Control+Shift Left resize horizontal -50
+
+riverctl map float Control+Alt+Shift Up resize vertical 150
+riverctl map float Control+Alt+Shift Right resize horizontal 150
+riverctl map float Control+Alt+Shift Down resize vertical -150
+riverctl map float Control+Alt+Shift Left resize horizontal -150
 
 # Screen
 
@@ -150,6 +170,11 @@ riverctl map screen None Up focus-output up
 riverctl map screen None Right focus-output right
 riverctl map screen None Down focus-output down
 riverctl map screen None Left focus-output left
+
+riverctl map screen Shift Up send-to-output up
+riverctl map screen Shift Right send-to-output right
+riverctl map screen Shift Down send-to-output down
+riverctl map screen Shift Left send-to-output left
 
 riverctl map screen Alt+Shift Up spawn "
 	riverctl send-to-output up &&

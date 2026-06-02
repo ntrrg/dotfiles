@@ -49,7 +49,7 @@
   <!-- - <kbd>⌘</kbd> + <kbd>K</kbd> -> Start `xkill`. -->
   - <kbd>⌘</kbd> + <kbd>Delete</kbd> -> Turn off screen.
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd> -> Lock screen.
-  - <kbd>⌘</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd> -> Suspend.
+  - <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd> -> Suspend.
   - <kbd>⌘</kbd> + <kbd>B</kbd> -> Launch status bar.
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> -> Close status bar.
   - <kbd>⌘</kbd> + <kbd>D</kbd> -> Dismiss first notification.
@@ -74,9 +74,14 @@
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>1-9</kbd> -> Move window to workspace 1-9.
   - <kbd>⌘</kbd> + <kbd>0</kbd> -> Go to scratchpad.
   - <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd> -> Move window to scratchpad.
+  - <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>1-9</kbd> -> Toggle windows from workspace 1-9.
+  - <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>1-9</kbd> -> Toggle window on workspace 1-9.
+  - <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> -> View windows from all workspaces.
+  - <kbd>⌘</kbd> + <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd> -> Display window on all workspaces.
 
   **Layout:**
 
+  - <kbd>Alt</kbd> + <kbd>F10</kbd> -> Toggle single window layout (requires wideriver).
   - <kbd>Super</kbd> + <kbd>Enter</kbd> -> Set as main window.
   - <kbd>Alt</kbd> + <kbd>Tab</kbd> -> Cycle windows.
   - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd> -> Reverse cycle windows.
@@ -84,23 +89,52 @@
     - <kbd>↑</kbd> -> Increment main window count.
     - <kbd>↓</kbd> -> Decrement main window count.
     - <kbd>←</kbd> -> Decrement main window size.
+    - <kbd>Alt</kbd> + <kbd>←</kbd> -> Slightly decrement main window size.
+    - <kbd>Shift</kbd> + <kbd>←</kbd> -> Significantly decrement main window size.
     - <kbd>→</kbd> -> Increment main window size.
+    - <kbd>Alt</kbd> + <kbd>→</kbd> -> Slightly increment main window size.
+    - <kbd>Shift</kbd> + <kbd>→</kbd> -> Significantly increment main window size.
     - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Position main window in the top.
     - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Position main window in the bottom.
     - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Position main window in the left.
     - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Position main window in the right.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> -> Set wide layout (requires wideriver).
 
   **Floating:**
 
   - <kbd>⌘</kbd> + <kbd>F2</kbd> -> Enter float mode.
     - <kbd>↑</kbd> -> Move window up.
+    - <kbd>Alt</kbd> + <kbd>↑</kbd> -> Slightly move window up.
+    - <kbd>Shift</kbd> + <kbd>↑</kbd> -> Significantly move window up.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Snap window to the top.
     - <kbd>↓</kbd> -> Move window down.
+    - <kbd>Alt</kbd> + <kbd>↓</kbd> -> Slightly move window down.
+    - <kbd>Shift</kbd> + <kbd>↓</kbd> -> Significantly move window down.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Snap window to the bottom.
     - <kbd>←</kbd> -> Move window left.
+    - <kbd>Alt</kbd> + <kbd>←</kbd> -> Slightly move window left.
+    - <kbd>Shift</kbd> + <kbd>←</kbd> -> Significantly move window left.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Snap window to the left.
     - <kbd>→</kbd> -> Move window right.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Increase window size horizontally.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Decrease window size horizontally.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Decrease window size vertically.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Increase window size vertically.
+    - <kbd>Alt</kbd> + <kbd>→</kbd> -> Slightly move window left.
+    - <kbd>Shift</kbd> + <kbd>→</kbd> -> Significantly move window left.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Snap window to the left.
+    - <kbd>Ctrl</kbd> + <kbd>↑</kbd> -> Increase window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>↑</kbd> -> Slightly increase window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Shift</kbd> + <kbd>↑</kbd> -> Significantly increase window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Dramatically increase window size horizontally.
+    - <kbd>Ctrl</kbd> + <kbd>↓</kbd> -> Decrease window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>↓</kbd> -> Slightly decrease window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Shift</kbd> + <kbd>↓</kbd> -> Significantly decrease window size horizontally.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Dramatically decrease window size horizontally.
+    - <kbd>Ctrl</kbd> + <kbd>←</kbd> -> Decrease window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>←</kbd> -> Slightly decrease window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Shift</kbd> + <kbd>←</kbd> -> Significantly decrease window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Dramatically decrease window size vertically.
+    - <kbd>Ctrl</kbd> + <kbd>→</kbd> -> Increase window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>→</kbd> -> Slightly increase window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Shift</kbd> + <kbd>→</kbd> -> Significantly increase window size vertically.
+    - <kbd>Ctrl</kbd> + kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Dramatically increase window size vertically.
 
   **Screens:**
 
@@ -113,8 +147,12 @@
     - <kbd>↓</kbd> -> Focus screen down.
     - <kbd>←</kbd> -> Focus screen left.
     - <kbd>→</kbd> -> Focus screen right.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Move window one screen up.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Move window one screen down.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Move window one screen left.
-    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Move window one screen right.
+    - <kbd>Shift</kbd> + <kbd>↑</kbd> -> Move window one screen up.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> -> Move window and focus one screen up.
+    - <kbd>Shift</kbd> + <kbd>↓</kbd> -> Move window one screen down.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> -> Move window and focus one screen down.
+    - <kbd>Shift</kbd> + <kbd>←</kbd> -> Move window one screen left.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>←</kbd> -> Move window and focus one screen left.
+    - <kbd>Shift</kbd> + <kbd>→</kbd> -> Move window one screen right.
+    - <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>→</kbd> -> Move window and focus one screen right.
 
