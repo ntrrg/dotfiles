@@ -4,7 +4,7 @@
 	signingkey = 3D1B29B605EE7608
 
 [core]
-	editor = vim
+	editor = nvim
 	eol = lf
 	autocrlf = input
   #sshCommand = ssh -i ~/.ssh/id_rsa.pub -o IdentitiesOnly=yes -o AddKeysToAgent=yes

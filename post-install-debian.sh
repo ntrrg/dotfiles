@@ -79,18 +79,18 @@ fi
 
 # Apps
 
-apt-get purge -fy "vim-*"
+apt-get purge -fy vim "vim-*"
 
 apt-get install -y \
 	bc \
 	elinks \
 	htop \
 	iftop \
+	neovim \
 	netselect \
 	nmap \
 	pv \
-	time \
-	vim
+	time
 
 if [ "$IS_HARDWARE" -eq 1 ]; then
 	apt-get install -y powertop

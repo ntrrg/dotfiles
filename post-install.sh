@@ -122,7 +122,7 @@ apk add \
 
 if [ "$NEW_USER" = "ntrrg" ]; then
 	apk del vim
-	ntapk add vim || apk add vim
+	apk add neovim
 fi
 
 if [ "$IS_HARDWARE" -eq 1 ]; then
@@ -256,7 +256,7 @@ else
     <test name="family" qual="any">
       <string>monospace</string>
     </test>
-  
+
     <edit binding="strong" mode="prepend" name="family">
       <string>Noto Sans Mono</string>
     </edit>

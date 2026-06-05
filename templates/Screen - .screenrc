@@ -1,6 +1,6 @@
 only
 # screen TEXT_EDITOR_COMMAND
-screen vim
+screen nvim
 title "Text editor"
 split
 split -v

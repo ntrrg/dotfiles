@@ -24,7 +24,7 @@ gui: tui xdg-gui gtk assets
 	mkdir -p "$$HOME/Videos"
 
 .PHONY: tui
-tui: xdg bin git gpg htop ssh vim zsh
+tui: xdg bin git gpg htop neovim ssh vim zsh
 
 pi_scripts := $(shell find . -maxdepth 1 -name "post-install*.sh") firewall.sh
 
@@ -56,6 +56,10 @@ gpg:
 .PHONY: htop
 htop:
 	cp -rpf "htop" "$(XDG_CONFIG_HOME)/"
+
+.PHONY: neovim
+neovim:
+	cp -rpf "neovim/nvim" "$(XDG_CONFIG_HOME)/"
 
 .PHONY: ssh
 ssh:

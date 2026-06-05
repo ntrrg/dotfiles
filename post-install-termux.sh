@@ -29,12 +29,14 @@ apt-get install -y \
 
 # Apps
 
+apt-get purge -fy vim "vim-*"
+
 apt-get install -y \
 	bc \
 	elinks \
+	neovim \
 	nmap \
-	pv \
-	vim
+	pv
 
 ############
 # Cleaning #

@@ -5,8 +5,8 @@
 ################
 
 export BROWSER="chromium"
-export EDITOR="vim"
+export EDITOR="nvim"
 export PAGER="less"
 export SHELL="zsh"
 export TERMINAL="ghostty"
-export VISUAL="vim"
+export VISUAL="nvim"
